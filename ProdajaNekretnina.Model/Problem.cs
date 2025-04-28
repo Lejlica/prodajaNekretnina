@@ -18,10 +18,12 @@ namespace ProdajaNekretnina.Model
         public DateTime DatumRjesenja { get; set; }
         public string OpisRjesenja { get; set; }
         public int KorisnikId { get; set; }
-        public int NekrentinaId { get; set; }
+       
         public int StatusId { get; set; }
+        public int NekretninaId { get; set; }
         public Korisnici Korisnik { get; set; }
-        public Nekretnina Nekretnina { get; set; }
+        
         public Status Status { get; set; }
+        public Nekretnina Nekretnina { get; set; }
     }
 }

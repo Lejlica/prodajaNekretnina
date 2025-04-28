@@ -27,6 +27,9 @@ namespace ProdajaNekretnina.Model
         public string LozinkaSalt { get; set; } = null!;
 
         public bool? Status { get; set; }
+        public int? BrojUspjesnoProdanihNekretnina { get; set; }
+        public float? RejtingKupaca { get; set; }
+        public byte[]? BajtoviSlike { get; set; }
         public virtual ICollection<KorisniciUloge> KorisniciUloges { get; } = new List<KorisniciUloge>();
     }
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config>
+        <!-- Specify trust anchors (certificates) -->
+        <trust-anchors>
+            <!-- Reference the certificate in the res/raw directory -->
+            <certificates src="@raw/cert" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

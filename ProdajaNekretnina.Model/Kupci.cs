@@ -27,5 +27,7 @@ namespace ProdajaNekretnina.Model
         public string LozinkaSalt { get; set; } = null!;
 
         public bool Status { get; set; }
+        public string ClientId { get; set; } 
+        public string ClientSecret { get; set; } 
     }
 }

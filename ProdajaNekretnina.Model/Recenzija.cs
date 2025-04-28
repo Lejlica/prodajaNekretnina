@@ -11,7 +11,7 @@ namespace ProdajaNekretnina.Model
     {
         [Key]
         public int RecenzijaId { get; set; }
-        public int VrijednostZvjezdica { get; set; }
+        public float VrijednostZvjezdica { get; set; }
         public int KupacId { get; set; }
         public int KorisnikId { get; set; }
         public Kupci Kupac { get; set; }

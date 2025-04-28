@@ -14,9 +14,7 @@ namespace ProdajaNekretnina.Model
         public string PostanskiBroj { get; set; }
         public string Ulica { get; set; }
         public int GradId { get; set; }
-        public int DrzavaId { get; set; } 
-
-       
+        public int DrzavaId { get; set; }       
         public Grad Grad { get; set; } 
         public Drzava Drzava { get; set; }
     }
