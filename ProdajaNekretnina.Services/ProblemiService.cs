@@ -14,6 +14,17 @@ namespace ProdajaNekretnina.Services
     {
         public ProblemiService(SeminarskiNekretnineContext context, IMapper mapper) : base(context, mapper)
         {
+            
+        }
+        public override IQueryable<Problem> AddFilter(IQueryable<Problem> query, ProblemiSearchObject? search = null)
+        {
+            var filteredQuery = base.AddFilter(query, search);
+            if (search?.DatumPrijave !=null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.DatumPrijave == search.DatumPrijave);
+            }
+            return filteredQuery;
+
         }
     }
 }

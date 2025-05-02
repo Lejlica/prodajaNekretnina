@@ -1,4 +1,3 @@
-import "package:prodajanekretnina_admin/models/korisnici.dart";
 import "package:prodajanekretnina_admin/models/korisnikAgencija.dart";
 import "package:prodajanekretnina_admin/providers/base_provider.dart";
 

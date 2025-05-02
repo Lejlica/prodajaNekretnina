@@ -83,10 +83,10 @@ namespace ProdajaNekretnina.Services
             if (entity != null)
             {
                 _context.Set<TDb>().Remove(entity);
-                await _context.SaveChangesAsync();
-            }
+        await _context.SaveChangesAsync();
+  }
 
-            // Return a completed task without a value
+           // Return a completed task without a value
             return await Task.FromResult(default(T));
         }
 

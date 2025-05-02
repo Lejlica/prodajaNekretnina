@@ -1,4 +1,3 @@
-import "package:flutter/material.dart";
 import "package:prodajanekretnina_admin/models/obilazak.dart";
 import "package:prodajanekretnina_admin/providers/base_provider.dart";
 

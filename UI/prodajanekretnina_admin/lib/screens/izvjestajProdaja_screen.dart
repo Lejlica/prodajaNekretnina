@@ -11,6 +11,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,6 +36,8 @@ class MyHomePage extends StatelessWidget {
       TextEditingController();
   final TextEditingController kvadraturaController = TextEditingController();
   final TextEditingController satiController = TextEditingController();
+
+  MyHomePage({super.key});
   Future<void> generatePDF() async {
     final pdf = pw.Document();
 
@@ -137,7 +141,7 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Izvještaj o prodaji nekretnine'),
+        title: const Text('Izvještaj o prodaji nekretnine'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -146,20 +150,19 @@ class MyHomePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildOwnerCard(),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildRealEstateContainer(),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildCourtContainer(),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton(
                   onPressed: generatePDF,
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue, // Postavi plavu boju buttona
-                    onPrimary: Colors.white, // Postavi bijelu boju slova
+                    foregroundColor: Colors.white, backgroundColor: Colors.blue, // Postavi bijelu boju slova
                   ),
-                  child: Text('Generiši Izvještaj'),
+                  child: const Text('Generiši Izvještaj'),
                 ),
               ),
             ],
@@ -171,25 +174,25 @@ class MyHomePage extends StatelessWidget {
 
   Widget _buildOwnerCard() {
     return Card(
-      margin: EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.only(bottom: 20),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Informacije o Vlasniku',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: ownerController,
-              decoration: InputDecoration(labelText: 'Vlasnik'),
+              decoration: const InputDecoration(labelText: 'Vlasnik'),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: adresaVlasnikaController,
-              decoration: InputDecoration(labelText: 'Adresa vlasnika'),
+              decoration: const InputDecoration(labelText: 'Adresa vlasnika'),
             ),
           ],
         ),
@@ -199,35 +202,35 @@ class MyHomePage extends StatelessWidget {
 
   Widget _buildRealEstateContainer() {
     return Card(
-      margin: EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.only(bottom: 20),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Informacije o Nekretnini',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: adresaNekrentineController,
-              decoration: InputDecoration(labelText: 'Adresa nekretnine'),
+              decoration: const InputDecoration(labelText: 'Adresa nekretnine'),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             TextField(
               controller: kvadraturaController,
-              decoration: InputDecoration(labelText: 'Kvadratura nekretnine'),
+              decoration: const InputDecoration(labelText: 'Kvadratura nekretnine'),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             TextField(
               controller: cityController,
-              decoration: InputDecoration(labelText: 'Grad'),
+              decoration: const InputDecoration(labelText: 'Grad'),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             TextField(
               controller: priceController,
-              decoration: InputDecoration(labelText: 'Cijena'),
+              decoration: const InputDecoration(labelText: 'Cijena'),
             ),
           ],
         ),
@@ -237,45 +240,45 @@ class MyHomePage extends StatelessWidget {
 
   Widget _buildCourtContainer() {
     return Card(
-      margin: EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.only(bottom: 20),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Informacije o Sudu, Kantonu i Gradu',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: dateController,
-              decoration: InputDecoration(labelText: 'Datum'),
+              decoration: const InputDecoration(labelText: 'Datum'),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             TextField(
               controller: sudacController,
-              decoration: InputDecoration(labelText: 'Sudac'),
+              decoration: const InputDecoration(labelText: 'Sudac'),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             TextField(
               controller: satiController,
-              decoration: InputDecoration(labelText: 'Sati'),
+              decoration: const InputDecoration(labelText: 'Sati'),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             TextField(
               controller: kantonController,
-              decoration: InputDecoration(labelText: 'Kanton'),
+              decoration: const InputDecoration(labelText: 'Kanton'),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             TextField(
               controller: brojController,
-              decoration: InputDecoration(labelText: 'Broj ugovora'),
+              decoration: const InputDecoration(labelText: 'Broj ugovora'),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             TextField(
               controller: bankaController,
-              decoration: InputDecoration(labelText: 'Banka'),
+              decoration: const InputDecoration(labelText: 'Banka'),
             ),
           ],
         ),

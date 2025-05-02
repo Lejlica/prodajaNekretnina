@@ -12,7 +12,7 @@ class CommonNavigation extends StatelessWidget {
   //final void Function()? refreshKonzola;
   final VoidCallback? refreshKonzolaCallBack;
 
-  CommonNavigation({required this.onItemSelected, required this.selectedIndex, this.refreshKonzolaCallBack});
+  const CommonNavigation({super.key, required this.onItemSelected, required this.selectedIndex, this.refreshKonzolaCallBack});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class CommonNavigation extends StatelessWidget {
       children: <Widget>[
         NavigationRail(
           leading: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   border: Border(
                 bottom: BorderSide(
                   color: Colors.grey, // Customize the color of the border
@@ -29,18 +29,18 @@ class CommonNavigation extends StatelessWidget {
               )),
               child: Column(children: [
                 IconButton(
-                  icon: Icon(Icons.account_circle),
+                  icon: const Icon(Icons.account_circle),
                   onPressed: () {
                     // Handle the leading icon button press here.
                   },
                 ),
-                Text("Asad Tabak"),
+                const Text("Asad Tabak"),
               ])),
           selectedIndex: selectedIndex,
           onDestinationSelected: onItemSelected,
           groupAlignment: -1,
           labelType: NavigationRailLabelType.all,
-          destinations: <NavigationRailDestination>[
+          destinations: const <NavigationRailDestination>[
             NavigationRailDestination(
               icon: Icon(Icons.dashboard),
               label: Text('Konzola'),
@@ -59,11 +59,11 @@ class CommonNavigation extends StatelessWidget {
             ),
           ],
         ),
-        VerticalDivider(thickness: 1, width: 1),
+        const VerticalDivider(thickness: 1, width: 1),
         Expanded(
           child: IndexedStack(
             index: selectedIndex,
-            children: [
+            children: const [
              
            
             ],

@@ -108,11 +108,11 @@ class LoginPage extends StatelessWidget {
     _nekretnineProvider = context.read<NekretnineProvider>();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Login"),
+        title: const Text("Login"),
       ),
       body: Center(
         child: Container(
-          constraints: BoxConstraints(maxHeight: 400, maxWidth: 450),
+          constraints: const BoxConstraints(maxHeight: 400, maxWidth: 450),
           child: Card(
             child: Card(
               child: Stack(
@@ -143,18 +143,18 @@ class LoginPage extends StatelessWidget {
                     blendMode: BlendMode.srcATop,
                     child: Center(
                       child: Padding(
-                        padding: EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(height: 100),
+                            const SizedBox(height: 100),
                             Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.0),
-                                color: Color.fromRGBO(255, 255, 255, 0.6),
+                                color: const Color.fromRGBO(255, 255, 255, 0.6),
                               ),
                               child: TextField(
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   labelText: "Korisničko ime",
                                   prefixIcon: Icon(Icons.email),
                                   labelStyle: TextStyle(
@@ -166,18 +166,18 @@ class LoginPage extends StatelessWidget {
                                   ),
                                 ),
                                 controller: usernameController,
-                                style: TextStyle(color: Colors.black),
+                                style: const TextStyle(color: Colors.black),
                               ),
                             ),
-                            SizedBox(height: 16.0),
+                            const SizedBox(height: 16.0),
                             Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.0),
-                                color: Color.fromRGBO(255, 255, 255, 0.6),
+                                color: const Color.fromRGBO(255, 255, 255, 0.6),
                               ),
                               child: TextField(
                                 obscureText: true,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   labelText: "Lozinka",
                                   prefixIcon: Icon(Icons.password),
                                   labelStyle: TextStyle(
@@ -186,10 +186,10 @@ class LoginPage extends StatelessWidget {
                                   ),
                                 ),
                                 controller: passwordController,
-                                style: TextStyle(color: Colors.black),
+                                style: const TextStyle(color: Colors.black),
                               ),
                             ),
-                            SizedBox(height: 14),
+                            const SizedBox(height: 14),
                             ElevatedButton(
                               onPressed: () async {
                                 var username = usernameController.text;
@@ -213,20 +213,20 @@ class LoginPage extends StatelessWidget {
                                       context: context,
                                       builder: (BuildContext context) =>
                                           AlertDialog(
-                                            title: Text("Error"),
+                                            title: const Text("Error"),
                                             content: Text(e.toString()),
                                             actions: [
                                               TextButton(
                                                   onPressed: () =>
                                                       Navigator.pop(context),
-                                                  child: Text("OK"))
+                                                  child: const Text("OK"))
                                             ],
                                           ));
                                 }
                               },
-                              child: Text("Login"),
+                              child: const Text("Login"),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(
@@ -235,7 +235,7 @@ class LoginPage extends StatelessWidget {
                                   ),
                                 );
                               },
-                              child: Text(
+                              child: const Text(
                                 "Registruj se",
                                 style: TextStyle(
                                   color: Colors.white, // Set the color to blue

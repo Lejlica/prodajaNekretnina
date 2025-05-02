@@ -150,11 +150,11 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
       gradoviResult = await _gradoviProvider.get();
       print(gradoviResult);
       nekretninaAgentiResult = await _nekretninaAgentiProvider.get();
-      print('nekrAgenti ${nekretninaAgentiResult}');
+      print('nekrAgenti $nekretninaAgentiResult');
       korisnikAgencijaResult = await _korisnikAgencijaProvider.get();
-      print('korisnikAgencijaResult ${korisnikAgencijaResult}');
+      print('korisnikAgencijaResult $korisnikAgencijaResult');
       agencijeResult = await _agencijaProvider.get();
-      print('agencijeResult ${agencijeResult}');
+      print('agencijeResult $agencijeResult');
       setState(() {
         isLoading = false;
       });
@@ -170,6 +170,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+      title: 'Dodajte agenta',
       child: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -196,7 +197,6 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
           ),
         ),
       ),
-      title: 'Dodajte agenta',
     );
   }
 
@@ -218,17 +218,17 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
       key: _formKey,
       initialValue: _initialValue,
       child: Padding(
-        padding: EdgeInsets.all(40.0),
+        padding: const EdgeInsets.all(40.0),
         child: Container(
           height: 500,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               // Add your decoration properties here
               ),
           child: SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               children: [
-                Text(
+                const Text(
                   "Podaci o agentu",
                   style: TextStyle(
                     fontSize: 18,
@@ -240,7 +240,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                 ),
                 FormBuilderTextField(
                   name: 'ime',
-                  decoration: InputDecoration(labelText: 'Ime *'),
+                  decoration: const InputDecoration(labelText: 'Ime *'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter some text';
@@ -250,15 +250,15 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                 ),
                 FormBuilderTextField(
                   name: 'prezime',
-                  decoration: InputDecoration(labelText: 'Prezime *'),
+                  decoration: const InputDecoration(labelText: 'Prezime *'),
                 ),
                 FormBuilderTextField(
                   name: 'email',
-                  decoration: InputDecoration(labelText: 'Email *'),
+                  decoration: const InputDecoration(labelText: 'Email *'),
                 ),
                 FormBuilderTextField(
                   name: 'telefon',
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Telefon *',
                     helperText: 'Format: 000-000-0000',
                     helperStyle:
@@ -267,19 +267,19 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                 ),
                 FormBuilderTextField(
                   name: 'korisnickoIme',
-                  decoration: InputDecoration(labelText: 'Korisničko ime *'),
+                  decoration: const InputDecoration(labelText: 'Korisničko ime *'),
                 ),
                 FormBuilderTextField(
                   name: 'password',
-                  decoration: InputDecoration(labelText: 'Lozinka *'),
+                  decoration: const InputDecoration(labelText: 'Lozinka *'),
                   obscureText: true,
                 ),
                 FormBuilderTextField(
                   name: 'passwordPotvrda',
-                  decoration: InputDecoration(labelText: 'Potvrdite lozinku *'),
+                  decoration: const InputDecoration(labelText: 'Potvrdite lozinku *'),
                   obscureText: true,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 25,
                 ),
                 Row(
@@ -320,12 +320,10 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                               Korisnik insertedKorisnik =
                                   await _korisniciProvider.insert(request);
                               int? insertedKorisnikId;
-                              if (insertedKorisnik != null) {
-                                insertedKorisnikId =
-                                    insertedKorisnik.korisnikId;
-                                _formKey.currentState?.reset();
-                              }
-
+                              insertedKorisnikId =
+                                  insertedKorisnik.korisnikId;
+                              _formKey.currentState?.reset();
+                            
                               if (insertedKorisnikId != -1) {
                                 Map<String, dynamic> ulogeRequest = {
                                   'korisnikId': insertedKorisnikId,
@@ -340,7 +338,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text("Potvrda"),
+                                    title: const Text("Potvrda"),
                                     content: SingleChildScrollView(
                                       child: FormBuilderDropdown<String>(
                                         name: 'korisnikAgencijaId',
@@ -391,7 +389,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
 
                                           Navigator.of(context).pop();
                                         },
-                                        child: Text("OK"),
+                                        child: const Text("OK"),
                                       ),
                                     ],
                                   );
@@ -402,8 +400,8 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text("Upozorenje"),
-                                    content: Text(
+                                    title: const Text("Upozorenje"),
+                                    content: const Text(
                                         "Neispravan format telefona Zahtijevani format je: 000-000-0000"),
                                     actions: [
                                       TextButton(
@@ -411,7 +409,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                                           Navigator.of(context)
                                               .pop(); // Close the alert dialog
                                         },
-                                        child: Text("OK"),
+                                        child: const Text("OK"),
                                       ),
                                     ],
                                   );
@@ -423,8 +421,8 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text("Upozorenje"),
-                                  content: Text(
+                                  title: const Text("Upozorenje"),
+                                  content: const Text(
                                       "Korisničko ime već postoji. Molimo odaberite drugo."),
                                   actions: [
                                     TextButton(
@@ -432,7 +430,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                                         Navigator.of(context)
                                             .pop(); // Close the alert dialog
                                       },
-                                      child: Text("OK"),
+                                      child: const Text("OK"),
                                     ),
                                   ],
                                 );
@@ -442,19 +440,19 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
 
                           //_korisniciProvider.insert(request);
                         },
-                        child: Text('Potvrdi'),
+                        child: const Text('Potvrdi'),
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: () {
                         _formKey.currentState?.reset();
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(255, 166, 165,
+                        backgroundColor: const Color.fromARGB(255, 166, 165,
                             165), // Set the background color to white
                       ),
-                      child: Text(
+                      child: const Text(
                         'Odustani',
                         style: TextStyle(
                           color: Colors.black, // Set the text color to black
@@ -520,7 +518,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                   .where((slika) => slika.nekretninaId == nekretninaId)
                   .map((slika) {
                 print(slika.bajtoviSlike);
-                return Container(
+                return SizedBox(
                   width: 100,
                   height: 100,
                   child: imageFromBase64String(slika.bajtoviSlike ?? ""),
@@ -528,12 +526,12 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
               }).toList(),
             );
           } else {
-            return Text('Nema slika');
+            return const Text('Nema slika');
           }
         } else if (snapshot.hasError) {
-          return Text('Greška prilikom dobavljanja slika');
+          return const Text('Greška prilikom dobavljanja slika');
         } else {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
       },
     );

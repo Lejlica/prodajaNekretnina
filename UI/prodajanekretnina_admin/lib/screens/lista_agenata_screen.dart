@@ -96,7 +96,7 @@ class AgentCard extends StatelessWidget {
   final int brojUspjesnoProdanihNekretnina;
   final Uint8List bytes; // Slika agenta
 
-  AgentCard({
+  const AgentCard({super.key, 
     required this.ime,
     required this.prezime,
     required this.telefon,
@@ -109,37 +109,37 @@ class AgentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       child: Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
             CircleAvatar(
               radius: 50,
               backgroundImage: MemoryImage(bytes),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               '$ime $prezime',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Text(
               'Telefon: $telefon',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Text(
               'E-mail: $email',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Text(
               'Prodane nekretnine: $brojUspjesnoProdanihNekretnina',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ],
         ),
@@ -150,7 +150,7 @@ class AgentCard extends StatelessWidget {
 
 class ListaAgenataScreen extends StatefulWidget {
   final Nekretnina? nekretnina;
-  ListaAgenataScreen({Key? key, this.nekretnina}) : super(key: key);
+  const ListaAgenataScreen({Key? key, this.nekretnina}) : super(key: key);
   @override
   _ListaAgenataScreenState createState() => _ListaAgenataScreenState();
 }
@@ -158,7 +158,7 @@ class ListaAgenataScreen extends StatefulWidget {
 class _ListaAgenataScreenState extends State<ListaAgenataScreen> {
   late ObilazakProvider _obilazakProvider;
   SearchResult<Nekretnina>? result;
-  TextEditingController _nekretninaIdController = TextEditingController();
+  final TextEditingController _nekretninaIdController = TextEditingController();
   late KorisniciProvider _korisniciProvider;
   late NekretninaTipAkcijeProvider _nekretninaTipAkcijeProvider;
   late NekretninaAgentiProvider _nekretninaAgentiProvider;
@@ -263,7 +263,7 @@ class _ListaAgenataScreenState extends State<ListaAgenataScreen> {
   }
 
   List<int?> NadjiKorisnikIds() {
-    korisnikAgencijaResult!.result.forEach((entry) {
+    for (var entry in korisnikAgencijaResult!.result) {
       print(
           'entry.agencijaId: ${entry.agencijaId}, agencijaId: ${agencijaIdd()}');
       print('Before if condition');
@@ -272,7 +272,7 @@ class _ListaAgenataScreenState extends State<ListaAgenataScreen> {
         print('entry.korisnikId: ${entry.korisnikId}');
         korisnikIds.add(entry.korisnikId);
       }
-    });
+    }
     print('korisnikIds: $korisnikIds');
     return korisnikIds;
   }
@@ -282,12 +282,12 @@ class _ListaAgenataScreenState extends State<ListaAgenataScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lista agenata'),
+        title: const Text('Lista agenata'),
       ),
       body: isLoading
-          ? CircularProgressIndicator()
+          ? const CircularProgressIndicator()
           : GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
                 crossAxisSpacing: 10.0,
                 mainAxisSpacing: 10.0,
@@ -321,7 +321,7 @@ class _ListaAgenataScreenState extends State<ListaAgenataScreen> {
           },
         );
       },
-      child: SizedBox(
+      child: const SizedBox(
         width: 120,
         height: 180,
         child: Center(
@@ -359,7 +359,7 @@ class _ListaAgenataScreenState extends State<ListaAgenataScreen> {
     Korisnik? korisnik =
         korisniciResult!.result.firstWhere((k) => k.korisnikId == korisnikId);
 
-    String bajtovii = korisnik!.bajtoviSlike.toString();
+    String bajtovii = korisnik.bajtoviSlike.toString();
     Uint8List bytes = base64.decode(bajtovii ?? '');
 
     return AgentCard(
@@ -481,11 +481,11 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
       gradoviResult = await _gradoviProvider.get();
       print(gradoviResult);
       nekretninaAgentiResult = await _nekretninaAgentiProvider.get();
-      print('nekrAgenti ${nekretninaAgentiResult}');
+      print('nekrAgenti $nekretninaAgentiResult');
       korisnikAgencijaResult = await _korisnikAgencijaProvider.get();
-      print('korisnikAgencijaResult ${korisnikAgencijaResult}');
+      print('korisnikAgencijaResult $korisnikAgencijaResult');
       agencijeResult = await _agencijaProvider.get();
-      print('agencijeResult ${agencijeResult}');
+      print('agencijeResult $agencijeResult');
       setState(() {
         isLoading = false;
       });
@@ -531,12 +531,12 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
       key: _formKey,
       initialValue: _initialValue,
       child: Padding(
-        padding: EdgeInsets.all(40.0),
+        padding: const EdgeInsets.all(40.0),
         child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             children: [
-              Text(
+              const Text(
                 "Dodaj agenta",
                 style: TextStyle(
                   fontSize: 18,
@@ -548,7 +548,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
               ),
               FormBuilderTextField(
                 name: 'ime',
-                decoration: InputDecoration(labelText: 'Ime *'),
+                decoration: const InputDecoration(labelText: 'Ime *'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter some text';
@@ -558,15 +558,15 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
               ),
               FormBuilderTextField(
                 name: 'prezime',
-                decoration: InputDecoration(labelText: 'Prezime *'),
+                decoration: const InputDecoration(labelText: 'Prezime *'),
               ),
               FormBuilderTextField(
                 name: 'email',
-                decoration: InputDecoration(labelText: 'Email *'),
+                decoration: const InputDecoration(labelText: 'Email *'),
               ),
               FormBuilderTextField(
                 name: 'telefon',
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Telefon *',
                   helperText: 'Format: 000-000-0000',
                   helperStyle:
@@ -575,19 +575,19 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
               ),
               FormBuilderTextField(
                 name: 'korisnickoIme',
-                decoration: InputDecoration(labelText: 'Korisničko ime *'),
+                decoration: const InputDecoration(labelText: 'Korisničko ime *'),
               ),
               FormBuilderTextField(
                 name: 'password',
-                decoration: InputDecoration(labelText: 'Lozinka *'),
+                decoration: const InputDecoration(labelText: 'Lozinka *'),
                 obscureText: true,
               ),
               FormBuilderTextField(
                 name: 'passwordPotvrda',
-                decoration: InputDecoration(labelText: 'Potvrdite lozinku *'),
+                decoration: const InputDecoration(labelText: 'Potvrdite lozinku *'),
                 obscureText: true,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 25,
               ),
               Row(
@@ -628,11 +628,9 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                             Korisnik insertedKorisnik =
                                 await _korisniciProvider.insert(request);
                             int? insertedKorisnikId;
-                            if (insertedKorisnik != null) {
-                              insertedKorisnikId = insertedKorisnik.korisnikId;
-                              _formKey.currentState?.reset();
-                            }
-
+                            insertedKorisnikId = insertedKorisnik.korisnikId;
+                            _formKey.currentState?.reset();
+                          
                             if (insertedKorisnikId != -1) {
                               Map<String, dynamic> ulogeRequest = {
                                 'korisnikId': insertedKorisnikId,
@@ -647,7 +645,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text("Potvrda"),
+                                  title: const Text("Potvrda"),
                                   content: SingleChildScrollView(
                                     child: FormBuilderDropdown<String>(
                                       name: 'korisnikAgencijaId',
@@ -704,7 +702,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                                           ),
                                         );
                                       },
-                                      child: Text("OK"),
+                                      child: const Text("OK"),
                                     ),
                                   ],
                                 );
@@ -715,8 +713,8 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text("Upozorenje"),
-                                  content: Text(
+                                  title: const Text("Upozorenje"),
+                                  content: const Text(
                                       "Neispravan format telefona Zahtijevani format je: 000-000-0000"),
                                   actions: [
                                     TextButton(
@@ -724,7 +722,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                                         Navigator.of(context)
                                             .pop(); // Close the alert dialog
                                       },
-                                      child: Text("OK"),
+                                      child: const Text("OK"),
                                     ),
                                   ],
                                 );
@@ -736,8 +734,8 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text("Upozorenje"),
-                                content: Text(
+                                title: const Text("Upozorenje"),
+                                content: const Text(
                                     "Korisničko ime već postoji. Molimo odaberite drugo."),
                                 actions: [
                                   TextButton(
@@ -745,7 +743,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                                       Navigator.of(context)
                                           .pop(); // Close the alert dialog
                                     },
-                                    child: Text("OK"),
+                                    child: const Text("OK"),
                                   ),
                                 ],
                               );
@@ -755,15 +753,15 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
 
                         //_korisniciProvider.insert(request);
                       },
-                      child: Text('Potvrdi'),
+                      child: const Text('Potvrdi'),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop(); // Close the dialog
                     },
-                    child: Text(
+                    child: const Text(
                       'Odustani',
                       style: TextStyle(
                         color: Colors.black,
@@ -828,7 +826,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                   .where((slika) => slika.nekretninaId == nekretninaId)
                   .map((slika) {
                 print(slika.bajtoviSlike);
-                return Container(
+                return SizedBox(
                   width: 100,
                   height: 100,
                   child: imageFromBase64String(slika.bajtoviSlike ?? ""),
@@ -836,12 +834,12 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
               }).toList(),
             );
           } else {
-            return Text('Nema slika');
+            return const Text('Nema slika');
           }
         } else if (snapshot.hasError) {
-          return Text('Greška prilikom dobavljanja slika');
+          return const Text('Greška prilikom dobavljanja slika');
         } else {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
       },
     );

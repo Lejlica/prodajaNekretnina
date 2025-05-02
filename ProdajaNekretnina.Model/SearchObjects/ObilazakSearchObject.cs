@@ -9,9 +9,9 @@ namespace ProdajaNekretnina.Model.SearchObjects
 {
     public class ObilazakSearchObject : BaseSearchObject
     {
-        [StringLength(100, MinimumLength = 0)]
+        //[StringLength(100, MinimumLength = 0)]
         public int? NekretninaId { get; set; }
-        [StringLength(100, MinimumLength = 0)]
+        //[StringLength(100, MinimumLength = 0)]
         public bool? isOdobren { get; set; }
     }
 }

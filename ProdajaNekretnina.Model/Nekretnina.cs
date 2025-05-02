@@ -11,7 +11,7 @@ namespace ProdajaNekretnina.Model
     {
         [Key]
         public int NekretninaId { get; set; }
-       
+
         public bool IsOdobrena { get; set; }
         public int KorisnikId { get; set; }//vlasnik
         public int TipNekretnineId { get; set; }
@@ -35,7 +35,11 @@ namespace ProdajaNekretnina.Model
         public bool ParkingMjesto { get; set; }
         public int BrojUgovora { get; set; }
         public string DetaljanOpis { get; set; }
-     
 
-    }
+        public List<Slika> Slikas { get;      set;}
+
+
+
+
+}
 }

@@ -11,6 +11,7 @@ import 'package:prodajanekretnina_admin/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/gradovi_provider.dart';
 import 'package:prodajanekretnina_admin/providers/tipAkcije_provider.dart';
 import 'package:prodajanekretnina_admin/screens/glavni_ekran.dart';
+import 'package:prodajanekretnina_admin/screens/dodaj_nekr2.dart';
 import 'package:prodajanekretnina_admin/models/nekretninaTipAkcije.dart';
 import 'package:prodajanekretnina_admin/providers/nekretninaTipAkcije_provider.dart';
 import 'package:prodajanekretnina_admin/screens/nekretnine_detalji.dart';
@@ -30,7 +31,7 @@ class CustomCard extends StatefulWidget {
   final BuildContext context;
   final int? nekretninaId;
 
-  CustomCard({
+  const CustomCard({super.key, 
     required this.context,
     required this.nekretnina,
     required this.slike,
@@ -52,6 +53,8 @@ class _CustomCardState extends State<CustomCard> {
   SearchResult<Grad>? gradoviResult;
   SearchResult<NekretninaTipAkcije>? nekretninaTipAkcijeResult;
   SearchResult<TipAkcije>? tipAkcijeResult;
+
+  bool isLoading = true;
   @override
   void initState() {
     super.initState();
@@ -75,7 +78,7 @@ class _CustomCardState extends State<CustomCard> {
       nekretninaTipAkcijeResult = await _nekretninaTipAkcijeProvider.get();
       tipAkcijeResult = await _tipAkcijeProvider.get();
 
-      setState(() {});
+      setState(() {isLoading = false;});
     } catch (e) {
       print('Error in initForm: $e');
     }
@@ -99,25 +102,13 @@ class _CustomCardState extends State<CustomCard> {
 
       return grad?.naziv;
     }
+    return null;
   }
 
   NekretninaTipAkcije? nta;
   TipAkcije? ta;
 
-  String? getTipAkcije() {
-    int? gradic;
-    gradic = getGradId();
-    if (nekretninaTipAkcijeResult != null) {
-      nta = nekretninaTipAkcijeResult?.result.firstWhere(
-        (nta) => nta.nekretninaId == widget?.nekretnina?.nekretninaId,
-      );
-
-      ta = tipAkcijeResult?.result
-          .firstWhere((e) => e.tipAkcijeId == nta!.tipAkcijeId);
-
-      return ta?.naziv;
-    }
-  }
+  
 
   Lokacija? lokacija;
   int? getGradId() {
@@ -129,10 +120,25 @@ class _CustomCardState extends State<CustomCard> {
         (lokacija) => lokacija.lokacijaId == lokacijaId,
       );
     }
+    print("LokacijaId: ${widget.nekretnina?.lokacijaId}");
     print("GradId: ${lokacija?.gradId}");
     return lokacija?.gradId;
   }
+  String? getTipAkcije() {
+    int? gradic;
+    gradic = getGradId();
+    if (nekretninaTipAkcijeResult != null) {
+      nta = nekretninaTipAkcijeResult?.result.firstWhere(
+        (nta) => nta.nekretninaId == widget.nekretnina?.nekretninaId,
+      );
 
+      ta = tipAkcijeResult?.result
+          .firstWhere((e) => e.tipAkcijeId == nta!.tipAkcijeId);
+
+      return ta?.naziv;
+    }
+    return null;
+  }
   String? getUlica() {
     var lokacijaId = widget.nekretnina?.lokacijaId;
     if (lokacijaId != null &&
@@ -142,6 +148,7 @@ class _CustomCardState extends State<CustomCard> {
         (lokacija) => lokacija.lokacijaId == lokacijaId,
       );
     }
+
     print("Ulica: ${lokacija?.ulica}");
     return lokacija?.ulica;
   }
@@ -167,6 +174,7 @@ class _CustomCardState extends State<CustomCard> {
             tipAkcije.tipAkcijeId == 2)
         ? nekretnina
         : null;
+    return null;
   }
 
   @override
@@ -192,7 +200,7 @@ class _CustomCardState extends State<CustomCard> {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 ' ${getTipAkcije()}',
-                style: TextStyle(
+                style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Color.fromARGB(255, 245, 203, 76)),
               ),
@@ -201,7 +209,7 @@ class _CustomCardState extends State<CustomCard> {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 ' ${widget.nekretnina?.naziv ?? ""}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -210,15 +218,15 @@ class _CustomCardState extends State<CustomCard> {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.location_on, // Replace with your custom location icon
                     color: Colors.blue, // Set the color of the icon
                   ),
-                  SizedBox(width: 8), // Adjust the space between icon and text
+                  const SizedBox(width: 8), // Adjust the space between icon and text
                   Text(
                     '${getNazivGrad()}, ${getUlica()}, ${getPB()} ',
-                    style: TextStyle(
-                      color: const Color.fromARGB(255, 163, 163, 163),
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 163, 163, 163),
                     ),
                   ),
                 ],
@@ -228,7 +236,7 @@ class _CustomCardState extends State<CustomCard> {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 '${widget.nekretnina?.cijena ?? ""} BAM',
-                style: TextStyle(
+                style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                     fontSize: 17),
@@ -240,16 +248,16 @@ class _CustomCardState extends State<CustomCard> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.local_hotel, // Hotel icon represents rooms
                         color: Colors.blue, // Set the color to blue
                       ),
-                      SizedBox(
+                      const SizedBox(
                           width: 8), // Adjust the space between icon and text
                       Text(
                         'Sobe ${widget.nekretnina?.brojSoba ?? ""} ',
-                        style: TextStyle(
-                            color: const Color.fromARGB(255, 163, 163, 163),
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 163, 163, 163),
                             fontSize: 11),
                       ),
                     ],
@@ -258,7 +266,7 @@ class _CustomCardState extends State<CustomCard> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: widget.nekretnina?.parkingMjesto == true
-                      ? Row(
+                      ? const Row(
                           children: [
                             Icon(
                               Icons.drive_eta,
@@ -269,28 +277,28 @@ class _CustomCardState extends State<CustomCard> {
                               'Garaža 1',
                               style: TextStyle(
                                   color:
-                                      const Color.fromARGB(255, 163, 163, 163),
+                                      Color.fromARGB(255, 163, 163, 163),
                                   fontSize: 11),
                             ),
                           ],
                         )
-                      : SizedBox
+                      : const SizedBox
                           .shrink(), // This will create an empty space if parkingMjesto is false
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.stairs, // Hotel icon represents rooms
                         color: Colors.blue, // Set the color to blue
                       ),
-                      SizedBox(
+                      const SizedBox(
                           width: 8), // Adjust the space between icon and text
                       Text(
                         'Sprat ${widget.nekretnina?.sprat ?? ""} ',
-                        style: TextStyle(
-                            color: const Color.fromARGB(255, 163, 163, 163),
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 163, 163, 163),
                             fontSize: 11),
                       ),
                     ],
@@ -327,11 +335,11 @@ class _CustomCardState extends State<CustomCard> {
         Positioned(
           left: 0,
           child: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               if (_pageController.page != 0) {
                 _pageController.previousPage(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
               }
@@ -341,11 +349,11 @@ class _CustomCardState extends State<CustomCard> {
         Positioned(
           right: 0,
           child: IconButton(
-            icon: Icon(Icons.arrow_forward),
+            icon: const Icon(Icons.arrow_forward),
             onPressed: () {
               if (_pageController.page! < slike.length - 1) {
                 _pageController.nextPage(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
               }
@@ -360,9 +368,9 @@ class _CustomCardState extends State<CustomCard> {
 class _NekretnineListScreenState extends State<NekretnineListScreen> {
   late NekretnineProvider _nekretnineProvider;
   SearchResult<Nekretnina>? result;
-  TextEditingController _gradController = new TextEditingController();
-  TextEditingController _vlasnikController =
-      new TextEditingController(); // Add this line
+  final TextEditingController _gradController = TextEditingController();
+  final TextEditingController _vlasnikController =
+      TextEditingController(); // Add this line
   Map<int, List<Slika>> slikeMap = {};
   List<Slika> slike = [];
 
@@ -405,16 +413,16 @@ class _NekretnineListScreenState extends State<NekretnineListScreen> {
         children: [
           Expanded(
             child: TextField(
-              decoration: InputDecoration(labelText: "Vlasnik"),
+              decoration: const InputDecoration(labelText: "Vlasnik"),
               controller: _vlasnikController,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 8,
           ),
           Expanded(
             child: TextField(
-              decoration: InputDecoration(labelText: "Grad"),
+              decoration: const InputDecoration(labelText: "Grad"),
               controller: _gradController,
             ),
           ),
@@ -433,8 +441,8 @@ class _NekretnineListScreenState extends State<NekretnineListScreen> {
 
                 print("data: ${data.result[0].cijena}");
               },
-              child: Text("Pretraga")),
-          SizedBox(
+              child: const Text("Pretraga")),
+          const SizedBox(
             width: 8,
           ),
           ElevatedButton(
@@ -442,11 +450,11 @@ class _NekretnineListScreenState extends State<NekretnineListScreen> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) =>
-                        NekretnineDetaljiScreen(nekretnina: null),
+                        DodajNekr2Screen(nekretnina: null),
                   ),
                 );
               },
-              child: Text("Dodaj"))
+              child: const Text("Dodaj"))
         ],
       ),
     );
@@ -455,7 +463,7 @@ class _NekretnineListScreenState extends State<NekretnineListScreen> {
   Widget _buildDataListView() {
     return Expanded(
       child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
           crossAxisSpacing: 8.0,
           mainAxisSpacing: 8.0,
@@ -468,11 +476,11 @@ class _NekretnineListScreenState extends State<NekretnineListScreen> {
             future: _getSlikeForNekretnina(nekretnina.nekretninaId ?? 0),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
-                return Text('Error fetching images');
+                return const Text('Error fetching images');
               } else if (!snapshot.hasData) {
-                return Text('No images found for this property');
+                return const Text('No images found for this property');
               } else {
                 List<Slika> slike = snapshot.data!;
 

@@ -126,7 +126,7 @@ class _RegistracijaScreenState extends State<RegistracijaScreen> {
   Future initForm() async {
     try {
       
-      var tmpKorisniciData = await _korisniciProvider?.get();
+      var tmpKorisniciData = await _korisniciProvider.get();
 korisniciUlogeResult = await _korisniciUlogeProvider.get();
       print(korisniciUlogeResult);
       setState(() {
@@ -146,7 +146,7 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
     return Scaffold(
       appBar: AppBar(
         // Postavite svojstva AppBar-a prema potrebi
-        title: Text('Registracija'),
+        title: const Text('Registracija'),
       ),
       body: _formBuild(),
       endDrawer: null, // Ovo će onemogućiti otvaranje bočnog menija
@@ -159,9 +159,9 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
       key: _formKey,
       initialValue: _initialValue,
       child: Padding(
-          padding: EdgeInsets.all(40.0),
+          padding: const EdgeInsets.all(40.0),
           child: SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(),
               child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(children: [
@@ -173,8 +173,8 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                                 // White container with text
                                 Container(
                                   width: 300,
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Center(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: const Center(
                                     child: Text(
                                       'Vaša profilna slika', // Replace with the actual property name
                                       style: TextStyle(
@@ -188,7 +188,7 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                                 Container(
                                   width: 200,
                                   height: 200,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     borderRadius: BorderRadius.only(
                                       bottomLeft: Radius.circular(8.0),
                                       bottomRight: Radius.circular(8.0),
@@ -219,62 +219,62 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                                     color: Colors
                                         .grey, // Choose your default profile picture color
                                   ),
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.account_circle,
                                     size: 150,
                                     color: Colors
                                         .white, // Choose the color of the icon
                                   ),
                                 ),
-                                SizedBox(height: 8),
+                                const SizedBox(height: 8),
                               ],
                             ),
                           ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 200, right: 200),
+                      padding: const EdgeInsets.only(left: 200, right: 200),
                       child: Row(
                         children: [
                           Expanded(
                             child: FormBuilderTextField(
                               name: 'ime',
-                              decoration: InputDecoration(labelText: 'Ime'),
+                              decoration: const InputDecoration(labelText: 'Ime'),
                             ),
                           ),
-                          SizedBox(width: 100),
+                          const SizedBox(width: 100),
                           Expanded(
                             child: FormBuilderTextField(
                               name: 'prezime',
-                              decoration: InputDecoration(labelText: 'Prezime'),
+                              decoration: const InputDecoration(labelText: 'Prezime'),
                             ),
                           ),
                         ],
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 200, right: 200),
+                      padding: const EdgeInsets.only(left: 200, right: 200),
                       child: Row(
                         children: [
                           Expanded(
                             child: FormBuilderTextField(
                               name: 'email',
-                              decoration: InputDecoration(labelText: 'Email'),
+                              decoration: const InputDecoration(labelText: 'Email'),
                             ),
                           ),
-                          SizedBox(width: 100),
+                          const SizedBox(width: 100),
                           Expanded(
                             child: FormBuilderTextField(
                               name: 'telefon',
-                              decoration: InputDecoration(labelText: 'Telefon'),
+                              decoration: const InputDecoration(labelText: 'Telefon'),
                             ),
                           ),
                         ],
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 200, right: 200),
+                      padding: const EdgeInsets.only(left: 200, right: 200),
                       child: Row(
                         children: [
                           Expanded(
@@ -282,15 +282,15 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                               name: 'password',
                               obscureText:
                                   true, // Set this to true to display dots
-                              decoration: InputDecoration(labelText: 'Lozinka'),
+                              decoration: const InputDecoration(labelText: 'Lozinka'),
                             ),
                           ),
-                          SizedBox(width: 100),
+                          const SizedBox(width: 100),
                           Expanded(
                             child: FormBuilderTextField(
                               name: 'passwordPotvrda',
                               obscureText: true,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                   labelText: 'Potvrdite lozinku'),
                             ),
                           ),
@@ -298,20 +298,20 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 200, right: 200),
+                      padding: const EdgeInsets.only(left: 200, right: 200),
                       child: Row(
                         children: [
                           Expanded(
                             child: FormBuilderTextField(
                               name: 'korisnickoIme',
                               decoration:
-                                  InputDecoration(labelText: 'Korisničko ime'),
+                                  const InputDecoration(labelText: 'Korisničko ime'),
                             ),
                           ),
-                          SizedBox(width: 100),
+                          const SizedBox(width: 100),
                           Padding(
                             padding: const EdgeInsets.only(left: 0.0),
-                            child: Container(
+                            child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.28,
                               child: FormBuilderField(
                                 name: 'imageId',
@@ -328,9 +328,9 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                                             BorderRadius.circular(8.0),
                                       ),
                                       child: ListTile(
-                                        leading: Icon(Icons.photo),
-                                        title: Text("Odaberite sliku"),
-                                        trailing: Icon(Icons.file_upload),
+                                        leading: const Icon(Icons.photo),
+                                        title: const Text("Odaberite sliku"),
+                                        trailing: const Icon(Icons.file_upload),
                                         onTap: () async {
                                           selectedImagePath =
                                               await pickAndEncodeImage();
@@ -347,7 +347,7 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                       ),
                     ),
 
-                    SizedBox(
+                    const SizedBox(
                       height: 16,
                     ),
                     ElevatedButton(
@@ -357,14 +357,14 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                               _formKey.currentState?.fields['passwordPotvrda']
                                   ?.value) {
                             AlertDialog(
-                              title: Text("Upozorenje"),
-                              content: Text("Lozinke se ne poklapaju!"),
+                              title: const Text("Upozorenje"),
+                              content: const Text("Lozinke se ne poklapaju!"),
                               actions: <Widget>[
                                 TextButton(
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  child: Text("OK"),
+                                  child: const Text("OK"),
                                 ),
                               ],
                             );
@@ -372,7 +372,7 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                           }
                           print(
                               "formkey ${_formKey.currentState?.fields['korisnickoIme']?.value}");
-                          List<dynamic> korisniciData = data!
+                          List<dynamic> korisniciData = data
                               .where((korisnik) =>
                                   korisnik.korisnickoIme ==
                                   _formKey.currentState?.fields['korisnickoIme']
@@ -385,15 +385,15 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
 
                           if (korisniciData.isNotEmpty) {
                             AlertDialog(
-                              title: Text("Greška"),
-                              content: Text(
+                              title: const Text("Greška"),
+                              content: const Text(
                                   "Odabrano korisnicko ime nije dostupno. Molimo izaberite drugo."),
                               actions: <Widget>[
                                 TextButton(
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  child: Text("OK"),
+                                  child: const Text("OK"),
                                 ),
                               ],
                             );
@@ -430,40 +430,38 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                           Korisnik insertedKorisnik =
                               await _korisniciProvider.insert(request);
                           int? insertedKorisnikId;
-                          if (insertedKorisnik != null) {
-                            insertedKorisnikId = insertedKorisnik.korisnikId;
-                            _formKey.currentState?.reset();
+                          insertedKorisnikId = insertedKorisnik.korisnikId;
+                          _formKey.currentState?.reset();
 
-                            if (insertedKorisnikId != -1) {
-                              Map<String, dynamic> ulogeRequest = {
-                                'korisnikId': insertedKorisnikId,
-                                'ulogaId': 1,
-                              };
+                          if (insertedKorisnikId != -1) {
+                            Map<String, dynamic> ulogeRequest = {
+                              'korisnikId': insertedKorisnikId,
+                              'ulogaId': 1,
+                            };
 
-                              // Call the insert method from korisniciUlogeProvider
-                              _korisniciUlogeProvider.insert(ulogeRequest);
-                            }
-
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text("Registracija uspješna"),
-                                  content: Text(
-                                      "Vaš račun je uspješno registriran."),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text("Uredu"),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                            // Call the insert method from korisniciUlogeProvider
+                            _korisniciUlogeProvider.insert(ulogeRequest);
                           }
-                          if (insertedKorisnikId != null) {
+
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Registracija uspješna"),
+                                content: Text(
+                                    "Vaš račun je uspješno registriran."),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text("Uredu"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                                                  if (insertedKorisnikId != null) {
                             // Uspješna registracija, preusmeravanje na LoginPage
                             Navigator.pushReplacement(
                               context,
@@ -473,7 +471,7 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                             );
                           }
                         },
-                        child: Text('Registruj se')),
+                        child: const Text('Registruj se')),
                   ])))),
     );
   }
@@ -515,11 +513,9 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
       // Convert the bytes to base64
       String base64Image = base64Encode(imageBytes);
       setState(() {
-        if (pickedFile != null) {
-          _image = File(pickedFile.path);
-          _base64Image = base64Encode(_image!.readAsBytesSync());
-        }
-      });
+        _image = File(pickedFile.path);
+        _base64Image = base64Encode(_image!.readAsBytesSync());
+            });
       return base64Image.toString();
     } else {
       print('No image selected.');

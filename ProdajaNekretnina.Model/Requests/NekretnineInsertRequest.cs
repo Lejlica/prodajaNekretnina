@@ -27,6 +27,8 @@ namespace ProdajaNekretnina.Model.Requests
         public bool ParkingMjesto { get; set; }
         public int BrojUgovora { get; set; }
         public string DetaljanOpis { get; set; }
-       
+
+        //public List<Slika> Slikas { get; set; }
+
     }
 }

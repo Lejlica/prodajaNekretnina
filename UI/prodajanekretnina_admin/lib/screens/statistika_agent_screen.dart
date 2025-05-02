@@ -50,7 +50,7 @@ import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 
 class SalesStatisticsScreen extends StatefulWidget {
-  SalesStatisticsScreen({Key? key}) : super(key: key);
+  const SalesStatisticsScreen({Key? key}) : super(key: key);
 
   @override
   State<SalesStatisticsScreen> createState() => _SalesStatisticsScreenState();
@@ -89,12 +89,12 @@ class _SalesStatisticsScreenState extends State<SalesStatisticsScreen> {
 
   Future initForm() async {
     try {
-      korisniciResult = await _korisniciProvider?.get();
-      print("Koirsnici ${korisniciResult}");
+      korisniciResult = await _korisniciProvider.get();
+      print("Koirsnici $korisniciResult");
       agencijeResult = await _agencijaProvider.get();
-      print("Agncije ${agencijeResult}");
+      print("Agncije $agencijeResult");
       korisnikAgencijaResult = await _korisnikAgencijaProvider.get();
-      print("KoirAgei ${korisnikAgencijaResult}");
+      print("KoirAgei $korisnikAgencijaResult");
     } catch (e) {
       print('Error in initForm: $e');
     }
@@ -110,7 +110,6 @@ class _SalesStatisticsScreenState extends State<SalesStatisticsScreen> {
           "Agencije ${agencijeNazivi.toString()}"); // Dodajte ovo kako biste popunili listu
     }
 
-    ;
   }
 
   String convertBytesToBase64(Uint8List bytes) {
@@ -136,7 +135,7 @@ class _SalesStatisticsScreenState extends State<SalesStatisticsScreen> {
   int? Saberi(int? agencijaId) {
     List<int?> korisnikIds = [];
 
-    korisnikAgencijaResult!.result.forEach((entry) {
+    for (var entry in korisnikAgencijaResult!.result) {
       print('entry.agencijaId: ${entry.agencijaId}, agencijaId: $agencijaId');
       print('Before if condition');
       if (entry.agencijaId == agencijaId) {
@@ -144,23 +143,21 @@ class _SalesStatisticsScreenState extends State<SalesStatisticsScreen> {
         print('entry.korisnikId: ${entry.korisnikId}');
         korisnikIds.add(entry.korisnikId);
       }
-    });
+    }
 
     print('korisnikIds: $korisnikIds');
 
-    print("Korisnici: ${korisnikIds}, ${agencijaId}");
+    print("Korisnici: $korisnikIds, $agencijaId");
     int totalSales = 0;
 
     for (int? korisnikId in korisnikIds) {
       // Dobavite podatke o korisniku koristeći korisnikId
       Korisnik? korisnik = nadjiKorisnika(korisnikId);
-      print("korId ${korisnikId}");
+      print("korId $korisnikId");
       print("brnek ${korisnik!.brojUspjesnoProdanihNekretnina}");
       // Ako korisnik postoji i ima svojstvo brojProdatihNekretnina, dodajte ga ukupnom rezultatu
-      if (korisnik != null) {
-        totalSales += korisnik.brojUspjesnoProdanihNekretnina ?? 0;
-      }
-      print("totalsales ${totalSales}");
+      totalSales += korisnik.brojUspjesnoProdanihNekretnina ?? 0;
+          print("totalsales $totalSales");
     }
 
     return totalSales;
@@ -177,6 +174,7 @@ class _SalesStatisticsScreenState extends State<SalesStatisticsScreen> {
     return Column(
       children: agencijeNazivi.map((naziv) {
         return Container(
+          padding: const EdgeInsets.symmetric(vertical: 4),
           child: Text(
             naziv ?? '',
             style: TextStyle(
@@ -185,7 +183,6 @@ class _SalesStatisticsScreenState extends State<SalesStatisticsScreen> {
               fontSize: 14,
             ),
           ),
-          padding: EdgeInsets.symmetric(vertical: 4),
         );
       }).toList(),
     );
@@ -196,6 +193,7 @@ class _SalesStatisticsScreenState extends State<SalesStatisticsScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+      title: 'Statistika prodaje nekretnina po agencijama',
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -251,7 +249,6 @@ class _SalesStatisticsScreenState extends State<SalesStatisticsScreen> {
           ],
         ),
       ),
-      title: 'Statistika prodaje nekretnina po agencijama',
     );
   }
 }

@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  carousel_slider: ^4.0.0
+  carousel_slider: ^5.0.0
   http: ^0.13.5
   image_picker: ^0.8.9
   http_parser: ^4.0.2
@@ -41,6 +41,9 @@ dependencies:
   pdf: ^3.10.7
   path_provider: ^2.0.5
   open_file: ^3.2.1
+  
+  
+
   
  
 

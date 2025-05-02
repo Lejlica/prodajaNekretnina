@@ -63,7 +63,7 @@ class RijeseniProblemiScreen extends StatefulWidget {
 }*/
 
 class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
-  TextEditingController _problemIdController = TextEditingController();
+  final TextEditingController _problemIdController = TextEditingController();
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;
@@ -129,7 +129,7 @@ class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
       print(gradoviResult);
       nekretninaAgentiResult = await _nekretninaAgentiProvider.get();
 
-      print('nekrAgenti ${nekretninaAgentiResult}');
+      print('nekrAgenti $nekretninaAgentiResult');
       problemiResult = await _problemProvider.get();
       setState(() {
         isLoading = false;
@@ -143,7 +143,7 @@ class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Riješeni problemi'),
+        title: const Text('Riješeni problemi'),
       ),
       body: _buildBody(),
     );
@@ -165,17 +165,17 @@ class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
       child: Column(
         children: [
           _buildSearch(),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical, // Changed to vertical
               child: Column(
                 children: filteredNekretnine.map((Problem e) {
                   return Center(
-                    child: Container(
+                    child: SizedBox(
                       width: 600, // Postavite željenu širinu za Card
                       child: Card(
-                        color: Color.fromARGB(128, 182, 211, 247),
+                        color: const Color.fromARGB(128, 182, 211, 247),
                         child: ListTile(
                           onTap: () {
                             Navigator.of(context).push(
@@ -195,7 +195,7 @@ class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
                           title: Center(
                             child: Text(
                               'Problem ID: ${e.problemId?.toString() ?? ""}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -224,16 +224,16 @@ class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
               ),
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
             'Na čekanju: $brojNaCekanju',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               color: Colors.red,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -242,7 +242,7 @@ class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
                 ),
               );
             },
-            child: Text('Pregledaj prijavljene probleme'),
+            child: const Text('Pregledaj prijavljene probleme'),
           ),
         ],
       ),
@@ -276,7 +276,7 @@ class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
       children: [
         Expanded(
           child: TextField(
-            decoration: InputDecoration(labelText: "ID nekretnine"),
+            decoration: const InputDecoration(labelText: "ID nekretnine"),
             controller: _problemIdController,
           ),
         ),
@@ -292,7 +292,7 @@ class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
               problemiResult = data;
             });
           },
-          child: Text("Pretraga"),
+          child: const Text("Pretraga"),
         ),
       ],
     );
@@ -329,10 +329,10 @@ class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
       if (korisnik != null) {
         return Text('${korisnik.ime} ${korisnik.prezime}');
       } else {
-        return Text('Unknown Agent');
+        return const Text('Unknown Agent');
       }
     } else {
-      return Text('Unknown Agent');
+      return const Text('Unknown Agent');
     }
   }
 }
@@ -348,7 +348,7 @@ class ProblemDetailScreen extends StatelessWidget {
   final ProblemProvider problemProvider;
   final NekretninaAgentiProvider _nekretninaAgentiProvider;
   //final SearchResult<TipNekretnine>? tipNekretnineResult;
-  ProblemDetailScreen({
+  ProblemDetailScreen({super.key, 
     required this.problem,
     required this.korisniciResult,
     required this.nekretnineResult,
@@ -373,24 +373,24 @@ class ProblemDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalji o problemu'),
+        title: const Text('Detalji o problemu'),
       ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Card(
-                margin: EdgeInsets.symmetric(horizontal: 200, vertical: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 200, vertical: 10),
                 color: Colors.white,
                 child: Container(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   alignment: Alignment.center,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 10),
-                      Row(
+                      const SizedBox(height: 10),
+                      const Row(
                         children: [
                           Icon(
                             Icons.check_circle,
@@ -417,22 +417,22 @@ class ProblemDetailScreen extends StatelessWidget {
                           Text(
                             'Detalji/rješenje za prijavljeni problem',
                             style: TextStyle(
-                              color: const Color.fromARGB(239, 158, 158, 158),
+                              color: Color.fromARGB(239, 158, 158, 158),
                               fontSize: 10.0,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
-                      Divider(
+                      const SizedBox(height: 10),
+                      const Divider(
                         height: 3,
                         thickness: 1,
                         color: Colors.grey,
                       ),
-                      SizedBox(height: 10),
-                      VerticalDivider(
+                      const SizedBox(height: 10),
+                      const VerticalDivider(
                           width: 1, thickness: 1, color: Colors.blue),
-                      Text(
+                      const Text(
                         'Informacije',
                         style: TextStyle(
                           color: Colors.black,
@@ -440,25 +440,25 @@ class ProblemDetailScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       Row(
                         children: [
-                          Icon(Icons.send, color: Colors.grey, size: 17),
-                          SizedBox(width: 5),
-                          Text(
+                          const Icon(Icons.send, color: Colors.grey, size: 17),
+                          const SizedBox(width: 5),
+                          const Text(
                             'Zahtjev poslao: ',
                             style: TextStyle(
-                              color: const Color.fromARGB(255, 130, 130, 130),
+                              color: Color.fromARGB(255, 130, 130, 130),
                             ),
                           ),
-                          Text('${_getKorisnikName(problem.korisnikId)}'),
+                          Text(_getKorisnikName(problem.korisnikId)),
                           TextButton(
                             onPressed: () => _launchEmail(problem.korisnikId!),
                             child: Text(
-                              '${_getEmail(problem.korisnikId)}',
-                              style: TextStyle(
+                              _getEmail(problem.korisnikId),
+                              style: const TextStyle(
                                 color: Colors.blue,
                                 decoration: TextDecoration.underline,
                               ),
@@ -466,67 +466,67 @@ class ProblemDetailScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Row(children: [
-                        Icon(Icons.calendar_today,
+                        const Icon(Icons.calendar_today,
                             size: 18, color: Colors.grey),
-                        SizedBox(width: 5),
-                        Text(
+                        const SizedBox(width: 5),
+                        const Text(
                           'Datum prijave: ',
                           style: TextStyle(
-                            color: const Color.fromARGB(255, 130, 130, 130),
+                            color: Color.fromARGB(255, 130, 130, 130),
                           ),
                         ),
                         Text(
                           '${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.parse(problem.datumPrijave?.toString() ?? ""))} PM GMT',
                         ),
                       ]),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Row(
                         children: [
-                          Icon(Icons.location_on, color: Colors.grey, size: 20),
-                          SizedBox(width: 5),
-                          Text(
+                          const Icon(Icons.location_on, color: Colors.grey, size: 20),
+                          const SizedBox(width: 5),
+                          const Text(
                             'Lokacija: ',
                             style: TextStyle(
-                              color: const Color.fromARGB(255, 130, 130, 130),
+                              color: Color.fromARGB(255, 130, 130, 130),
                             ),
                           ),
-                          Text(
-                            '${_getAdresaNekretnine(problem.nekretninaId)}',
-                          ),
+                          //Text(
+                          //  _getAdresaNekretnine(problem.nekretninaId),
+                          //),
                         ],
                       ),
-                      SizedBox(height: 10),
-                      Row(children: [
+                      const SizedBox(height: 10),
+                      const Row(children: [
                         Text(
                           'Detalji: ',
                           style: TextStyle(
-                            color: const Color.fromARGB(255, 130, 130, 130),
+                            color: Color.fromARGB(255, 130, 130, 130),
                           ),
                         ),
                       ]),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Row(children: [
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text('Nekretnina ID: ${problem.nekretninaId}')
                       ]),
                       Row(children: [
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text('Broj telefona: ${_getBrTel(problem.korisnikId)}')
                       ]),
                       Row(children: [
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text.rich(
                           TextSpan(
                             text: 'Je li problem ranije prijavljivan?: ',
                             children: <InlineSpan>[
                               problem.isVecPrijavljen == true
-                                  ? WidgetSpan(
+                                  ? const WidgetSpan(
                                       child: Icon(Icons.check,
                                           color: Colors.green),
                                     )
-                                  : WidgetSpan(
+                                  : const WidgetSpan(
                                       child:
                                           Icon(Icons.close, color: Colors.red),
                                     ),
@@ -534,16 +534,16 @@ class ProblemDetailScreen extends StatelessWidget {
                           ),
                         ),
                       ]),
-                      SizedBox(height: 20),
-                      Divider(
+                      const SizedBox(height: 20),
+                      const Divider(
                         height: 3,
                         thickness: 1,
                         color: Colors.grey,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
-                      Text(
+                      const Text(
                         'Rješenje',
                         style: TextStyle(
                           color: Colors.black,
@@ -551,40 +551,40 @@ class ProblemDetailScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       Row(children: [
-                        Icon(Icons.calendar_today,
+                        const Icon(Icons.calendar_today,
                             size: 18, color: Colors.grey),
-                        SizedBox(width: 5),
-                        Text(
+                        const SizedBox(width: 5),
+                        const Text(
                           'Datum rješenja: ',
                           style: TextStyle(
-                            color: const Color.fromARGB(255, 130, 130, 130),
+                            color: Color.fromARGB(255, 130, 130, 130),
                           ),
                         ),
                         Text(
                           '${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.parse(problem.datumRjesenja?.toString() ?? ""))} PM GMT',
                         ),
                       ]),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Row(children: [
-                        Icon(Icons.note_alt, size: 18, color: Colors.grey),
-                        SizedBox(width: 5),
-                        Text(
+                        const Icon(Icons.note_alt, size: 18, color: Colors.grey),
+                        const SizedBox(width: 5),
+                        const Text(
                           'Opis rješenja: ',
                           style: TextStyle(
-                            color: const Color.fromARGB(255, 130, 130, 130),
+                            color: Color.fromARGB(255, 130, 130, 130),
                           ),
                         ),
                         Text(
                           '${problem.opisRjesenja?.toString()}',
                         ),
                       ]),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                     ],
                   ),
                 ),

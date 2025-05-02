@@ -41,15 +41,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 
-class NekretnineDetaljiScreen extends StatefulWidget {
+class DodajNekr2Screen extends StatefulWidget {
   Nekretnina? nekretnina;
   Grad? grad;
 
-  NekretnineDetaljiScreen({Key? key, this.nekretnina}) : super(key: key);
+  DodajNekr2Screen({Key? key, this.nekretnina}) : super(key: key);
 
   @override
-  State<NekretnineDetaljiScreen> createState() =>
-      _NekretnineDetaljiScreenState();
+  State<DodajNekr2Screen> createState() =>
+      _DodajNekr2ScreenState();
 }
 
 /*Future<Uint8List?> pickImageFromGallery() async {
@@ -65,7 +65,7 @@ class NekretnineDetaljiScreen extends StatefulWidget {
   return null;
 }*/
 
-class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
+class _DodajNekr2ScreenState extends State<DodajNekr2Screen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;

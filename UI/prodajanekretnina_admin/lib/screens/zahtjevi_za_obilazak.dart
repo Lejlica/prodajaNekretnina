@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:prodajanekretnina_admin/models/obilazak.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
 import 'package:prodajanekretnina_admin/screens/glavni_ekran.dart';
 import 'package:prodajanekretnina_admin/providers/obilazak_provider.dart';
+import 'package:prodajanekretnina_admin/providers/nekretnine_provider.dart';
 import 'package:prodajanekretnina_admin/screens/zahtjevi_za_obilazak_detalji.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -19,8 +22,9 @@ class ZahtjeviZaObilazakScreen extends StatefulWidget {
 class _ZahtjeviZaObilazakScreenState extends State<ZahtjeviZaObilazakScreen> {
   late ObilazakProvider _obilazakProvider;
   SearchResult<Obilazak>? result;
-  TextEditingController _nekretninaIdController = new TextEditingController();
-
+  final TextEditingController _nekretninaIdController = TextEditingController();
+ 
+  
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
@@ -29,6 +33,20 @@ class _ZahtjeviZaObilazakScreenState extends State<ZahtjeviZaObilazakScreen> {
     print(_obilazakProvider);
   }
 
+  @override
+void initState() {
+  super.initState();
+  _obilazakProvider = ObilazakProvider();
+  _onRefresh(); // pozivaš API ili postavljaš početne vrijednosti
+}
+
+  FutureOr<void> _onRefresh() async {
+    var data = await _obilazakProvider.get(filter: {});
+    setState(() {
+      result = data;
+    });
+  }
+ 
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
@@ -39,14 +57,14 @@ class _ZahtjeviZaObilazakScreenState extends State<ZahtjeviZaObilazakScreen> {
     );
   }
 
-  Widget _buildSearch() {
+ /* Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
           Expanded(
             child: TextField(
-              decoration: InputDecoration(labelText: "ID nekretnine"),
+              decoration: const InputDecoration(labelText: "ID nekretnine"),
               controller: _nekretninaIdController,
             ),
           ),
@@ -65,18 +83,58 @@ class _ZahtjeviZaObilazakScreenState extends State<ZahtjeviZaObilazakScreen> {
 
                 // print("data: ${data.result[0].naziv}");
               },
-              child: Text("Pretraga")),
+              child: const Text("Pretraga")),
         ],
       ),
     );
-  }
+  }*/
+bool isOdobrenaChecked = false;
+Widget _buildSearch() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 10),
+      child: Container(
+        width: 1000,
+        height: 80,
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+  mainAxisAlignment: MainAxisAlignment.start, // ili spaceEvenly ako želiš ravnomerno
+  children: [
+    Checkbox(
+      value: isOdobrenaChecked,
+      onChanged: (value) {
+        setState(() {
+          isOdobrenaChecked = value!;
+        });
+      },
+    ),
+    const Text("Odobrena"),
+    const SizedBox(width: 10), // Manji razmak nego 40
+    ElevatedButton(
+      onPressed: () async {
+        var data = await _obilazakProvider.get(
+          filter: {
+            'isOdobren': isOdobrenaChecked,
+          },
+        );
 
+        setState(() {
+          result = data;
+        });
+      },
+      child: const Text("Pretraga"),
+    ),
+  ],
+),
+
+      ),
+    );
+  }
   Widget _buildDataListView() {
-    return Expanded(
-        child: SingleChildScrollView(
+    return SingleChildScrollView(
       child: DataTable(
-          columns: [
-            const DataColumn(
+        showCheckboxColumn: false,
+          columns: const [
+            DataColumn(
               label: Expanded(
                 child: Text(
                   'ID',
@@ -84,7 +142,7 @@ class _ZahtjeviZaObilazakScreenState extends State<ZahtjeviZaObilazakScreen> {
                 ),
               ),
             ),
-            const DataColumn(
+            DataColumn(
               label: Expanded(
                 child: Text(
                   'Vrijeme obilaska',
@@ -92,7 +150,7 @@ class _ZahtjeviZaObilazakScreenState extends State<ZahtjeviZaObilazakScreen> {
                 ),
               ),
             ),
-            const DataColumn(
+            DataColumn(
               label: Expanded(
                 child: Text(
                   'Nekretnina ID',
@@ -100,6 +158,12 @@ class _ZahtjeviZaObilazakScreenState extends State<ZahtjeviZaObilazakScreen> {
                 ),
               ),
             ),
+            DataColumn(
+                      label: Text(
+                        'Odobren',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
           ],
           rows: result?.result
                   .map((Obilazak e) => DataRow(
@@ -118,13 +182,28 @@ class _ZahtjeviZaObilazakScreenState extends State<ZahtjeviZaObilazakScreen> {
                               },
                           cells: [
                             DataCell(Text(e.obilazakId?.toString() ?? "")),
-                            DataCell(Text(DateFormat('yyyy-MM-dd HH:mm:ss')
-                                .format(DateTime.parse(
-                                    e.vrijemeObilaska?.toString() ?? "")))),
+                            DataCell(Text(
+                        // Formatiranje datuma na "dd.MM.yyyy HH:mm" + "h"
+                        DateFormat('dd.MM.yyyy HH:mm')
+                            .format(DateTime.parse(e.vrijemeObilaska?.toString() ?? "")) +
+                            "h",
+                      ),),
                             DataCell(Text(e.nekretninaId?.toString() ?? "")),
+                            DataCell(
+                              Icon(
+                                e.isOdobren == true
+                                    ? Icons.check
+                                    : Icons.access_time,
+                                color: e.isOdobren == true
+                                    ? Colors.green
+                                    : Colors.orange,
+                                size: 24,
+                              ),
+                            ),
                           ]))
                   .toList() ??
               []),
-    ));
+    );
   }
 }
+

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:prodajanekretnina_admin/main.dart';
 import 'package:prodajanekretnina_admin/screens/dodaj_agenta_screen.dart';
+import 'package:prodajanekretnina_admin/screens/dodaj_nekr2.dart';
+import 'package:prodajanekretnina_admin/screens/dodaj_uredi_nekretninu.dart';
 import 'package:prodajanekretnina_admin/screens/nekretnine_detalji.dart';
 import 'package:prodajanekretnina_admin/screens/nekretnine_lista_screen.dart';
 import 'package:prodajanekretnina_admin/screens/rijeseni_problemi.dart';
 import 'package:prodajanekretnina_admin/screens/vasProfil_screen.dart';
 import 'package:prodajanekretnina_admin/screens/zahtjevi_za_prodaju.dart';
 import 'package:prodajanekretnina_admin/screens/zahtjevi_za_obilazak_detalji.dart';
+import 'package:prodajanekretnina_admin/screens/zahtjevi_za_obilazak.dart';
 import 'package:prodajanekretnina_admin/screens/zahtjevi_za_iznajmljivanje.dart';
 import 'package:prodajanekretnina_admin/screens/prijavljeni_problemi.dart';
 import 'package:prodajanekretnina_admin/screens/statistika_agent_screen.dart';
@@ -44,15 +47,15 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
         child: ListView(
           children: [
             ListTile(
-              leading: Icon(Icons.arrow_back), // Add the back arrow icon
+              leading: const Icon(Icons.arrow_back), // Add the back arrow icon
 
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Nekretnine'),
+              leading: const Icon(Icons.home),
+              title: const Text('Nekretnine'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -62,12 +65,12 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.add),
-              title: Text('Dodaj nekretninu'),
+              leading: const Icon(Icons.add),
+              title: const Text('Dodaj nekretninu'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => NekretnineDetaljiScreen(),
+                    builder: (context) => DodajNekr2Screen(),
                   ),
                 );
               },
@@ -84,11 +87,11 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
               },
             ),*/
             ExpansionTile(
-              leading: Icon(Icons.article),
-              title: Text('Zahtjevi'),
+              leading: const Icon(Icons.article),
+              title: const Text('Zahtjevi'),
               children: [
                 ListTile(
-                  title: Text('Zahtjevi za prodaju'),
+                  title: const Text('Zahtjevi za prodaju'),
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -98,7 +101,7 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
                   },
                 ),
                 ListTile(
-                  title: Text('Zahtjevi za iznajmljivanje'),
+                  title: const Text('Zahtjevi za iznajmljivanje'),
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -109,7 +112,7 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
                   },
                 ),
                 ListTile(
-                  title: Text('Zahtjevi za obilazak'),
+                  title: const Text('Zahtjevi za obilazak'),
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -121,11 +124,11 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
               ],
             ),
             ExpansionTile(
-              leading: Icon(Icons.article),
-              title: Text('Problemi'),
+              leading: const Icon(Icons.article),
+              title: const Text('Problemi'),
               children: [
                 ListTile(
-                  title: Text('Prijavljeni problemi'),
+                  title: const Text('Prijavljeni problemi'),
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -135,7 +138,7 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
                   },
                 ),
                 ListTile(
-                  title: Text('Riješeni problemi'),
+                  title: const Text('Riješeni problemi'),
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -147,7 +150,7 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
               ],
             ),
             ListTile(
-              title: Text('Statistika'),
+              title: const Text('Statistika'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -157,7 +160,7 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
               },
             ),
             ListTile(
-              title: Text('Izvještaj o prodaji'),
+              title: const Text('Izvještaj o prodaji'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -167,12 +170,12 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
               },
             ),
             ListTile(
-              leading: Icon(
+              leading: const Icon(
                 Icons.settings,
                 size: 24.0,
                 color: Colors.blue,
               ),
-              title: Text('Vaš profil'),
+              title: const Text('Vaš profil'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -182,7 +185,7 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
               },
             ),
             ListTile(
-              title: Text('Lista agenata'),
+              title: const Text('Lista agenata'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(

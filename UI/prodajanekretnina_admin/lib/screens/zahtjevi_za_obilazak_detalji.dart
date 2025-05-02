@@ -11,11 +11,12 @@ import 'package:prodajanekretnina_admin/screens/zahtjevi_za_obilazak.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
+import 'dart:async';
 
 class ZahtjeviZaObilazakDetaljiScreen extends StatefulWidget {
   final Obilazak? obilazak;
 
-  ZahtjeviZaObilazakDetaljiScreen({Key? key, this.obilazak}) : super(key: key);
+  const ZahtjeviZaObilazakDetaljiScreen({Key? key, this.obilazak}) : super(key: key);
 
   @override
   _ZahtjeviZaObilazakDetaljiScreenState createState() =>
@@ -26,21 +27,23 @@ class _ZahtjeviZaObilazakDetaljiScreenState
     extends State<ZahtjeviZaObilazakDetaljiScreen> {
   late ObilazakProvider _obilazakProvider;
   SearchResult<Obilazak>? result;
-  TextEditingController _nekretninaIdController = TextEditingController();
+  
+ 
+  final TextEditingController _nekretninaIdController = TextEditingController();
   late KorisniciProvider _korisniciProvider;
   late NekretninaAgentiProvider _nekretninaAgentiProvider;
   bool isLoading = true;
 
   SearchResult<Korisnik>? korisniciResult;
   SearchResult<NekretninaAgenti>? nekretninaAgentiResult;
-  @override
+ /* @override
   void initState() {
     super.initState();
     _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
     _korisniciProvider = context.read<KorisniciProvider>();
     _obilazakProvider = context.read<ObilazakProvider>();
     initForm();
-  }
+  }*/
 
   Future<void> initForm() async {
     try {
@@ -56,12 +59,29 @@ class _ZahtjeviZaObilazakDetaljiScreenState
       print('Error in initForm: $e');
     }
   }
+  @override
+void initState() {
+  super.initState();
+  _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
+  _korisniciProvider = context.read<KorisniciProvider>();
+  _obilazakProvider = ObilazakProvider();
+  _onRefresh();
+  initForm(); // pozivaš API ili postavljaš početne vrijednosti
+}
+
+  FutureOr<void> _onRefresh() async {
+    var data = await _obilazakProvider.get(filter: {});
+    setState(() {
+      result = data;
+    });
+  }
+ 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Zahtjevi za obilascima'),
+        title: const Text('Zahtjevi za obilascima'),
       ),
       body: _buildBody(),
     );
@@ -73,15 +93,16 @@ class _ZahtjeviZaObilazakDetaljiScreenState
       child: Column(
         children: [
           _buildSearch(),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(
-                columns: [
+                 showCheckboxColumn: false,
+                columns: const [
                   DataColumn(
                     label: Text(
-                      'ID',
+                      'Redni broj',
                       style: TextStyle(fontStyle: FontStyle.italic),
                     ),
                   ),
@@ -148,20 +169,28 @@ class _ZahtjeviZaObilazakDetaljiScreenState
                               DataCell(Text(
                                   entry.value.obilazakId?.toString() ?? "")),
                               DataCell(Text(
-                                DateFormat('yyyy-MM-dd HH:mm:ss').format(
-                                  DateTime.parse(
-                                      entry.value.vrijemeObilaska?.toString() ??
-                                          ""),
-                                ),
-                              )),
+                        // Formatiranje datuma na "dd.MM.yyyy HH:mm" + "h"
+                        DateFormat('dd.MM.yyyy HH:mm')
+                            .format(DateTime.parse(entry.value.vrijemeObilaska?.toString() ?? "")) +
+                            "h",
+                      ),),
                               DataCell(Text(
                                   entry.value.nekretninaId?.toString() ?? "")),
                               DataCell(_buildKorisnikNameCell(
                                   entry.value.korisnikId)),
                               // DataCell(_buildAgentNameCell(entry.value.nekretninaId)),
-                              DataCell(entry.value.isOdobren == true
-                                  ? Icon(Icons.check)
-                                  : Icon(Icons.close)),
+                              
+                                  DataCell(
+                              Icon(
+                                entry.value.isOdobren == true
+                                    ? Icons.check
+                                    : Icons.access_time,
+                                color: entry.value.isOdobren == true
+                                    ? Colors.green
+                                    : Colors.orange,
+                                size: 24,
+                              ),
+                            ),
                             ],
                           ),
                         )
@@ -175,30 +204,48 @@ class _ZahtjeviZaObilazakDetaljiScreenState
     );
   }
 
-  Widget _buildSearch() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            decoration: InputDecoration(labelText: "ID nekretnine"),
-            controller: _nekretninaIdController,
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            var data = await _obilazakProvider.get(
-              filter: {
-                'nekretninaId': _nekretninaIdController.text,
-              },
-            );
-
-            setState(() {
-              result = data;
-            });
+  bool isOdobrenaChecked = false;
+Widget _buildSearch() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: 1000,
+        height: 80,
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+  mainAxisAlignment: MainAxisAlignment.center, // ili spaceEvenly ako želiš ravnomerno
+  children: [
+    SizedBox(
+      width: 200,
+      
+     
+    ),
+    Checkbox(
+      value: isOdobrenaChecked,
+      onChanged: (value) {
+        setState(() {
+          isOdobrenaChecked = value!;
+        });
+      },
+    ),
+    const Text("Odobrena"),
+    SizedBox(width: 20),
+    ElevatedButton(
+      onPressed: () async {
+        var data = await _obilazakProvider.get(
+          filter: {
+            'isOdobren': isOdobrenaChecked,
           },
-          child: Text("Pretraga"),
-        ),
-      ],
+        );
+
+        setState(() {
+          result = data;
+        });
+      },
+      child: const Text("Pretraga"),
+    ),
+  ],
+),   ),
     );
   }
 
@@ -224,10 +271,10 @@ class _ZahtjeviZaObilazakDetaljiScreenState
       if (korisnik != null) {
         return Text('${korisnik.ime} ${korisnik.prezime}');
       } else {
-        return Text('Unknown Agent');
+        return const Text('Unknown Agent');
       }
     } else {
-      return Text('Unknown Agent');
+      return const Text('Unknown Agent');
     }
   }
 }
@@ -236,7 +283,7 @@ class ObilazakDetailScreen extends StatelessWidget {
   final Obilazak obilazak;
   final SearchResult<Korisnik>? korisniciResult;
   final ObilazakProvider obilazakProvider;
-  ObilazakDetailScreen({
+  const ObilazakDetailScreen({super.key, 
     required this.obilazak,
     required this.korisniciResult,
     required this.obilazakProvider,
@@ -255,20 +302,20 @@ class ObilazakDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Odobrenje/odbijanje obilazaka'),
+        title: const Text('Odobrenje/odbijanje obilazaka'),
       ),
       body: Center(
-        child: Container(
+        child: SizedBox(
           width: 600,
           height: 330,
           child: Card(
-            margin: EdgeInsets.all(16.0),
+            margin: const EdgeInsets.all(16.0),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  const Row(
                     children: [
                       Icon(
                         Icons.check_circle,
@@ -300,7 +347,7 @@ class ObilazakDetailScreen extends StatelessWidget {
                       Text(
                         'Odobrite ili odbijte zahtjev',
                         style: TextStyle(
-                          color: const Color.fromARGB(239, 158, 158,
+                          color: Color.fromARGB(239, 158, 158,
                               158), // Postavite boju teksta na plavu
                           fontSize:
                               10.0, // Prilagodite veličinu teksta prema potrebi
@@ -308,41 +355,41 @@ class ObilazakDetailScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  Divider(
+                  const SizedBox(height: 10),
+                  const Divider(
                     height: 3,
                     thickness: 1,
                     color: Colors.grey,
                   ),
-                  SizedBox(height: 10),
-                  VerticalDivider(width: 1, thickness: 1, color: Colors.blue),
+                  const SizedBox(height: 10),
+                  const VerticalDivider(width: 1, thickness: 1, color: Colors.blue),
                   Text(
                     obilazak.isOdobren == true
                         ? 'Odobren obilazak'
                         : 'Odobrenje na čekanju',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
 
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   // Text('ID: ${obilazak.obilazakId}'),
                   Row(
                     children: [
-                      Text(
+                      const Text(
                         'Zahtjev poslao: ',
                         style: TextStyle(
-                          color: const Color.fromARGB(255, 130, 130, 130),
+                          color: Color.fromARGB(255, 130, 130, 130),
                         ),
                       ),
-                      Text('${_getKorisnikName(obilazak.korisnikId)}'),
+                      Text(_getKorisnikName(obilazak.korisnikId)),
                       TextButton(
                         onPressed: () => _launchEmail(obilazak.korisnikId!),
                         child: Text(
-                          '${_getEmail(obilazak.korisnikId)}',
-                          style: TextStyle(
+                          _getEmail(obilazak.korisnikId),
+                          style: const TextStyle(
                             color: Colors
                                 .blue, // Postavite boju teksta na plavu ili drugu po želji
                             decoration: TextDecoration
@@ -353,45 +400,46 @@ class ObilazakDetailScreen extends StatelessWidget {
                     ],
                   ),
                   Row(children: [
-                    Text(
+                    const Text(
                       'Vrijeme obilaska: ',
                       style: TextStyle(
-                        color: const Color.fromARGB(255, 130, 130, 130),
+                        color: Color.fromARGB(255, 130, 130, 130),
                       ),
                     ),
                     Text(
-                      '${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.parse(obilazak.vrijemeObilaska?.toString() ?? ""))} PM GMT',
+                      '${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.parse(obilazak.vrijemeObilaska?.toString() ?? ""))+
+                            "h"}',
                     ),
                   ]),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
-                  Row(children: [
+                  const Row(children: [
                     Text(
                       'Detalji: ',
                       style: TextStyle(
-                        color: const Color.fromARGB(255, 130, 130, 130),
+                        color: Color.fromARGB(255, 130, 130, 130),
                       ),
                     ),
                   ]),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   Row(children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Text('Nekretnina ID: ${obilazak.nekretninaId}')
                   ]),
 
                   Row(children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Text('Broj telefona: ${_getBrTel(obilazak.korisnikId)}')
                   ]),
 
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Row(children: [
                     ElevatedButton(
                       onPressed: () {
@@ -399,8 +447,8 @@ class ObilazakDetailScreen extends StatelessWidget {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Potvrda'),
-                              content: Text(
+                              title: const Text('Potvrda'),
+                              content: const Text(
                                   'Da li ste sigurni da želite odbiti zahtjev?'),
                               actions: [
                                 TextButton(
@@ -408,7 +456,7 @@ class ObilazakDetailScreen extends StatelessWidget {
                                     Navigator.of(context)
                                         .pop(); // Zatvaranje dijaloga
                                   },
-                                  child: Text('Ne'),
+                                  child: const Text('Ne'),
                                 ),
                                 TextButton(
                                   onPressed: () async {
@@ -420,8 +468,8 @@ class ObilazakDetailScreen extends StatelessWidget {
                                       builder: (BuildContext context) {
                                         return AlertDialog(
                                           title:
-                                              Text('Uspješno uklonjen zahtjev'),
-                                          content: Text(
+                                              const Text('Uspješno uklonjen zahtjev'),
+                                          content: const Text(
                                               'Zahtjev je uspješno odbačen.'),
                                           actions: [
                                             TextButton(
@@ -455,14 +503,14 @@ class ObilazakDetailScreen extends StatelessWidget {
                                                   });
                                                 }
                                               },
-                                              child: Text('OK'),
+                                              child: const Text('OK'),
                                             ),
                                           ],
                                         );
                                       },
                                     );
                                   },
-                                  child: Text('Da'),
+                                  child: const Text('Da'),
                                 ),
                               ],
                             );
@@ -470,22 +518,22 @@ class ObilazakDetailScreen extends StatelessWidget {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(
+                        backgroundColor: const Color.fromARGB(
                             255, 228, 56, 13), // Boja pozadine dugmeta
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(
                             Radius.circular(8.0), // Radijus gornjeg levog ugla
                           ),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Odbij',
                         style: TextStyle(
                           color: Colors.white,
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     ElevatedButton(
@@ -511,9 +559,9 @@ class ObilazakDetailScreen extends StatelessWidget {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text('Uspješno odobren zahtjev'),
+                                    title: const Text('Uspješno odobren zahtjev'),
                                     content:
-                                        Text('Zahtjev je uspješno odobren.'),
+                                        const Text('Zahtjev je uspješno odobren.'),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
@@ -525,7 +573,7 @@ class ObilazakDetailScreen extends StatelessWidget {
                                                     ZahtjeviZaObilazakDetaljiScreen()),
                                           ); // Close the dialog
                                         },
-                                        child: Text('OK'),
+                                        child: const Text('OK'),
                                       ),
                                     ],
                                   );
@@ -533,14 +581,14 @@ class ObilazakDetailScreen extends StatelessWidget {
                               );
                             },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.blue,
-                        shape: RoundedRectangleBorder(
+                        backgroundColor: Colors.blue,
+                        shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(
                             Radius.circular(8.0), // Radijus gornjeg levog ugla
                           ),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Odobri',
                         style: TextStyle(
                           color: Colors.white,

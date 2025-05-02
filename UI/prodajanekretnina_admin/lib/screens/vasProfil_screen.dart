@@ -131,7 +131,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
 
   Future initForm() async {
     try {
-      var tmpKorisniciData = await _korisniciProvider?.get();
+      var tmpKorisniciData = await _korisniciProvider.get();
       //var tmpKupciData = await _kupciProvider?.get(null);
       setState(() {
         isLoading = false;
@@ -156,7 +156,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
         child: Column(
           children: [
             FutureBuilder(
-              future: _korisniciProvider?.get(),
+              future: _korisniciProvider.get(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   String bajtovii;
@@ -167,22 +167,22 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                   Korisnik? kora = korisnikk();
                   bajtovii = kora!.bajtoviSlike.toString();
                   bytes = base64.decode(bajtovii ?? '');
-                  print("bytes ${bytes}");
+                  print("bytes $bytes");
                   // Inicijalizacija kontrolera s podacima korisnika
                   _korisnickoImeController.text =
-                      kora!.korisnickoIme.toString();
-                  _emailController.text = kora!.email.toString();
-                  _telefonController.text = kora!.telefon.toString();
+                      kora.korisnickoIme.toString();
+                  _emailController.text = kora.email.toString();
+                  _telefonController.text = kora.telefon.toString();
                   // _passwordController.text = kora!.password.toString();
                   // _passwordPotvrdaController.text =
                   //kora!.passwordPotvrda.toString();
-                  _imeController.text = kora!.ime.toString();
-                  _prezimeController.text = kora!.prezime.toString();
+                  _imeController.text = kora.ime.toString();
+                  _prezimeController.text = kora.prezime.toString();
                   // Vratite željeni widget koji koristi inicijalizirane kontrolere
                   return _formBuild();
                 } else {
                   // Podaci se još uvijek dohvaćaju
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
               },
             ),
@@ -197,7 +197,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
   Korisnik? korisnikk() {
     print('Username: $username');
     print('datica: $data');
-    List<dynamic> filteredData = data!.result.where((korisnik) {
+    List<dynamic> filteredData = data.result.where((korisnik) {
       print('KorisnickoIme: ${korisnik.korisnickoIme}');
       return korisnik.korisnickoIme == username;
     }).toList();
@@ -210,7 +210,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
   }
 
   int? korisnikId() {
-    List<dynamic> filteredData = data!.result
+    List<dynamic> filteredData = data.result
         .where((korisnik) => korisnik.korisnickoIme == username)
         .toList();
 
@@ -223,7 +223,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
 
   int? kupacId() {
     List<dynamic> filteredData =
-        kupcidata!.where((kupac) => kupac.korisnickoIme == username).toList();
+        kupcidata.where((kupac) => kupac.korisnickoIme == username).toList();
 
     if (filteredData.isNotEmpty) {
       return filteredData[0].kupacId;
@@ -251,7 +251,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
         _imeController = TextEditingController(text: kora!.ime);
         _prezimeController = TextEditingController(text: kora!.prezime);*/
   String? bajtovi() {
-    List<dynamic> filteredData = data!.result.where((korisnik) {
+    List<dynamic> filteredData = data.result.where((korisnik) {
       print('Korisnickooooime: ${korisnik.korisnickoIme}');
       return korisnik.korisnickoIme == username;
     }).toList();
@@ -272,10 +272,10 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
       key: _formKey,
       initialValue: _initialValue,
       child: Padding(
-        padding: EdgeInsets.only(left: 60.0, right: 60.0),
+        padding: const EdgeInsets.only(left: 60.0, right: 60.0),
         child: Card(
           child: SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               children: [
                 _image != null
@@ -288,7 +288,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                             Container(
                               width: 250,
                               height: 250,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(8.0),
                                   bottomRight: Radius.circular(8.0),
@@ -307,7 +307,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                         ),
                       )
                     : Padding(
-                        padding: EdgeInsets.only(top: 20.0),
+                        padding: const EdgeInsets.only(top: 20.0),
                         child: bytes.isNotEmpty
                             ? ClipOval(
                                 child: Image.memory(
@@ -320,55 +320,55 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                             : Container(),
                       ),
                 Padding(
-                  padding: EdgeInsets.only(left: 200, right: 200),
+                  padding: const EdgeInsets.only(left: 200, right: 200),
                   child: Row(
                     children: [
                       Expanded(
                         child: FormBuilderTextField(
                           name: 'ime',
                           controller: _imeController,
-                          decoration: InputDecoration(labelText: 'Ime'),
+                          decoration: const InputDecoration(labelText: 'Ime'),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 80,
                       ),
                       Expanded(
                         child: FormBuilderTextField(
                           name: 'prezime',
                           controller: _prezimeController,
-                          decoration: InputDecoration(labelText: 'Prezime'),
+                          decoration: const InputDecoration(labelText: 'Prezime'),
                         ),
                       ),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 200, right: 200),
+                  padding: const EdgeInsets.only(left: 200, right: 200),
                   child: Row(
                     children: [
                       Expanded(
                         child: FormBuilderTextField(
                           name: 'email',
                           controller: _emailController,
-                          decoration: InputDecoration(labelText: 'Email'),
+                          decoration: const InputDecoration(labelText: 'Email'),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 80,
                       ),
                       Expanded(
                         child: FormBuilderTextField(
                           name: 'telefon',
                           controller: _telefonController,
-                          decoration: InputDecoration(labelText: 'Telefon'),
+                          decoration: const InputDecoration(labelText: 'Telefon'),
                         ),
                       ),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 200, right: 200),
+                  padding: const EdgeInsets.only(left: 200, right: 200),
                   child: Row(
                     children: [
                       Expanded(
@@ -376,17 +376,17 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                           name: 'korisnickoIme',
                           controller: _korisnickoImeController,
                           decoration:
-                              InputDecoration(labelText: 'Korisničko ime'),
+                              const InputDecoration(labelText: 'Korisničko ime'),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 80,
                       ),
                       Expanded(
                         child: FormBuilderTextField(
                           name: 'password',
                           controller: _passwordController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Stara lozinka',
                           ),
                           obscureText: true,
@@ -398,7 +398,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                 Row(children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 200),
-                    child: Container(
+                    child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.28,
                       child: FormBuilderField(
                         name: 'imageId',
@@ -417,14 +417,14 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                                       4.0), // Smanjite vrednost za manje zaobljenje
                                 ),
                                 child: ListTile(
-                                  leading: Icon(Icons.photo),
-                                  title: Text(
+                                  leading: const Icon(Icons.photo),
+                                  title: const Text(
                                     "Odaberite sliku",
                                     style: TextStyle(
                                         fontSize:
                                             14), // Postavite željenu veličinu fonta
                                   ),
-                                  trailing: Icon(Icons.file_upload),
+                                  trailing: const Icon(Icons.file_upload),
                                   onTap: () async {
                                     selectedImagePath =
                                         await pickAndEncodeImage();
@@ -439,15 +439,15 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                     ),
                   ),
                 ]),
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 Row(children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 680),
+                    padding: const EdgeInsets.only(left: 680),
                     child: ElevatedButton(
                       onPressed: () {
-                        dynamic matchingKorisnik = data?.result.firstWhere(
+                        dynamic matchingKorisnik = data.result.firstWhere(
                           (korisnik) => korisnik.korisnickoIme == username,
                         );
 
@@ -461,12 +461,12 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                           );
                         }
                       },
-                      child: Text(
+                      child: const Text(
                         'Izmjena lozinke',
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   ElevatedButton(
@@ -477,12 +477,12 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
-                            title: Text("Greška!"),
-                            content: Text(
+                            title: const Text("Greška!"),
+                            content: const Text(
                                 "Neispravna lozinka ili korisničko ime, pokušajte ponovo"),
                             actions: [
                               TextButton(
-                                child: Text("Uredu"),
+                                child: const Text("Uredu"),
                                 onPressed: () => Navigator.pop(context),
                               ),
                             ],
@@ -516,40 +516,38 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                           await _korisniciProvider.update(korId!, request);
 
                       int? insertedKorisnikId;
-                      if (insertedKorisnik != null) {
-                        insertedKorisnikId = insertedKorisnik.korisnikId;
-                        _formKey.currentState?.reset();
+                      insertedKorisnikId = insertedKorisnik.korisnikId;
+                      _formKey.currentState?.reset();
 
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text("Uspješno sačuvane izmjene"),
-                              content: Text("Vaš račun je uspješno ažuriran."),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text("Uredu"),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      }
-                    },
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Uspješno sačuvane izmjene"),
+                            content: Text("Vaš račun je uspješno ažuriran."),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Uredu"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                                        },
                     style: ElevatedButton.styleFrom(
-                      primary: Color.fromARGB(255, 82, 120, 150),
+                      backgroundColor: const Color.fromARGB(255, 82, 120, 150),
                       // Postavite željenu boju ovdje
                     ),
-                    child: Text(
+                    child: const Text(
                       'Sačuvaj izmjene',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ]),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 )
               ],
@@ -597,11 +595,9 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
       // Convert the bytes to base64
       String base64Image = base64Encode(imageBytes);
       setState(() {
-        if (pickedFile != null) {
-          _image = File(pickedFile.path);
-          _base64Image = base64Encode(_image!.readAsBytesSync());
-        }
-      });
+        _image = File(pickedFile.path);
+        _base64Image = base64Encode(_image!.readAsBytesSync());
+            });
       return base64Image.toString();
     } else {
       print('No image selected.');

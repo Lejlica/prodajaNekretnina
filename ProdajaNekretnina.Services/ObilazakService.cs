@@ -15,5 +15,16 @@ namespace ProdajaNekretnina.Services
         public ObilazakService(SeminarskiNekretnineContext context, IMapper mapper) : base(context, mapper)
         {
         }
+
+        public override IQueryable<Obilazak> AddFilter(IQueryable<Obilazak> query, ObilazakSearchObject? search = null)
+        {
+            var filteredQuery = base.AddFilter(query, search);
+            if (search?.isOdobren == true)
+            {
+                filteredQuery = filteredQuery.Where(x => x.isOdobren == search.isOdobren);
+            }
+            return filteredQuery;
+
+        }
     }
 }

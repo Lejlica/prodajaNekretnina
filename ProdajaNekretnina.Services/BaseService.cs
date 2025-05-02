@@ -63,8 +63,6 @@ namespace ProdajaNekretnina.Services
 
         public virtual IQueryable<TDb> AddInclude(IQueryable<TDb> query, TSearch? search = null)
         {
-           
-
             return query;
         }
 

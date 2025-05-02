@@ -33,7 +33,7 @@ import '../utils/util.dart';
 class ZahtjeviZaIznajmljivanjeDetaljiScreen extends StatefulWidget {
   final Nekretnina? nekretnina;
 
-  ZahtjeviZaIznajmljivanjeDetaljiScreen({Key? key, this.nekretnina})
+  const ZahtjeviZaIznajmljivanjeDetaljiScreen({Key? key, this.nekretnina})
       : super(key: key);
 
   @override
@@ -45,7 +45,7 @@ class _ZahtjeviZaIznajmljivanjeDetaljiScreenState
     extends State<ZahtjeviZaIznajmljivanjeDetaljiScreen> {
   late ObilazakProvider _obilazakProvider;
   SearchResult<Nekretnina>? result;
-  TextEditingController _nekretninaIdController = TextEditingController();
+  final TextEditingController _nekretninaIdController = TextEditingController();
   late KorisniciProvider _korisniciProvider;
   late NekretninaTipAkcijeProvider _nekretninaTipAkcijeProvider;
   late NekretninaAgentiProvider _nekretninaAgentiProvider;
@@ -130,6 +130,7 @@ class _ZahtjeviZaIznajmljivanjeDetaljiScreenState
 
       return grad?.naziv;
     }
+    return null;
   }
 
   Lokacija? lokacija;
@@ -176,7 +177,7 @@ class _ZahtjeviZaIznajmljivanjeDetaljiScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Zahtjevi za iznajmljivanje'),
+        title: const Text('Zahtjevi za iznajmljivanje'),
       ),
       body: _buildBody(),
     );
@@ -198,8 +199,10 @@ class _ZahtjeviZaIznajmljivanjeDetaljiScreenState
     }
 
     DateTime date = DateTime.parse(dateString); // Parse the String to DateTime
-    return DateFormat('dd-MM-yyyy').format(date);
+    return DateFormat('dd.MM.yyyy. HH:mm').format(date)+ 'h';
   }
+  
+
 
   Widget _buildBody() {
     // Filter nekretnine based on nekretninaTipAkcijeResult
@@ -216,23 +219,19 @@ class _ZahtjeviZaIznajmljivanjeDetaljiScreenState
       child: Column(
         children: [
           _buildSearch(),
-          SizedBox(height: 16),
-          Padding(
-            padding: EdgeInsets.only(left: 60),
-            child: Expanded(
+          const SizedBox(height: 16),
+          Expanded(
+            
+            child: Padding(
+              padding: const EdgeInsets.only(left: 60),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
-                  columns: [
+                   showCheckboxColumn: false,
+                  columns: const [
                     DataColumn(
                       label: Text(
                         'Nekretnina ID',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Ime i prezime',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ),
@@ -251,6 +250,12 @@ class _ZahtjeviZaIznajmljivanjeDetaljiScreenState
                     DataColumn(
                       label: Text(
                         'Broj ugovora',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Ime i prezime',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ),
@@ -302,7 +307,7 @@ class _ZahtjeviZaIznajmljivanjeDetaljiScreenState
                                 onPressed: () => _launchEmail(e.korisnikId!),
                                 child: Text(
                                   '${getMail(e.korisnikId)}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors
                                         .blue, // Postavite boju teksta na plavu ili drugu po želji
                                     decoration: TextDecoration
@@ -339,27 +344,27 @@ class _ZahtjeviZaIznajmljivanjeDetaljiScreenState
 
   Widget _buildSearch() {
     return Padding(
-      padding: EdgeInsets.only(left: 60),
+      padding: const EdgeInsets.only(left: 60),
       child: Container(
         width: 1000,
         height: 100,
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(
+           /* Expanded(
               child: TextField(
                 decoration: InputDecoration(
                   hintText: "ID nekretnine",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(50.0),
-                    borderSide: BorderSide(color: Colors.grey),
+                    borderSide: const BorderSide(color: Colors.grey),
                   ),
                 ),
                 controller: _nekretninaIdController,
               ),
-            ),
-            SizedBox(width: 10),
+            ),*/
+            const SizedBox(width: 10),
             Checkbox(
               value: isOdobrenaChecked,
               onChanged: (value) {
@@ -368,8 +373,8 @@ class _ZahtjeviZaIznajmljivanjeDetaljiScreenState
                 });
               },
             ),
-            Text("Odobrena"),
-            SizedBox(width: 40),
+            const Text("Odobrena"),
+            const SizedBox(width: 40),
             ElevatedButton(
               onPressed: () async {
                 var data = await _nekretnineProvider.get(
@@ -383,7 +388,7 @@ class _ZahtjeviZaIznajmljivanjeDetaljiScreenState
                   result = data;
                 });
               },
-              child: Text("Pretraga"),
+              child: const Text("Pretraga"),
             ),
           ],
         ),
@@ -431,10 +436,10 @@ class _ZahtjeviZaIznajmljivanjeDetaljiScreenState
       if (korisnik != null) {
         return Text('${korisnik.ime} ${korisnik.prezime}');
       } else {
-        return Text('Unknown Agent');
+        return const Text('Unknown Agent');
       }
     } else {
-      return Text('Unknown Agent');
+      return const Text('Unknown Agent');
     }
   }
 }
@@ -455,7 +460,7 @@ class NekretninaDetailScreen extends StatelessWidget {
 
   bool isLoading = true;
 
-  NekretninaDetailScreen({
+  NekretninaDetailScreen({super.key, 
     required this.nekretnina,
     required this.korisniciResult,
     required this.nekretnineProvider,
@@ -476,29 +481,29 @@ class NekretninaDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Detalji o zahtjevu'),
+          title: const Text('Detalji o zahtjevu'),
         ),
         body: SingleChildScrollView(
             child: Center(
           child: Column(children: [
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               'Naziv nekretnine: ${nekretnina.naziv}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
             ),
             Card(
-              margin: EdgeInsets.symmetric(horizontal: 200, vertical: 10),
-              color: Color.fromARGB(255, 246, 244, 244),
+              margin: const EdgeInsets.symmetric(horizontal: 200, vertical: 10),
+              color: const Color.fromARGB(255, 246, 244, 244),
               child: Container(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 alignment: Alignment.center,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     /*Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -589,7 +594,7 @@ class NekretninaDetailScreen extends StatelessWidget {
                       ),
                     ],
                   ),*/
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -599,18 +604,17 @@ class NekretninaDetailScreen extends StatelessWidget {
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return CircularProgressIndicator();
+                                return const CircularProgressIndicator();
                               } else if (snapshot.hasData) {
                                 SearchResult<Slika>? slike = snapshot.data;
 
                                 if (slike != null &&
-                                    slike.result.isNotEmpty &&
-                                    nekretnina != null) {
+                                    slike.result.isNotEmpty) {
                                   // Create a list of image URLs from the data
                                   List<String> imageUrls = slike.result
                                       .where((slika) =>
                                           slika.nekretninaId ==
-                                          nekretnina!.nekretninaId)
+                                          nekretnina.nekretninaId)
                                       .map((slika) => slika.bajtoviSlike ?? "")
                                       .toList();
 
@@ -637,7 +641,7 @@ class NekretninaDetailScreen extends StatelessWidget {
                                                 width: MediaQuery.of(context)
                                                     .size
                                                     .width,
-                                                margin: EdgeInsets.symmetric(
+                                                margin: const EdgeInsets.symmetric(
                                                     horizontal: 5.0),
                                                 child: imageFromBase64String(
                                                     imageUrl),
@@ -648,16 +652,16 @@ class NekretninaDetailScreen extends StatelessWidget {
                                       }).toList(),
                                     );
                                   } else {
-                                    return Text('Nema slika');
+                                    return const Text('Nema slika');
                                   }
                                 } else {
-                                  return Text('Nema slika');
+                                  return const Text('Nema slika');
                                 }
                               } else if (snapshot.hasError) {
-                                return Text(
+                                return const Text(
                                     'Greška prilikom dobavljanja slika');
                               } else {
-                                return Text('Nema slika');
+                                return const Text('Nema slika');
                               }
                             },
                           ),
@@ -667,8 +671,8 @@ class NekretninaDetailScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        '${nekretnina?.cijena ?? ""} BAM',
-                        style: TextStyle(
+                        '${nekretnina.cijena ?? ""} BAM',
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.blue,
                             fontSize: 25),
@@ -680,17 +684,17 @@ class NekretninaDetailScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons
                                     .local_hotel, // Hotel icon represents rooms
                                 color: Colors.blue, // Set the color to blue
                               ),
-                              SizedBox(
+                              const SizedBox(
                                   width:
                                       8), // Adjust the space between icon and text
                               Text(
-                                'Sobe ${nekretnina?.brojSoba ?? ""} ',
-                                style: TextStyle(
+                                'Sobe ${nekretnina.brojSoba ?? ""} ',
+                                style: const TextStyle(
                                     color: Colors.black, fontSize: 11),
                               ),
                             ],
@@ -698,8 +702,8 @@ class NekretninaDetailScreen extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: nekretnina?.parkingMjesto == true
-                              ? Row(
+                          child: nekretnina.parkingMjesto == true
+                              ? const Row(
                                   children: [
                                     Icon(
                                       Icons.drive_eta,
@@ -714,23 +718,23 @@ class NekretninaDetailScreen extends StatelessWidget {
                                     ),
                                   ],
                                 )
-                              : SizedBox
+                              : const SizedBox
                                   .shrink(), // This will create an empty space if parkingMjesto is false
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.stairs, // Hotel icon represents rooms
                                 color: Colors.blue, // Set the color to blue
                               ),
-                              SizedBox(
+                              const SizedBox(
                                   width:
                                       8), // Adjust the space between icon and text
                               Text(
-                                'Sprat ${nekretnina?.sprat ?? ""} ',
-                                style: TextStyle(
+                                'Sprat ${nekretnina.sprat ?? ""} ',
+                                style: const TextStyle(
                                     color: Colors.black, fontSize: 11),
                               ),
                             ],
@@ -740,17 +744,17 @@ class NekretninaDetailScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons
                                     .crop_square, // Hotel icon represents rooms
                                 color: Colors.blue, // Set the color to blue
                               ),
-                              SizedBox(
+                              const SizedBox(
                                   width:
                                       8), // Adjust the space between icon and text
                               Text(
-                                'Kvadratura ${nekretnina?.kvadratura ?? ""} ',
-                                style: TextStyle(
+                                'Kvadratura ${nekretnina.kvadratura ?? ""} ',
+                                style: const TextStyle(
                                     color: Colors.black, fontSize: 11),
                               ),
                             ],
@@ -758,8 +762,8 @@ class NekretninaDetailScreen extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: nekretnina?.novogradnja == true
-                              ? Row(
+                          child: nekretnina.novogradnja == true
+                              ? const Row(
                                   children: [
                                     Icon(
                                       Icons.label,
@@ -774,21 +778,21 @@ class NekretninaDetailScreen extends StatelessWidget {
                                     ),
                                   ],
                                 )
-                              : SizedBox
+                              : const SizedBox
                                   .shrink(), // This will create an empty space if parkingMjesto is false
                         ),
                       ],
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
             ),
             Card(
-              margin: EdgeInsets.symmetric(horizontal: 200, vertical: 10),
-              color: Color.fromARGB(255, 246, 244, 244),
+              margin: const EdgeInsets.symmetric(horizontal: 200, vertical: 10),
+              color: const Color.fromARGB(255, 246, 244, 244),
               child: Container(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
                       Row(
@@ -798,23 +802,23 @@ class NekretninaDetailScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Informacije o nekretnini',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18,
                                   ),
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 Text(
                                     'Nekretnina ID: ${nekretnina.nekretninaId}'),
                                 Text(
                                     'Datum dodavanja: ${_formatDate(nekretnina.datumDodavanja)}'),
                                 Text(
                                     'Datum izmjene: ${_formatDate(nekretnina.datumIzmjene)}'),
-                                Text('Tip akcije: Prodaja'),
+                                const Text('Tip akcije: Prodaja'),
                                 Row(children: [
-                                  Text(
+                                  const Text(
                                     'Status: ',
                                     style: TextStyle(
                                       fontSize: 16,
@@ -834,29 +838,29 @@ class NekretninaDetailScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          SizedBox(width: 20),
+                          const SizedBox(width: 20),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Informacije o prodavcu',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18,
                                   ),
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 Text(
                                     'Ime i prezime: ${_getKorisnikName(nekretnina.korisnikId)}'),
                                 Row(children: [
-                                  Text('Email: '),
+                                  const Text('Email: '),
                                   TextButton(
                                     onPressed: () =>
                                         _launchEmail(nekretnina.korisnikId!),
                                     child: Text(
-                                      '${_getEmail(nekretnina.korisnikId)}',
-                                      style: TextStyle(
+                                      _getEmail(nekretnina.korisnikId),
+                                      style: const TextStyle(
                                         color: Colors
                                             .blue, // Postavite boju teksta na plavu ili drugu po želji
                                         decoration: TextDecoration
@@ -880,23 +884,23 @@ class NekretninaDetailScreen extends StatelessWidget {
                     nekretnina.isOdobrena ==
                         false, // Karta će biti vidljiva samo kada je isOdobrena false
                 child: Card(
-                  margin: EdgeInsets.symmetric(horizontal: 200, vertical: 10),
-                  color: Color.fromARGB(255, 246, 244, 244),
+                  margin: const EdgeInsets.symmetric(horizontal: 200, vertical: 10),
+                  color: const Color.fromARGB(255, 246, 244, 244),
                   child: Container(
-                    padding: EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               'Dodajte agenta za nekretninu',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(width: 16),
+                            const SizedBox(width: 16),
                             Expanded(
                               child: FormBuilderDropdown<String>(
                                 name: 'korisnikId',
@@ -916,8 +920,8 @@ class NekretninaDetailScreen extends StatelessWidget {
                                     'korisnikId': newValue,
                                     'nekretninaId': nekretnina.nekretninaId,
                                   };
-                                  print('new value ${newValue}');
-                                  print('new value ${request}');
+                                  print('new value $newValue');
+                                  print('new value $request');
                                   var agentId = request['korisnikId'];
                                   if (agentId != null) {
                                     await _nekretninaAgentiProvider
@@ -937,7 +941,7 @@ class NekretninaDetailScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: nekretnina.isOdobrena == true
                               ? null
@@ -963,26 +967,20 @@ class NekretninaDetailScreen extends StatelessWidget {
                                       nekretnina.nekretninaId!,
                                       request,
                                     );
-                                    if (result != null) {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              ZahtjeviZaIznajmljivanjeDetaljiScreen(),
-                                        ),
-                                      );
-                                      print('kliknuli ste odobri ${request}');
-                                    } else {
-                                      // Prikazati poruku o grešci korisniku
-                                      print(
-                                          'Greška prilikom ažuriranja nekretnine.');
-                                    }
-                                  } catch (e) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ZahtjeviZaIznajmljivanjeDetaljiScreen(),
+                                      ),
+                                    );
+                                    print('kliknuli ste odobri ${request}');
+                                                                    } catch (e) {
                                     // Prikazati poruku o grešci korisniku
                                     print(
                                         'Greška prilikom izvođenja akcije: $e');
                                   }
                                 },
-                          child: Text('Odobri'),
+                          child: const Text('Odobri'),
                         ),
                       ],
                     ),

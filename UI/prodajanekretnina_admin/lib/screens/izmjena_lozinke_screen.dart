@@ -106,7 +106,7 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
 
   Future initForm() async {
     try {
-      var tmpKorisniciData = await _korisniciProvider?.get();
+      var tmpKorisniciData = await _korisniciProvider.get();
 
       setState(() {
         isLoading = false;
@@ -127,21 +127,21 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
     _nekretnineProvider = context.read<NekretnineProvider>();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Izmjena lozinke"),
+        title: const Text("Izmjena lozinke"),
       ),
       body: Center(
         child: Container(
-          constraints: BoxConstraints(maxHeight: 500, maxWidth: 1050),
+          constraints: const BoxConstraints(maxHeight: 500, maxWidth: 1050),
           child: Card(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Container(
+              child: SizedBox(
                 width: MediaQuery.of(context)
                     .size
                     .width, // Set the width of the container
                 child: Row(
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width *
                           0.5, // Set the width for the image
                       child: Image.asset(
@@ -152,12 +152,12 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(right: 70),
-                      child: Container(
+                      padding: const EdgeInsets.only(right: 70),
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width *
                             0.5, // Set the width for the FutureBuilder
                         child: FutureBuilder(
-                          future: _korisniciProvider?.get(),
+                          future: _korisniciProvider.get(),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.done) {
@@ -169,7 +169,7 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                               return _formBuild();
                             } else {
                               // Podaci se još uvijek dohvaćaju
-                              return CircularProgressIndicator();
+                              return const CircularProgressIndicator();
                             }
                           },
                         ),
@@ -189,7 +189,7 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
   Korisnik? korisnikk() {
     print('Username: $username');
     print('datica: $data');
-    List<dynamic> filteredData = data!.result.where((korisnik) {
+    List<dynamic> filteredData = data.result.where((korisnik) {
       print('KorisnickoIme: ${korisnik.korisnickoIme}');
       return korisnik.korisnickoIme == username;
     }).toList();
@@ -202,7 +202,7 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
   }
 
   int? korisnikId() {
-    List<dynamic> filteredData = data!.result
+    List<dynamic> filteredData = data.result
         .where((korisnik) => korisnik.korisnickoIme == username)
         .toList();
 
@@ -232,7 +232,7 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
         _imeController = TextEditingController(text: kora!.ime);
         _prezimeController = TextEditingController(text: kora!.prezime);*/
   bool _passwordsMatch = true;
-  bool _passwordsMatchh = false;
+  final bool _passwordsMatchh = false;
   bool arePasswordsMatching() {
     return _passwordController.text == _passwordPotvrdaController.text;
   }
@@ -246,18 +246,18 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
       child: Row(
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 60.0, left: 30),
+            padding: const EdgeInsets.only(top: 60.0, left: 30),
             child: Container(
               height: 500,
               width: 300,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   // Add your decoration properties here
                   ),
               child: SingleChildScrollView(
-                physics: AlwaysScrollableScrollPhysics(),
+                physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   children: [
-                    Text(
+                    const Text(
                       "Promjena lozinke",
                       style: TextStyle(
                         fontSize: 20.0, // Adjust the font size as needed
@@ -265,34 +265,34 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                             FontWeight.bold, // Adjust the font weight if needed
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     FormBuilderTextField(
                       name: 'password',
                       controller: _passwordOldController,
-                      decoration: InputDecoration(labelText: 'Stara lozinka'),
+                      decoration: const InputDecoration(labelText: 'Stara lozinka'),
                       obscureText: true,
                     ),
                     FormBuilderTextField(
                       name: 'password',
                       controller: _passwordController,
-                      decoration: InputDecoration(labelText: 'Nova lozinka'),
+                      decoration: const InputDecoration(labelText: 'Nova lozinka'),
                       obscureText: true,
                     ),
                     FormBuilderTextField(
                       name: 'passwordPotvrda',
                       controller: _passwordPotvrdaController,
                       decoration:
-                          InputDecoration(labelText: 'Potvrdite lozinku'),
+                          const InputDecoration(labelText: 'Potvrdite lozinku'),
                       obscureText: true,
                       onChanged: (value) {},
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 16,
                     ),
-                    if (!_passwordsMatch && _passwordsMatch != null)
-                      Text(
+                    if (!_passwordsMatch)
+                      const Text(
                         'Lozinke se ne poklapaju',
                         style: TextStyle(color: Colors.red),
                       ),
@@ -306,11 +306,11 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                         },
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.grey),
+                              WidgetStateProperty.all<Color>(Colors.grey),
                         ),
-                        child: Text('Odustani'),
+                        child: const Text('Odustani'),
                       )),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       Expanded(
@@ -325,12 +325,12 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) => AlertDialog(
-                                  title: Text("Greška!"),
-                                  content: Text(
+                                  title: const Text("Greška!"),
+                                  content: const Text(
                                       "Neispravna prethodna lozinka, pokušajte ponovo"),
                                   actions: [
                                     TextButton(
-                                      child: Text("Uredu"),
+                                      child: const Text("Uredu"),
                                       onPressed: () => Navigator.pop(context),
                                     ),
                                   ],
@@ -359,15 +359,15 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                                 _passwordController.text,
                                 request,
                               );
-                              print("Success ${success}");
+                              print("Success $success");
                               if (success == true) {
                                 // Uspješno izvršena promjena lozinke, prikaži success alert
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('Uspješno'),
-                                      content: Text(
+                                      title: const Text('Uspješno'),
+                                      content: const Text(
                                           'Lozinka je uspješno ažurirana.'),
                                       actions: <Widget>[
                                         TextButton(
@@ -375,7 +375,7 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                                             Navigator.of(context)
                                                 .pop(); // Zatvori alert
                                           },
-                                          child: Text('OK'),
+                                          child: const Text('OK'),
                                         ),
                                       ],
                                     );
@@ -387,8 +387,8 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('Greška'),
-                                      content: Text(
+                                      title: const Text('Greška'),
+                                      content: const Text(
                                           'Došlo je do greške prilikom ažuriranja lozinke.'),
                                       actions: <Widget>[
                                         TextButton(
@@ -396,7 +396,7 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                                             Navigator.of(context)
                                                 .pop(); // Zatvori alert
                                           },
-                                          child: Text('OK'),
+                                          child: const Text('OK'),
                                         ),
                                       ],
                                     );
@@ -409,16 +409,16 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text('Greška'),
+                                    title: const Text('Greška'),
                                     content: Text(
-                                        '2Došlo je do greške prilikom ažuriranja lozinke. ${error}'),
+                                        '2Došlo je do greške prilikom ažuriranja lozinke. $error'),
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
                                           Navigator.of(context)
                                               .pop(); // Zatvori alert
                                         },
-                                        child: Text('OK'),
+                                        child: const Text('OK'),
                                       ),
                                     ],
                                   );
@@ -426,7 +426,7 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                               );
                             }
                           },
-                          child: Text('Sačuvaj'),
+                          child: const Text('Sačuvaj'),
                         ),
                       ),
                     ])

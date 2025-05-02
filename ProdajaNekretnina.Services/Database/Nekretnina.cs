@@ -7,7 +7,6 @@ public partial class Nekretnina
 {
     public int NekretninaId { get; set; }
     
-
     public bool IsOdobrena { get; set; }
 
     public int KorisnikId { get; set; }

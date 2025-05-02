@@ -9,7 +9,7 @@ namespace ProdajaNekretnina.Model.SearchObjects
 {
     public class ProblemiSearchObject : BaseSearchObject
     {
-        [StringLength(100, MinimumLength = 0)]
+       // [StringLength(100, MinimumLength = 0)]
         public DateTime? DatumPrijave { get; set; }
     }
 }

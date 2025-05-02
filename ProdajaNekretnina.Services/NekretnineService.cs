@@ -32,6 +32,12 @@ namespace ProdajaNekretnina.Services
             _baseState = baseState;
         }
 
+        /*public override IQueryable<Database.Nekretnina> AddInclude(IQueryable<Database.Nekretnina> query, NekretnineSearchObject? search = null)
+        {
+            query = query.Include("Slikas");
+
+            return base.AddInclude(query, search);
+        }*/
         /*public override IQueryable<Nekretnina> AddInclude(IQueryable<Nekretnina> query, NekretnineSearchObject? search = null)
         {
             if (search?.nazivTipa == true)

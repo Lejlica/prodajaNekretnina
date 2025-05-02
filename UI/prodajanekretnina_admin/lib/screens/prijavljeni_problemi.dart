@@ -73,7 +73,7 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
     });
   }
 
-  TextEditingController _problemIdController = TextEditingController();
+  final TextEditingController _problemIdController = TextEditingController();
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;
@@ -143,7 +143,7 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
       print(gradoviResult);
       nekretninaAgentiResult = await _nekretninaAgentiProvider.get();
 
-      print('nekrAgenti ${nekretninaAgentiResult}');
+      print('nekrAgenti $nekretninaAgentiResult');
       problemiResult = await _problemProvider.get();
       setState(() {
         isLoading = false;
@@ -157,7 +157,7 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Prijavljeni problemi'),
+        title: const Text('Prijavljeni problemi'),
       ),
       body: _buildBody(),
     );
@@ -175,13 +175,13 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
       child: Column(
         children: [
           _buildSearch(),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical, // Changed to vertical
               child: Column(
                 children: filteredNekretnine.map((Problem e) {
-                  return Container(
+                  return SizedBox(
                     width: 700,
                     child: GestureDetector(
                       onTap: () {
@@ -190,10 +190,12 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
                             builder: (context) => ProblemDetailScreen(
                               problem: e,
                               korisniciResult: korisniciResult,
-                              problemProvider: _problemProvider,
                               nekretnineResult: nekretnineResult,
+                              
+                              
                               lokacijeResult: lokacijeResult,
                               gradoviResult: gradoviResult,
+                              problemProvider: _problemProvider,
                               statusResult: statusResult,
                               //tipNekretnineResult: tipoviNekretninaResult,
                             ),
@@ -201,17 +203,17 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
                         );
                       },
                       child: Card(
-                        color: Color.fromARGB(128, 253, 253, 254),
+                        color: const Color.fromARGB(128, 253, 253, 254),
                         child: Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               vertical: 16, horizontal: 14),
                           child: Row(
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Problem ID: ${e.problemId?.toString() ?? ""}',
+                                  'Problem br. ${e.problemId?.toString() ?? ""}:',
                                   textAlign: TextAlign.left,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold, // Set to bold
                                   ),
@@ -222,7 +224,7 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                        'ID nekretnine: ${e.nekretninaId?.toString() ?? ""}'),
+                                        'Rb. nekretnine: ${e.nekretninaId?.toString() ?? ""}'),
                                     Text(
                                         'Vlasnik: ${_getVlasnik(e.nekretninaId)}'),
                                   ],
@@ -230,12 +232,23 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
                               ),
                               Expanded(
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                         'Datum prijave: ${_formatDate(e.datumPrijave)}'),
-                                    Text(
-                                        'Status rješavanja problema: ${_getStringStatusa(e.statusId)}'),
+                                    Text.rich(
+                                      TextSpan(
+                                        text: 'Status rješavanja problema: ',
+                                        style: TextStyle(color: Colors.black), // osnovna boja
+                                        children: [
+                                          TextSpan(
+                                            text: _getStringStatusa(e.statusId),
+                                            style: TextStyle(color: Colors.deepOrangeAccent), // crvena boja samo za status
+                                          ),
+                                        ],
+                                      ),
+                                    ),  
+
                                   ],
                                 ),
                               ),
@@ -260,7 +273,7 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
     }
 
     DateTime date = DateTime.parse(dateString); // Parse the String to DateTime
-    return DateFormat('dd-MM-yyyy').format(date);
+    return DateFormat('dd.MM.yyyy. HH:mm').format(date)+ 'h';
   }
 
   String _getStringStatusa(int? statusId) {
@@ -274,11 +287,11 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
 
   String _getVlasnik(int? nekretninaId) {
     Nekretnina? nekretnine = nekretnineResult?.result.firstWhere(
-      (element) => element.nekretninaId == nekretninaId,
+      (element) => element.nekretninaId == nekretninaId,orElse: () => Nekretnina(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null),
       // Default value
     );
-    Korisnik? korisnik = korisniciResult?.result.firstWhere(
-      (element) => element.korisnikId == nekretnine?.korisnikId,
+    var korisnik = korisniciResult?.result.firstWhere(
+      (element) => element.korisnikId == nekretnine?.korisnikId, orElse: () => Korisnik(null, null, null, null, null, null, null, null, null, null),
       // Default value
     );
 
@@ -290,7 +303,7 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
       children: [
         Expanded(
           child: TextField(
-            decoration: InputDecoration(labelText: "ID nekretnine"),
+            decoration: const InputDecoration(labelText: "ID nekretnine"),
             controller: _problemIdController,
           ),
         ),
@@ -306,7 +319,7 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
               problemiResult = data;
             });
           },
-          child: Text("Pretraga"),
+          child: const Text("Pretraga"),
         ),
       ],
     );
@@ -343,10 +356,10 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
       if (korisnik != null) {
         return Text('${korisnik.ime} ${korisnik.prezime}');
       } else {
-        return Text('Unknown Agent');
+        return const Text('Unknown Agent');
       }
     } else {
-      return Text('Unknown Agent');
+      return const Text('Unknown Agent');
     }
   }
 }
@@ -363,7 +376,7 @@ class ProblemDetailScreen extends StatelessWidget {
   final SearchResult<Status>? statusResult;
   final NekretninaAgentiProvider _nekretninaAgentiProvider;
   //final SearchResult<TipNekretnine>? tipNekretnineResult;
-  ProblemDetailScreen({
+  ProblemDetailScreen({super.key, 
     required this.problem,
     required this.korisniciResult,
     required this.nekretnineResult,
@@ -378,15 +391,15 @@ class ProblemDetailScreen extends StatelessWidget {
     String defaultDatumRjesenja = problem.datumRjesenja != null
         ? problem.datumRjesenja!
         : DateTime.now().toIso8601String();
-    TextEditingController datumPopravkeController =
-        TextEditingController(text: defaultDatumRjesenja);
+    TextEditingController datumPopravkeController =TextEditingController(text: "");
+       // TextEditingController(text: defaultDatumRjesenja);
     print('datum contr ${problem.datumRjesenja}');
     TextEditingController opisPopravkeController =
         TextEditingController(text: problem.opisRjesenja);
     TextEditingController statusProblemaController = TextEditingController();
     ValueNotifier<DateTime?> selectedDate = ValueNotifier<DateTime?>(null);
 
-    void _selectDate(BuildContext context) async {
+    void selectDate(BuildContext context) async {
       final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
@@ -401,7 +414,7 @@ class ProblemDetailScreen extends StatelessWidget {
       }
     }
 
-    void _launchEmail(int korisnikId) async {
+    void launchEmail(int korisnikId) async {
       String email = _getEmail(korisnikId);
 
       if (await canLaunch('mailto:$email')) {
@@ -413,24 +426,24 @@ class ProblemDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalji o problemu'),
+        title: const Text('Detalji o problemu'),
       ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Card(
-                margin: EdgeInsets.symmetric(horizontal: 200, vertical: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 200, vertical: 10),
                 color: Colors.white,
                 child: Container(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   alignment: Alignment.center,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 10),
-                      Row(
+                      const SizedBox(height: 10),
+                      const Row(
                         children: [
                           Icon(
                             Icons.help_outline,
@@ -457,22 +470,22 @@ class ProblemDetailScreen extends StatelessWidget {
                           Text(
                             'Detalji/rješenje za prijavljeni problem',
                             style: TextStyle(
-                              color: const Color.fromARGB(239, 158, 158, 158),
+                              color: Color.fromARGB(239, 158, 158, 158),
                               fontSize: 10.0,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
-                      Divider(
+                      const SizedBox(height: 10),
+                      const Divider(
                         height: 3,
                         thickness: 1,
                         color: Colors.grey,
                       ),
-                      SizedBox(height: 10),
-                      VerticalDivider(
+                      const SizedBox(height: 10),
+                      const VerticalDivider(
                           width: 1, thickness: 1, color: Colors.blue),
-                      Text(
+                      const Text(
                         'Informacije',
                         style: TextStyle(
                           color: Colors.black,
@@ -480,25 +493,25 @@ class ProblemDetailScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       Row(
                         children: [
-                          Icon(Icons.send, color: Colors.grey, size: 17),
-                          SizedBox(width: 5),
-                          Text(
+                          const Icon(Icons.send, color: Colors.grey, size: 17),
+                          const SizedBox(width: 5),
+                          const Text(
                             'Zahtjev poslao: ',
                             style: TextStyle(
-                              color: const Color.fromARGB(255, 130, 130, 130),
+                              color: Color.fromARGB(255, 130, 130, 130),
                             ),
                           ),
-                          Text('${_getKorisnikName(problem.korisnikId)}'),
+                          Text(_getKorisnikName(problem.korisnikId)),
                           TextButton(
-                            onPressed: () => _launchEmail(problem.korisnikId!),
+                            onPressed: () => launchEmail(problem.korisnikId!),
                             child: Text(
-                              '${_getEmail(problem.korisnikId)}',
-                              style: TextStyle(
+                              _getEmail(problem.korisnikId),
+                              style: const TextStyle(
                                 color: Colors.blue,
                                 decoration: TextDecoration.underline,
                               ),
@@ -506,67 +519,67 @@ class ProblemDetailScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Row(children: [
-                        Icon(Icons.calendar_today,
+                        const Icon(Icons.calendar_today,
                             size: 18, color: Colors.grey),
-                        SizedBox(width: 5),
-                        Text(
+                        const SizedBox(width: 5),
+                        const Text(
                           'Datum prijave: ',
                           style: TextStyle(
-                            color: const Color.fromARGB(255, 130, 130, 130),
+                            color: Color.fromARGB(255, 130, 130, 130),
                           ),
                         ),
                         Text(
                           '${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.parse(problem.datumPrijave?.toString() ?? ""))} PM GMT',
                         ),
                       ]),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Row(
                         children: [
-                          Icon(Icons.location_on, color: Colors.grey, size: 20),
-                          SizedBox(width: 5),
-                          Text(
+                          const Icon(Icons.location_on, color: Colors.grey, size: 20),
+                          const SizedBox(width: 5),
+                          const Text(
                             'Lokacija: ',
                             style: TextStyle(
-                              color: const Color.fromARGB(255, 130, 130, 130),
+                              color: Color.fromARGB(255, 130, 130, 130),
                             ),
                           ),
-                          Text(
-                            '${_getAdresaNekretnine(problem.nekretninaId)}',
-                          ),
+                          //Text(
+                          //  _getAdresaNekretnine(problem.nekretninaId),
+                          //),
                         ],
                       ),
-                      SizedBox(height: 10),
-                      Row(children: [
+                      const SizedBox(height: 10),
+                      const Row(children: [
                         Text(
                           'Detalji: ',
                           style: TextStyle(
-                            color: const Color.fromARGB(255, 130, 130, 130),
+                            color: Color.fromARGB(255, 130, 130, 130),
                           ),
                         ),
                       ]),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Row(children: [
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text('Nekretnina ID: ${problem.nekretninaId}')
                       ]),
                       Row(children: [
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text('Broj telefona: ${_getBrTel(problem.korisnikId)}')
                       ]),
                       Row(children: [
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text.rich(
                           TextSpan(
                             text: 'Je li problem ranije prijavljivan?: ',
                             children: <InlineSpan>[
                               problem.isVecPrijavljen == true
-                                  ? WidgetSpan(
+                                  ? const WidgetSpan(
                                       child: Icon(Icons.check,
                                           color: Colors.green),
                                     )
-                                  : WidgetSpan(
+                                  : const WidgetSpan(
                                       child:
                                           Icon(Icons.close, color: Colors.red),
                                     ),
@@ -574,16 +587,16 @@ class ProblemDetailScreen extends StatelessWidget {
                           ),
                         ),
                       ]),
-                      SizedBox(height: 20),
-                      Divider(
+                      const SizedBox(height: 20),
+                      const Divider(
                         height: 3,
                         thickness: 1,
                         color: Colors.grey,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
-                      Text(
+                      const Text(
                         'Rješenje',
                         style: TextStyle(
                           color: Colors.black,
@@ -591,26 +604,27 @@ class ProblemDetailScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       Row(
                         children: [
                           Expanded(
                             child: TextFormField(
+                              
                               readOnly: true,
-                              onTap: () => _selectDate(context),
-                              decoration: InputDecoration(
+                              onTap: () => selectDate(context),
+                              decoration: const InputDecoration(
                                 labelText: 'Datum popravke',
                                 suffixIcon: Icon(Icons.calendar_today),
                               ),
                               controller: datumPopravkeController,
                             ),
                           ),
-                          SizedBox(width: 70),
+                          const SizedBox(width: 70),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Odaberite status rješavanja problema:'),
+                                const Text('Odaberite status rješavanja problema:'),
                                 DropdownButtonFormField<int>(
                                   value: selectedStatusId,
                                   onChanged: (newValue) {
@@ -631,7 +645,7 @@ class ProblemDetailScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       TextFormField(
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -640,18 +654,40 @@ class ProblemDetailScreen extends StatelessWidget {
                           return null;
                         },
                         controller: opisPopravkeController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Opis popravke',
                           border:
                               OutlineInputBorder(), // Add this line to create a box border
                         ),
                       ),
-                      SizedBox(height: 16),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: problem.statusId == 3
                             ? null
                             : () async {
+
+                              if(datumPopravkeController.text.isEmpty) {
+                                return showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('Greška'),
+                                        content: Text(
+                                            'Odaberite datum popravke.'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('U redu'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                              }
+                              
                                 DateFormat inputFormat =
                                     DateFormat('yyyy-MM-dd HH:mm:ss.SSS');
                                 DateTime parsedDate = inputFormat
@@ -674,43 +710,21 @@ class ProblemDetailScreen extends StatelessWidget {
                                   'opis': problem.opis,
                                 };
 
-                                print('datum ${parsedDate}');
+                                print('datum $parsedDate');
                                 try {
                                   var result = await problemProvider.update(
                                     problem.problemId!,
                                     request,
                                   );
 
-                                  if (result != null) {
-                                    // Prikazuje dijalog o uspješnom završetku
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text('Uspješno obavljeno'),
-                                          content: Text(
-                                              'Podaci su uspješno spremljeni.'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Text('U redu'),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  }
-                                } catch (error) {
-                                  // Prikazuje dijalog o grešci
+                                  // Prikazuje dijalog o uspješnom završetku
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: Text('Greška'),
+                                        title: Text('Uspješno obavljeno'),
                                         content: Text(
-                                            'Došlo je do greške prilikom spremanja podataka.'),
+                                            'Podaci su uspješno spremljeni.'),
                                         actions: [
                                           TextButton(
                                             onPressed: () {
@@ -722,12 +736,32 @@ class ProblemDetailScreen extends StatelessWidget {
                                       );
                                     },
                                   );
+                                                                } catch (error) {
+                                  // Prikazuje dijalog o grešci
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Greška'),
+                                        content: const Text(
+                                            'Došlo je do greške prilikom spremanja podataka.'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('U redu'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 }
                               },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.blue, // Ovde postavi boju buttona
+                          backgroundColor: Colors.blue, // Ovde postavi boju buttona
                         ),
-                        child: Text(
+                        child: const Text(
                           'Spremi',
                           style: TextStyle(
                             color: Colors.white,
@@ -752,12 +786,13 @@ class ProblemDetailScreen extends StatelessWidget {
     }
 
     DateTime date = DateTime.parse(dateString); // Parse the String to DateTime
-    return DateFormat('dd-MM-yyyy').format(date);
+   return DateFormat('dd.MM.yyyy. HH:mm').format(date)+ 'h';
   }
 
   String _getStringStatusa(int? statusId) {
     Status? statusi = statusResult?.result.firstWhere(
       (element) => element.statusId == statusId,
+      orElse: () => Status(0, 'Nepoznat status'),
       // Default value
     );
 
