@@ -375,7 +375,7 @@ class _ZahtjeviZaIznajmljivanjeDetaljiScreenState
             ),
             const Text("Odobrena"),
             const SizedBox(width: 40),
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: () async {
                 var data = await _nekretnineProvider.get(
                   filter: {
@@ -388,7 +388,15 @@ class _ZahtjeviZaIznajmljivanjeDetaljiScreenState
                   result = data;
                 });
               },
-              child: const Text("Pretraga"),
+              icon: const Icon(Icons.search),
+                label: const Text("Pretraga"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 87, 88, 171),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
             ),
           ],
         ),

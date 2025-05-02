@@ -77,7 +77,7 @@ class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
   late NekretninaAgentiProvider _nekretninaAgentiProvider;
   late ProblemProvider _problemProvider;
   bool isLoading = true;
-
+final TextEditingController _datumController = TextEditingController();
   SearchResult<Korisnik>? korisniciResult;
   SearchResult<Nekretnina>? nekretnineResult;
   SearchResult<TipNekretnine>? tipoviResult;
@@ -194,7 +194,7 @@ class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
                           },
                           title: Center(
                             child: Text(
-                              'Problem ID: ${e.problemId?.toString() ?? ""}',
+                              'Problem br. ${e.problemId?.toString() ?? ""}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -206,7 +206,7 @@ class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
                                 child: Column(
                                   children: [
                                     Text(
-                                        'ID nekretnine: ${e.nekretninaId?.toString() ?? ""}'),
+                                        'Rb. nekretnine: ${e.nekretninaId?.toString() ?? ""}'),
                                     Text(
                                         'Vlasnik: ${_getVlasnik(e.nekretninaId)}'),
                                     Text(
@@ -255,7 +255,7 @@ class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
     }
 
     DateTime date = DateTime.parse(dateString); // Parse the String to DateTime
-    return DateFormat('dd-MM-yyyy').format(date);
+    return DateFormat('dd.MM.yyyy.').format(date);
   }
 
   String _getVlasnik(int? nekretninaId) {
@@ -270,33 +270,84 @@ class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
 
     return '${korisnik?.ime} ${korisnik?.prezime}';
   }
+ValueNotifier<DateTime?> selectedDate = ValueNotifier<DateTime?>(null);
+void selectDate(BuildContext context) async {
+      final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2101),
+      );
+
+      if (picked != null) {
+        selectedDate.value = picked;
+        _datumController.text =
+            DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(selectedDate.value!);
+      }
+    }
 
   Widget _buildSearch() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            decoration: const InputDecoration(labelText: "ID nekretnine"),
-            controller: _problemIdController,
+  return Center(
+    child: Container(
+      padding: const EdgeInsets.all(16.0),
+      constraints: const BoxConstraints(maxWidth: 500), // ograničena širina
+      child: Row(
+        children: [
+          Flexible(
+            flex: 3,
+            child: TextFormField(
+              readOnly: true,
+              controller: _datumController,
+              onTap: () => selectDate(context),
+              decoration: InputDecoration(
+                labelText: 'Datum prijave problema',
+                filled: true,
+                fillColor: Colors.blueGrey.shade50,
+                suffixIcon: const Icon(Icons.calendar_today),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                  borderSide: const BorderSide(color: Colors.blue, width: 2),
+                ),
+              ),
+            ),
           ),
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            var data = await _problemProvider.get(
-              filter: {
-                'problemId': _problemIdController.text,
-              },
-            );
+          const SizedBox(width: 12), // razmak
+          Flexible(
+            flex: 2,
+            child: SizedBox(
+              height: 48,
+              child: ElevatedButton.icon(
+                onPressed: () async {
+                  var data = await _problemProvider.get(
+                    filter: {
+                      'DatumPrijave': _datumController.text,
+                    },
+                  );
 
-            setState(() {
-              problemiResult = data;
-            });
-          },
-          child: const Text("Pretraga"),
-        ),
-      ],
-    );
-  }
+                  setState(() {
+                    problemiResult = data;
+                  });
+                },
+                icon: const Icon(Icons.search),
+                label: const Text("Pretraga"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 87, 88, 171),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 
   Widget _buildKorisnikNameCell(int? korisnikId) {
     Korisnik? korisnik = korisniciResult?.result.firstWhere(
@@ -478,7 +529,7 @@ class ProblemDetailScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.parse(problem.datumPrijave?.toString() ?? ""))} PM GMT',
+                          '${DateFormat('dd.MM.yyyy. HH:mm').format(DateTime.parse(problem.datumPrijave?.toString() ?? ""))}h',
                         ),
                       ]),
                       const SizedBox(height: 10),
@@ -509,7 +560,7 @@ class ProblemDetailScreen extends StatelessWidget {
                       const SizedBox(height: 5),
                       Row(children: [
                         const SizedBox(width: 10),
-                        Text('Nekretnina ID: ${problem.nekretninaId}')
+                        Text('Rb. nekretnine: ${problem.nekretninaId}')
                       ]),
                       Row(children: [
                         const SizedBox(width: 10),
@@ -565,7 +616,7 @@ class ProblemDetailScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.parse(problem.datumRjesenja?.toString() ?? ""))} PM GMT',
+                          '${DateFormat('dd.MM.yyyy. HH:mm').format(DateTime.parse(problem.datumRjesenja?.toString() ?? ""))}h',
                         ),
                       ]),
                       const SizedBox(
@@ -602,7 +653,7 @@ class ProblemDetailScreen extends StatelessWidget {
     }
 
     DateTime date = DateTime.parse(dateString); // Parse the String to DateTime
-    return DateFormat('dd-MM-yyyy').format(date);
+    return DateFormat('dd.MM.yyyy.').format(date);
   }
 
   String _getAdresaNekretnine(int? nekretninaId) {

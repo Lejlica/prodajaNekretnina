@@ -73,7 +73,7 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
     });
   }
 
-  final TextEditingController _problemIdController = TextEditingController();
+  final TextEditingController _datumController = TextEditingController();
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;
@@ -297,33 +297,84 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
 
     return '${korisnik?.ime} ${korisnik?.prezime}';
   }
+  ValueNotifier<DateTime?> selectedDate = ValueNotifier<DateTime?>(null);
+void selectDate(BuildContext context) async {
+      final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2101),
+      );
+
+      if (picked != null) {
+        selectedDate.value = picked;
+        _datumController.text =
+            DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(selectedDate.value!);
+      }
+    }
 
   Widget _buildSearch() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            decoration: const InputDecoration(labelText: "ID nekretnine"),
-            controller: _problemIdController,
+  return Center(
+    child: Container(
+      padding: const EdgeInsets.all(16.0),
+      constraints: const BoxConstraints(maxWidth: 500), // ograničena širina
+      child: Row(
+        children: [
+          Flexible(
+            flex: 3,
+            child: TextFormField(
+              readOnly: true,
+              controller: _datumController,
+              onTap: () => selectDate(context),
+              decoration: InputDecoration(
+                labelText: 'Datum prijave problema',
+                filled: true,
+                fillColor: Colors.blueGrey.shade50,
+                suffixIcon: const Icon(Icons.calendar_today),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                  borderSide: const BorderSide(color: Colors.blue, width: 2),
+                ),
+              ),
+            ),
           ),
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            var data = await _problemProvider.get(
-              filter: {
-                'problemId': _problemIdController.text,
-              },
-            );
+          const SizedBox(width: 12), // razmak
+          Flexible(
+            flex: 2,
+            child: SizedBox(
+              height: 48,
+              child: ElevatedButton.icon(
+                onPressed: () async {
+                  var data = await _problemProvider.get(
+                    filter: {
+                      'DatumPrijave': _datumController.text,
+                    },
+                  );
 
-            setState(() {
-              problemiResult = data;
-            });
-          },
-          child: const Text("Pretraga"),
-        ),
-      ],
-    );
-  }
+                  setState(() {
+                    problemiResult = data;
+                  });
+                },
+                icon: const Icon(Icons.search),
+                label: const Text("Pretraga"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 87, 88, 171),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 
   Widget _buildKorisnikNameCell(int? korisnikId) {
     Korisnik? korisnik = korisniciResult?.result.firstWhere(

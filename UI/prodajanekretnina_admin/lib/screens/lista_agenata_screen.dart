@@ -218,8 +218,9 @@ class _ListaAgenataScreenState extends State<ListaAgenataScreen> {
       korisnikAgencijaResult = await _korisnikAgencijaProvider.get();
       print(korisnikAgencijaResult);
       List<int> nekretnineIdsForProdaja = [];
-      print('korisnikIds after initForm: $korisnikIds');
       NadjiKorisnikIds();
+      print('korisnikIds after initForm: $korisnikIds');
+      
       // Iterate through tipAkcije items to find matching nekretninaId values
       for (var nekretninaTipAkcije in nekretninaTipAkcijeResult!.result) {
         if (nekretninaTipAkcije.tipAkcijeId == 2) {

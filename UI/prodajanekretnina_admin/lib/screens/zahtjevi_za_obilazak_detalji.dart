@@ -230,7 +230,7 @@ Widget _buildSearch() {
     ),
     const Text("Odobrena"),
     SizedBox(width: 20),
-    ElevatedButton(
+    ElevatedButton.icon(
       onPressed: () async {
         var data = await _obilazakProvider.get(
           filter: {
@@ -242,7 +242,15 @@ Widget _buildSearch() {
           result = data;
         });
       },
-      child: const Text("Pretraga"),
+      icon: const Icon(Icons.search),
+                label: const Text("Pretraga"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 87, 88, 171),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
     ),
   ],
 ),   ),
