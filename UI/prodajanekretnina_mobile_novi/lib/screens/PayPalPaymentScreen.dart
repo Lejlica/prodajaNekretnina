@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
-import 'package:http/http.dart' as http;
 import 'package:prodajanekretnina_mobile_novi/main.dart';
 import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
 import 'package:prodajanekretnina_mobile_novi/models/nekretnine.dart';
@@ -111,8 +110,8 @@ Future<void> _createKupovina() async {
         clientId: "ATK0JSyRAbys9cOlLdJD7dOD2VO0gG_BmGCCyI5hXJKiJ8R8voykKUx3y8knkC8s8JNkVNuahVKXybeQ",
   	secretKey: "EHgWlt_b_1cHhuM1JQtX-z0RzWOxTqS6qN2uoppq6kabAff2wZwiz9F5RqJQ0QFL1H4K9C7Uc5jalzKw",
 
-        returnURL: "https://example.com/success",
-        cancelURL: "https://example.com/cancel",
+        returnURL: "https://samplesite.com/return",
+        cancelURL: "https://samplesite.com/cancel",
         transactions: [
           {
             "amount": {

@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
@@ -10,14 +9,10 @@ import 'package:prodajanekretnina_mobile_novi/models/tipoviNekretnina.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/nekretnine_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/slike_provider.dart';
-
 import 'package:prodajanekretnina_mobile_novi/providers/tipNekr_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/kupci_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/NekretnineDetaljiScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/PayPalPaymentScreen.dart';
-import 'package:prodajanekretnina_mobile_novi/screens/PaymentScreen.dart';
-import 'package:prodajanekretnina_mobile_novi/screens/makePayment.dart';
-import 'package:prodajanekretnina_mobile_novi/screens/UnesiClientPaypalPodatkeScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/glavni_ekran.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
@@ -54,22 +49,16 @@ class CustomCard extends StatefulWidget {
 class _CustomCardState extends State<CustomCard> {
   late PageController _pageController;
   List<dynamic> data = [];
-  late KupciProvider _kupciProvider;
   late KorisniciProvider _korisniciProvider;
+  late KupciProvider _kupciProvider;
 
-  int _currentPage = 0;
-  final int _pageSize = 4;
-  bool _isLoading = false;
-  bool _hasMore = true;
-
-  List<Nekretnina> _nekretnine = [];
   
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: 0);
-    _kupciProvider = context.read<KupciProvider>();
     _korisniciProvider = context.read<KorisniciProvider>();
+    _kupciProvider = context.read<KupciProvider>();
     
     initForm();
     
@@ -78,9 +67,11 @@ class _CustomCardState extends State<CustomCard> {
 Future initForm() async {
   try {
     var tmpKorisniciData = await _korisniciProvider.get({});
+    var tmpKupciData = await _kupciProvider.get({});
 
     setState(() {
       data = tmpKorisniciData!;
+      
     });
 
     String? username = Authorization.username;
@@ -109,7 +100,7 @@ Future initForm() async {
 }
 
 String? username = Authorization.username;
-// zavisi kako si organizovao
+
 Korisnik? pronadjiKorisnika(String username) {
   List<dynamic> filteredData =
       data!.where((korisnik) => korisnik.korisnickoIme == username).toList();
@@ -290,10 +281,10 @@ Korisnik? pronadjiKorisnika(String username) {
 
     return CarouselSlider(
       options: CarouselOptions(
-        height: 200, // Set the height of the carousel
-        viewportFraction: 1.0, // Display a single image at a time
-        autoPlay: true, // Enable auto-play
-        autoPlayInterval: Duration(seconds: 3), // Auto-play interval
+        height: 200, 
+        viewportFraction: 1.0,
+        autoPlay: true, 
+        autoPlayInterval: Duration(seconds: 3),
       ),
       items: slike.map((slika) {
  
@@ -343,7 +334,7 @@ loadNekretnine();
   void didChangeDependencies() {
     super.didChangeDependencies();
     setState(() {
-      // Ponovo postavite podatke
+    
       initForm();
     });
   }
@@ -361,14 +352,7 @@ loadNekretnine();
         dataa = tmpData!;
         tipNekrData = tmpTipNekrData!;
       });
-      /*var searchFilters = {
-        'isOdobrena': true,
-      };
-
-      var tmpData = await _nekretnineProvider.get(searchFilters);
-      setState(() {
-        dataa = tmpData!;
-      });*/
+    
     } catch (e) {
       print('Error in initForm: $e');
     }
@@ -543,7 +527,7 @@ Widget _buildSearch() {
         ),
         SizedBox(height: 16),
 
-        // Cijena od / do
+      
         Row(
           children: [
             Expanded(
@@ -620,9 +604,9 @@ Widget _buildDataListView() {
         return CustomCard(
           context: context,
           nekretnina: nekretnina,
-          slike: [], // ili možeš slati null, jer koristiš slikeMap unutra
+          slike: [], 
           nekretninaId: nekretnina.nekretninaId!,
-          slikaBajtovi: slikaBajtovi, // ako dodaš kao parametar u CustomCard
+          slikaBajtovi: slikaBajtovi,
         );
       },
     ),

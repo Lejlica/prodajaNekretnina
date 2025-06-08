@@ -21,7 +21,6 @@ using Nekretnina = ProdajaNekretnina.Model.Nekretnina;
 using ReccomendResult = ProdajaNekretnina.Model.ReccomendResult;
 using PayPal.Api;
 using Microsoft.AspNetCore.Authorization;
-using ProdajaNekretnina.Services.RabbitMQ;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ProdajaNekretnina.Services
@@ -172,21 +171,17 @@ namespace ProdajaNekretnina.Services
             var targetWish = korisnickeZelje.Last();
 
             
-             /*var sveNekretnine = _context.Nekretninas
-                 .Include(x => x.Lokacija.Grad)
-                 .Where(x => !korisnickeZelje.Any(w => w.NekretninaId ==
-x.NekretninaId))
-                 .ToList();*/
+             
 
              var sveNekretnine = _context.Nekretninas
-     .Include(x => x.Lokacija.Grad)
-     .ToList() // ✔️ sada je u memoriji
-     .Where(x => !korisnickeZelje.Any(w => w.NekretninaId ==
-x.NekretninaId))
-     .ToList();
+                 .Include(x => x.Lokacija.Grad)
+                 .ToList() 
+                 .Where(x => !korisnickeZelje.Any(w => w.NekretninaId ==
+            x.NekretninaId))
+                 .ToList();
 
 
-            // Dodaj i target nekretninu u dataset
+            // Dodajemo i target nekretninu u dataset
             var sveZaML = sveNekretnine.Append(targetWish).ToList();
 
             var mlContext = new MLContext();
@@ -202,20 +197,20 @@ x.NekretninaId))
             var data = mlContext.Data.LoadFromEnumerable(podaci);
 
             var pipeline =
-mlContext.Transforms.Categorical.OneHotEncoding("LocationEncoded",
-"Lokacija")
-.Append(mlContext.Transforms.Concatenate("Features", "LocationEncoded",
-"BrojSoba", "Cijena"))
-.Append(mlContext.Transforms.NormalizeMinMax("Features"));
+                mlContext.Transforms.Categorical.OneHotEncoding("LocationEncoded",
+                "Lokacija")
+                .Append(mlContext.Transforms.Concatenate("Features", "LocationEncoded",
+                "BrojSoba", "Cijena"))
+                .Append(mlContext.Transforms.NormalizeMinMax("Features"));
 
             var transformer = pipeline.Fit(data);
             var transformedData = transformer.Transform(data);
 
             var featuresWithId =
-mlContext.Data.CreateEnumerable<TransformedNekretnina>(transformedData,
-reuseRowObject: false).ToList();
+                mlContext.Data.CreateEnumerable<TransformedNekretnina>(transformedData,
+                reuseRowObject: false).ToList();
 
-            // Uzmi vektor osobina za target nekretninu
+            // Uzimamo vektor osobina za target nekretninu
             var targetVector = featuresWithId.First(x => x.NekretninaId
 == targetWish.NekretninaId).Features;
 
@@ -262,7 +257,7 @@ reuseRowObject: false).ToList();
         {
             public int NekretninaId { get; set; }
 
-            [VectorType] // Ova anotacija dozvoljava mapiranje vektora
+            [VectorType] 
             public float[] Features { get; set; }
         }
 

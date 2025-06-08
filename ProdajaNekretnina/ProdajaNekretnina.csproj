@@ -29,7 +29,6 @@
 
   <ItemGroup>
 	  <ProjectReference Include="..\ProdajaNekretnina.MailPublisher\ProdajaNekretnina.MailPublisher.csproj" />
-	  <ProjectReference Include="..\RabbitMQConsumer\RabbitMQConsumer.csproj" />
     <ProjectReference Include="..\ProdajaNekretnina.Model\ProdajaNekretnina.Model.csproj" />
     <ProjectReference Include="..\ProdajaNekretnina.Services\ProdajaNekretnina.Services.csproj" />
   </ItemGroup>

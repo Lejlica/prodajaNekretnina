@@ -1,4 +1,3 @@
-import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
 
 import 'package:flutter/material.dart';
 

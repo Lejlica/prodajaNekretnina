@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
 import 'package:prodajanekretnina_mobile_novi/models/nekretnine.dart';
-import 'package:prodajanekretnina_mobile_novi/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_mobile_novi/models/slike.dart';
-import 'package:prodajanekretnina_mobile_novi/models/lokacije.dart';
-import 'package:prodajanekretnina_mobile_novi/models/gradovi.dart';
 import 'package:prodajanekretnina_mobile_novi/models/nekretninaTipAkcije.dart';
 import 'package:prodajanekretnina_mobile_novi/models/tipAkcije.dart';
-import 'package:prodajanekretnina_mobile_novi/models/obilazak.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:prodajanekretnina_mobile_novi/models/search_result.dart';
-import 'package:prodajanekretnina_mobile_novi/models/reccomendResult.dart';
 import 'package:prodajanekretnina_mobile_novi/models/tipoviNekretnina.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/tipAkcije_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/obilazak_provider.dart';
@@ -23,26 +16,16 @@ import 'package:prodajanekretnina_mobile_novi/providers/slike_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnikNekretninaWish_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/nekretninaAgenti_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/gradovi_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/reccomend_results_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/screens/NekretnineDetaljiScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/glavni_ekran.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/AgentDetaljiScreen.dart';
 import '../utils/util.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'dart:typed_data';
-import 'package:prodajanekretnina_mobile_novi/utils/util.dart';
-
-import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
@@ -128,13 +111,11 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
         context.read<KorisnikNekretninaWishProvider>();
     _tipNekretnineProvider = TipoviNekretninaProvider();
     _reccomendResultProvider = context.read<ReccomendResultProvider>();
-    //_slikeProvider = SlikeProvider();
-    //_tipAkcijeProvider = TipAkcijeProvider();
-    //_nekretninaTipAkcijeProvider = NekretninaTipAkcijeProvider();
+    
     initForm();
 
     print("tipNekretnineProvider PROVIDER ${_tipNekretnineProvider}");
-    // ispis();
+   
   }
 
   @override
@@ -436,7 +417,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                               if (slike != null &&
                                   slike.result.isNotEmpty &&
                                   widget.nekretnina != null) {
-                                // Create a list of image URLs from the data
+                              
                                 List<String> imageUrls = slike.result
                                     .where((slika) =>
                                         slika.nekretninaId ==
@@ -444,17 +425,17 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                                     .map((slika) => slika.bajtoviSlike ?? "")
                                     .toList();
 
-                                // Check if there are images to display in the carousel
+                               
                                 if (imageUrls.isNotEmpty) {
                                   return CarouselSlider(
                                     options: CarouselOptions(
                                       height:
-                                          300.0, // Adjust the height of the slider as needed
+                                          300.0, 
                                       autoPlay:
-                                          true, // Enable auto-playing of images
+                                          true, 
                                       enlargeCenterPage: true,
                                       viewportFraction:
-                                          0.8, // Adjust the size of the images
+                                          0.8, 
                                       aspectRatio: 16 / 9,
                                     ),
                                     items: imageUrls.map((imageUrl) {
@@ -462,7 +443,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                                         builder: (BuildContext context) {
                                           return AspectRatio(
                                             aspectRatio: 16 /
-                                                9, // Set the desired aspect ratio
+                                                9, 
                                             child: Container(
                                               width: MediaQuery.of(context)
                                                   .size
@@ -499,7 +480,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                         List<Nekretnina> recommendedNekretnine =
                             await _nekretnineProvider.recommend(korisnikId()!);
 
-                        // Ovde možete koristiti listu recommendedNekretnine kako želite
+                    
                         print(recommendedNekretnine);
                       } catch (e) {
                         print('Error: $e');
@@ -552,32 +533,32 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                     },
                     child: Container(
                       padding: EdgeInsets.all(
-                          10.0), // Prilagodite razmak oko dugmeta
+                          10.0), 
                       decoration: BoxDecoration(
-                        color: Colors.blue, // Prilagodite boju pozadine dugmeta
+                        color: Colors.blue, 
                         borderRadius: BorderRadius.circular(
-                            20.0), // Prilagodite oblik dugmeta
+                            20.0), 
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
                             Icons
-                                .favorite_border, // Koristite ikonu srca ili neku drugu ikonu
-                            color: Colors.white, // Prilagodite boju ikone
+                                .favorite_border,
+                            color: Colors.white, 
                           ),
-                          SizedBox(width: 5.0), // Razmak između ikone i teksta
+                          SizedBox(width: 5.0), 
                           Text(
                             "Dodaj u listu želja",
                             style: TextStyle(
-                              color: Colors.white, // Prilagodite boju teksta
+                              color: Colors.white, 
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  //  int? reccomendForUser() {
+                
                   
 
                   SizedBox(height: 10),
@@ -726,7 +707,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                           padding: EdgeInsets.all(10),
                           child: Row(
   children: [
-    Icon(Icons.bed, size: 20, color: const Color.fromARGB(255, 125, 52, 52)), // Ikonica za broj spavaćih soba
+    Icon(Icons.bed, size: 20, color: const Color.fromARGB(255, 125, 52, 52)),
     SizedBox(width: 5),
     Text(
       "Broj spavaćih soba: ${_initialValue['brojSpavacihSoba']}",
@@ -752,7 +733,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                           padding: EdgeInsets.all(10),
                           child: Row(
   children: [
-    Icon(Icons.arrow_upward, size: 20, color: Colors.grey), // Ikonica za sprat
+    Icon(Icons.arrow_upward, size: 20, color: Colors.grey), 
     SizedBox(width: 5),
     Text(
       "Sprat: ${_initialValue['sprat']}",
@@ -778,7 +759,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                           padding: EdgeInsets.all(10),
                           child: Row(
   children: [
-    Icon(Icons.local_parking, size: 20, color: Colors.grey), // Ikonica za parking mjesto
+    Icon(Icons.local_parking, size: 20, color: Colors.grey),
     SizedBox(width: 5),
     Text("Parking mjesto:", style: TextStyle(fontSize: 16)),
     SizedBox(width: 5),
@@ -807,7 +788,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                           padding: EdgeInsets.all(10),
                           child: Row(
   children: [
-    Icon(Icons.chair, size: 20, color: Colors.grey), // Ikonica za namještenost
+    Icon(Icons.chair, size: 20, color: Colors.grey), 
     SizedBox(width: 5),
     Text("Namješten:", style: TextStyle(fontSize: 16)),
     SizedBox(width: 5),
@@ -836,7 +817,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                           padding: EdgeInsets.all(10),
                           child: Row(
   children: [
-    Icon(Icons.aspect_ratio, size: 20, color: Colors.grey), // Ikonica za kvadraturu
+    Icon(Icons.aspect_ratio, size: 20, color: Colors.grey), 
     SizedBox(width: 5),
     Text(
       "Kvadratura: ${_initialValue['kvadratura']} m2",
@@ -855,7 +836,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                     children: [
                       SizedBox(width: 10),
                       Text(
-                        "Detaljan opis", // Prikaz cijene iz _initialValue
+                        "Detaljan opis", 
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
@@ -874,7 +855,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                           ),
                           padding: EdgeInsets.all(10),
                           child: Text(
-                            "${_initialValue['detaljanOpis']} ", // Prikaz cijene iz _initialValue
+                            "${_initialValue['detaljanOpis']} ", 
                             style: TextStyle(fontSize: 16),
                           ),
                         ),
@@ -885,7 +866,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                   SizedBox(height: 20),
                   Padding(
                     padding: EdgeInsets.all(
-                        10.0), // Prilagodite veličinu padding-a prema potrebi
+                        10.0), 
                     child: Row(
                       children: [
                         Text(
@@ -920,7 +901,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                                   } else {
                                     List<dynamic>? data = snapshot.data;
 
-                                    // Filter the data based on the condit ion
+                                  
                                     List<dynamic> filteredData = data!
                                         .where((nekretninaAgent) =>
                                             nekretninaAgent.nekretninaId ==
@@ -929,7 +910,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
 
                                     if (filteredData.isEmpty) {
                                       return Text(
-                                          'No matching data available.');
+                                          'Nema dodijeljenih agenata.');
                                     }
                                     return Container(
                                       height: 200,
@@ -974,11 +955,11 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
     border: Border.all(width: 1, color: Colors.grey),
     borderRadius: BorderRadius.circular(5),
   ),
-  child: LayoutBuilder( // Dodajemo LayoutBuilder da dobijemo constraints
+  child: LayoutBuilder( 
     builder: (context, constraints) {
       return Row(
         children: [
-          // Info o agentu
+
           Flexible(
             flex: 2,
             child: Column(
@@ -988,7 +969,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                   children: [
                     Icon(Icons.person, size: 24, color: Colors.black),
                     SizedBox(width: 7),
-                    Expanded( // Ovdje dodajemo kako bi tekst znao gdje da "pukne"
+                    Expanded( 
                       child: Text(
                         'Ime i prezime: ${matchingKorisnik.ime} ${matchingKorisnik.prezime}',
                         style: TextStyle(fontSize: 15),
@@ -1030,21 +1011,9 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
           ),
           SizedBox(width: 10),
 
-          // Slika agenta
-          /*Container(
-            width: 100, // Fiksiramo širinu slike
-            height: 100,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: Image.memory(
-                base64.decode(matchingKorisnik.bajtoviSlike!),
-                fit: BoxFit.cover,
-              ),
-              
-            ),
-          ),*/
+         
           Container(
-  width: 100, // Fiksiramo širinu slike
+  width: 100, 
   height: 100,
   child: ClipRRect(
     borderRadius: BorderRadius.circular(4),
@@ -1054,13 +1023,13 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
               return Image.asset(
-                'assets/images/usericon.webp', // Putanja do defaultne slike
+                'assets/images/usericon.webp',
                 fit: BoxFit.cover,
               );
             },
           )
         : Image.asset(
-            'assets/images/usericon.webp', // Putanja do defaultne slike
+            'assets/images/usericon.webp',
             fit: BoxFit.cover,
           ),
   ),
@@ -1092,7 +1061,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                   ),
                   Padding(
                     padding: EdgeInsets.all(
-                        10.0), // Prilagodite veličinu padding-a prema potrebi
+                        10.0), 
                     child: Row(
                       children: [
                         Text(
@@ -1107,7 +1076,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                   ),
                   Padding(
                     padding: EdgeInsets.all(
-                        10.0), // Prilagodite veličinu padding-a prema potrebi
+                        10.0), 
                     child: TextFormField(
                       readOnly: true,
                       onTap: () => _selectDate(context),
@@ -1155,7 +1124,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                             );
 
                             if (isAvailable == true) {
-                              // Datum je dostupan, izvršite zakazivanje
+                           
                               Map<String, dynamic> request = {
                                 'korisnikId': korisnikId(),
                                 'nekretninaId': widget.nekretnina?.nekretninaId,
@@ -1189,7 +1158,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                                 },
                               );
                             } else {
-                              // Datum je zauzet, prikažite odgovarajući alert
+                           
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -1220,7 +1189,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
               ),
             ],
           ),
-        ), //ovdje
+        ), 
       ),
     );
   }
@@ -1228,7 +1197,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
   String _getNazivTipa(int? tipNekretnineId) {
     TipNekretnine? tipNekretnine = tipNekretnineResult?.result.firstWhere(
       (element) => element.tipNekretnineId == tipNekretnineId,
-      // Default value
+     
     );
 
     return '${tipNekretnine?.nazivTipa} ';
@@ -1237,26 +1206,19 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
   File? _image;
   String? _base64Image;
 
-  /*Future getImage() async {
-    var result = await FilePicker.platform.pickFiles(type: FileType.image);
-
-    if (result != null && result.files.single.path != null) {
-      _image = File(result.files.single.path!);
-      _base64Image = base64Encode(_image!.readAsBytesSync());
-    }
-  }*/
+  
 
   Future<void> getImage() async {
   final picker = ImagePicker();
 
-  // Izbor slike sa galerije
+
   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
   if (pickedFile != null) {
-    // Ako je slika odabrana, čitaj je kao bajtove
+ 
     File imageFile = File(pickedFile.path);
     
-    // Pretvori bajtove u base64
+  
     String base64Image = base64Encode(imageFile.readAsBytesSync());
 
     print("Base64 image: $base64Image");
@@ -1298,7 +1260,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
   }
 
   Future<List<Slika>> _getSlikeForNekretnina(int nekretninaId) async {
-    _slikeProvider = SlikeProvider(); // Initialize SlikeProvider
+    _slikeProvider = SlikeProvider(); 
     SearchResult<Slika> slikeResult = await _slikeProvider
         .get(filter: {'nekretninaId': nekretninaId.toString()});
     return slikeResult.result;
@@ -1308,11 +1270,11 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
     print("Poziva se _buildDataListView()");
     return Expanded(
       child: ListView.builder(
-        itemCount: recommendedNekretninee.length, //result?.result.length ?? 0,
+        itemCount: recommendedNekretninee.length, 
         itemBuilder: (context, index) {
           if (index < recommendedNekretninee.length) {
             int? nekretnina =
-                recommendedNekretninee[index]; //result!.result[index];
+                recommendedNekretninee[index]; 
             print("NekrIdJedan ${nekretnina}");
             return FutureBuilder<List<Slika>>(
               future: _getSlikeForNekretnina(nekretnina ?? 0),
@@ -1330,7 +1292,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                     try {
                       tipNekretnine = nekrData.firstWhere(
                         (element) => element.nekretninaId == nekretninaId,
-                        // Default value
+                       
                       );
                     } catch (e) {
                       print('Error while fetching TipNekretnine: $e');
@@ -1358,7 +1320,7 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
               },
             );
           } else {
-            return SizedBox(); // Prazan widget za slučaj van granica indeksa
+            return SizedBox(); 
           }
         },
       ),
@@ -1416,7 +1378,7 @@ class _CustomCardState extends State<CustomCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildImageSlider(), // Display the carousel slider
+            _buildImageSlider(), 
 
             ListTile(
               title: Text(
@@ -1455,10 +1417,10 @@ class _CustomCardState extends State<CustomCard> {
 
     return CarouselSlider(
       options: CarouselOptions(
-        height: 200, // Set the height of the carousel
-        viewportFraction: 1.0, // Display a single image at a time
-        autoPlay: true, // Enable auto-play
-        autoPlayInterval: Duration(seconds: 3), // Auto-play interval
+        height: 200, 
+        viewportFraction: 1.0, 
+        autoPlay: true, 
+        autoPlayInterval: Duration(seconds: 3), 
       ),
       items: slike.map((slika) {
         return Image(

@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-
-import 'package:http_parser/http_parser.dart';
 import 'package:prodajanekretnina_mobile_novi/models/drzave.dart';
 import 'package:prodajanekretnina_mobile_novi/models/gradovi.dart';
 import 'package:prodajanekretnina_mobile_novi/models/problemi.dart';
-
-import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-
-
 import 'package:prodajanekretnina_mobile_novi/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_mobile_novi/models/lokacije.dart';
 import 'package:prodajanekretnina_mobile_novi/models/nekretnine.dart';
@@ -21,9 +14,7 @@ import 'package:prodajanekretnina_mobile_novi/providers/problem_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/gradovi_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnici_provider.dart';
-
 import 'package:prodajanekretnina_mobile_novi/providers/nekretninaAgenti_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/nekretnine_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/tipoviNekretnina_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/glavni_ekran.dart';
@@ -31,16 +22,6 @@ import 'package:prodajanekretnina_mobile_novi/screens/saljiMail.dart';
 import 'package:provider/provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/slike_provider.dart';
 import '../utils/util.dart';
-//import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-//import 'package:file_picker/file_picker.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-//import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'dart:typed_data';
 
 class PrijaviProblemScreen extends StatefulWidget {
   Problem? problem;
@@ -51,37 +32,18 @@ class PrijaviProblemScreen extends StatefulWidget {
   State<PrijaviProblemScreen> createState() => _PrijaviProblemScreenState();
 }
 
-/*Future<Uint8List?> pickImageFromGallery() async {
-  final picker = ImagePicker();
-  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-  if (pickedFile != null) {
-    // Read the selected image as bytes
-    Uint8List? bytes = await pickedFile.readAsBytes();
-    return bytes;
-  }
-
-  return null;
-}*/
 
 class _PrijaviProblemScreenState extends State<PrijaviProblemScreen> {
+
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;
-  late TipoviNekretninaProvider _tipoviNekretninaProvider;
   Nekretnina? nekretnina;
   late ProblemProvider _problemProvider;
-  late GradoviProvider _gradoviProvider;
-  late DrzaveProvider _drzaveProvider;
-  late NekretnineProvider _nekretnineProvider;
-  late SlikeProvider _slikeProvider;
-
-  late NekretninaAgentiProvider _nekretninaAgentiProvider;
   bool isLoading = true;
-
   SearchResult<TipNekretnine>? tipoviResult;
   SearchResult<Lokacija>? lokacijeResult;
-
   SearchResult<Grad>? gradoviResult;
   SearchResult<Drzava>? drzaveResult;
   SearchResult<Slika>? slikeResult;
@@ -93,26 +55,12 @@ class _PrijaviProblemScreenState extends State<PrijaviProblemScreen> {
     super.initState();
 
     _initialValue = {
-      /* 'opis': widget.problem?.opis?.toString(),
-      'datumPrijave': widget.problem?.datumPrijave?.toString(),
-      'isVecPrijavljen': widget.problem?.isVecPrijavljen?.toString(),
-      'datumNastankaProblema':
-          widget.problem?.datumNastankaProblema?.toString(),
-      'datumRjesenja': widget.problem?.datumRjesenja?.toString(),
-      'opisRjesenja': widget.problem?.opisRjesenja?.toString(),
-      'korisnikId': widget.problem?.korisnikId?.toString(),
-      'nekretninaId': widget.problem?.nekretninaId?.toString(),
-      'statusId': widget.problem?.statusId?.toString()*/
+     
     };
 
-    _nekretnineProvider = NekretnineProvider();
+    
     _problemProvider = context.read<ProblemProvider>();
     _korisniciProvider = context.read<KorisniciProvider>();
-    _tipoviNekretninaProvider = context.read<TipoviNekretninaProvider>();
-
-    _gradoviProvider = context.read<GradoviProvider>();
-    _drzaveProvider = context.read<DrzaveProvider>();
-    _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
     initForm();
   }
 
@@ -170,7 +118,7 @@ class _PrijaviProblemScreenState extends State<PrijaviProblemScreen> {
           ],
         ),
 
-            // Opis problema
+            
             FormBuilderTextField(
   name: 'opis',
   maxLines: 5,
@@ -202,7 +150,7 @@ class _PrijaviProblemScreenState extends State<PrijaviProblemScreen> {
 
             SizedBox(height: 16),
 
-            // Datum nastanka problema
+         
             FormBuilderTextField(
               name: 'datumNastankaProblema',
               readOnly: true,
@@ -230,7 +178,7 @@ class _PrijaviProblemScreenState extends State<PrijaviProblemScreen> {
             ),
             SizedBox(height: 16),
 
-            // Checkbox
+          
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -250,7 +198,7 @@ class _PrijaviProblemScreenState extends State<PrijaviProblemScreen> {
             ),
             SizedBox(height: 20),
 
-            // Submit dugme
+        
             Center(
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(

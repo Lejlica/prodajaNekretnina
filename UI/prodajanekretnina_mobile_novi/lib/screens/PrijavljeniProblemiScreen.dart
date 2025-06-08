@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:prodajanekretnina_mobile_novi/models/drzave.dart';
 import 'package:prodajanekretnina_mobile_novi/models/gradovi.dart';
-
 import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
 import 'package:prodajanekretnina_mobile_novi/models/problemi.dart';
 import 'package:prodajanekretnina_mobile_novi/models/nekretninaAgenti.dart';
@@ -13,31 +11,14 @@ import 'package:prodajanekretnina_mobile_novi/models/status.dart';
 import 'package:prodajanekretnina_mobile_novi/models/search_result.dart';
 import 'package:prodajanekretnina_mobile_novi/models/slike.dart';
 import 'package:prodajanekretnina_mobile_novi/models/tipoviNekretnina.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/drzave_provide.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/gradovi_provider.dart';
-
 import 'package:prodajanekretnina_mobile_novi/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/nekretninaAgenti_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/nekretnine_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/status_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/problem_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/tipoviNekretnina_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/screens/glavni_ekran.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import '../utils/util.dart';
-//import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-//import 'package:file_picker/file_picker.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-//import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'dart:typed_data';
 
 class PrijavljeniProblemiScreen extends StatefulWidget {
   Problem? problem;
@@ -50,18 +31,7 @@ class PrijavljeniProblemiScreen extends StatefulWidget {
       _PrijavljeniProblemiScreenState();
 }
 
-/*Future<Uint8List?> pickImageFromGallery() async {
-  final picker = ImagePicker();
-  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-  if (pickedFile != null) {
-    // Read the selected image as bytes
-    Uint8List? bytes = await pickedFile.readAsBytes();
-    return bytes;
-  }
-
-  return null;
-}*/
 
 class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
   int? selectedStatusId;
@@ -141,7 +111,7 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
       appBar: AppBar(
         title: Text(
           'Prijavljeni problemi',
-          style: TextStyle(fontSize: 20), // Prilagodi veličinu fonta ovdje
+          style: TextStyle(fontSize: 20), 
         ),
       ),
       body: _buildBody(),
@@ -168,7 +138,7 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
     return Center(child: CircularProgressIndicator());
   }
 
-  // Filter nekretnine based on nekretninaTipAkcijeResult
+ 
   List<dynamic> filteredNekretnine =
       ProblemiData.where((status) => status.korisnikId == korisnikId())
           .toList();
@@ -432,252 +402,9 @@ class ProblemDetailScreen extends StatelessWidget {
     required this.gradoviResult,
     required this.problemProvider,
     required this.statusResult,
-    //required this.tipNekretnineResult,
+   
   }) : _nekretninaAgentiProvider = NekretninaAgentiProvider();
-  /* @override
-  Widget build(BuildContext context) {
-    String defaultDatumRjesenja = problem.datumRjesenja != null
-        ? problem.datumRjesenja!
-        : DateTime.now().toIso8601String();
-    TextEditingController datumPopravkeController =
-        TextEditingController(text: defaultDatumRjesenja);
-    print('datum contr ${problem.datumRjesenja}');
-    TextEditingController opisPopravkeController =
-        TextEditingController(text: problem.opisRjesenja);
-    TextEditingController statusProblemaController = TextEditingController();
-    ValueNotifier<DateTime?> selectedDate = ValueNotifier<DateTime?>(null);
-
-    void _selectDate(BuildContext context) async {
-      final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(2000),
-        lastDate: DateTime(2101),
-      );
-
-      if (picked != null) {
-        selectedDate.value = picked;
-        datumPopravkeController.text =
-            DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(selectedDate.value!);
-      }
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Detalji o problemu'),
-      ),
-      body: ListView(children: [
-        Center(
-          child: Column(children: [
-            SizedBox(height: 16),
-            Text(
-              'Opis problema: ${problem.opis}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(horizontal: 200, vertical: 10),
-              color: Color.fromARGB(128, 253, 253, 254),
-              child: Container(
-                padding: EdgeInsets.all(16.0),
-                alignment: Alignment.center,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 10),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Informacije o problemu',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Text('Nekretnina ID: ${problem.nekretninaId}'),
-                              Text(
-                                  'Datum prijave: ${_formatDate(problem.datumPrijave)}'),
-                              Text('Opis problema: ${problem.opis}'),
-                              Text(
-                                  'Je li problem ranije prijavljivan? ${problem.isVecPrijavljen == true ? "Da" : "Ne"}'),
-                              Text(
-                                  'Lokacija: ${_getAdresaNekretnine(problem.nekretninaId)}'),
-                              Text(
-                                  'Status rješavanja problema: ${_getStringStatusa(problem.statusId)}'),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Kontakt podaci vlasnika',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                  'Vlasnik: ${_getVlasnik(problem.nekretninaId)}'),
-                              Text(
-                                  'E-mail: ${_getEmaill(problem.nekretninaId)}'),
-                              Text(
-                                  'Broj telefona: ${_getBrTele(problem.nekretninaId)}'),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        /*Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Informacije o prodavcu',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                  'Ime i prezime: ${_getKorisnikName(nekretnina.korisnikId)}'),
-                              Text('Email: ${_getEmail(nekretnina.korisnikId)}'),
-                              Text(
-                                  'Broj telefona: ${_getBrTel(nekretnina.korisnikId)}'),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: FormBuilderDropdown<String>(
-                                  name: 'korisnikId',
-                                  decoration: InputDecoration(
-                                    labelText: 'Dodajte agenta za nekretninu',
-                                    suffix: IconButton(
-                                      icon: const Icon(Icons.close),
-                                      onPressed: () {
-                                        _formKey
-                                            .currentState!.fields['korisnikId']
-                                            ?.reset();
-                                      },
-                                    ),
-                                    hintText: 'Odaberite agenta',
-                                  ),
-                                  onChanged: (newValue) async {
-                                    Map<String, dynamic> request = {
-                                      'korisnikId': newValue,
-                                      'nekretninaId': nekretnina.nekretninaId,
-                                    };
-                                    print('new value ${newValue}');
-                                    print('new value ${request}');
-                                    var agentId = request['korisnikId'];
-                                    if (agentId != null) {
-                                      await _nekretninaAgentiProvider
-                                          .insert(request);
-                                    }
-                                  },
-                                  items: korisniciResult?.result
-                                          .map((Korisnik k) => DropdownMenuItem(
-                                                alignment:
-                                                    AlignmentDirectional.center,
-                                                value: k.korisnikId.toString(),
-                                                child: Text(k.ime.toString()),
-                                              ))
-                                          .toList() ??
-                                      [],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),*/
-                      ],
-                    ),
-                    SizedBox(height: 16),
-                    /*TextFormField(
-                      controller: datumPopravkeController,
-                      decoration: InputDecoration(labelText: 'Datum popravke'),
-                    ),*/
-                    TextFormField(
-                      readOnly: true,
-                      onTap: () => _selectDate(context),
-                      decoration: InputDecoration(
-                        labelText: 'Datum popravke',
-                        suffixIcon: Icon(Icons.calendar_today),
-                      ),
-                      controller: datumPopravkeController,
-                    ),
-                    TextFormField(
-                      controller: opisPopravkeController,
-                      decoration: InputDecoration(labelText: 'Opis popravke'),
-                    ),
-                    SizedBox(height: 16),
-                    Text('Odaberite status rješavanja problema:'),
-                    DropdownButtonFormField<int>(
-                      value: selectedStatusId,
-                      onChanged: (newValue) {
-                        _formKey.currentState
-                            ?.save(); // Save the form to trigger validation
-
-                        selectedStatusId = newValue;
-                      },
-                      items: statusResult?.result
-                          .map<DropdownMenuItem<int>>((Status status) {
-                        return DropdownMenuItem<int>(
-                          value: status.statusId,
-                          child: Text(status.opis ?? ''),
-                        );
-                      }).toList(),
-                    ),
-                    SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        DateFormat inputFormat =
-                            DateFormat('yyyy-MM-dd HH:mm:ss.SSS');
-                        DateTime parsedDate =
-                            inputFormat.parse(datumPopravkeController.text);
-
-                        Map<String, dynamic> request = {
-                          'statusId': selectedStatusId,
-                          'korisnikId': problem.korisnikId,
-                          'nekretninaId': problem.nekretninaId,
-                          'datumPrijave': problem.datumPrijave,
-                          'datumNastankaProblema':
-                              problem.datumNastankaProblema,
-                          //'datumRjesenja': parsedDate.toIso8601String(),
-                          'datumRjesenja':
-                              selectedDate.value?.toIso8601String() ?? '',
-                          'opisRjesenja': opisPopravkeController.text.isEmpty
-                              ? problem
-                                  .opisRjesenja // Use the existing value if not modified
-                              : opisPopravkeController.text,
-                          'opis': problem.opis,
-                        };
-
-                        print('datum ${parsedDate}');
-                        var result = problemProvider.update(
-                          problem.problemId!,
-                          request,
-                        );
-                      },
-                      child: Text('Spremi'),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          ]),
-        ),
-      ]),
-    );
-  }*/
+  
   @override
   Widget build(BuildContext context) {
      final theme = Theme.of(context);
@@ -718,20 +445,20 @@ class ProblemDetailScreen extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Naslov sa ikonom i većim fontom
+       
         Row(
           children: [
             Icon(
-              Icons.info_outline, // Ikonica za opis
-              color: Colors.orange, // Možete promeniti boju ikone
-              size: 28, // Povećajte veličinu ikone
+              Icons.info_outline,
+              color: Colors.orange, 
+              size: 28, 
             ),
-            SizedBox(width: 8), // Razmak između ikone i teksta
+            SizedBox(width: 8), 
             Text(
               'Opis problema',
               style: TextStyle(
-                fontSize: 24, // Povećava veličinu fonta
-                fontWeight: FontWeight.bold, // Ako želite da tekst bude podebljan
+                fontSize: 24, 
+                fontWeight: FontWeight.bold, 
               ),
             ),
           ],
@@ -748,16 +475,16 @@ class ProblemDetailScreen extends StatelessWidget {
           fontSize: 18,
           fontWeight: FontWeight.w600,
         ),
-        overflow: TextOverflow.visible, // Omogućava prelom teksta
-        softWrap: true, // Automatski prelazak u novi red
+        overflow: TextOverflow.visible, 
+        softWrap: true, 
       ),
     ),
   ],
 ),
 
-        SizedBox(height: 18), // Razmak između naslova i sadržaja
+        SizedBox(height: 18), 
 
-        // Card sa stilizovanim informacijama
+       
         Card(
           elevation: 4,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -868,15 +595,7 @@ class ProblemDetailScreen extends StatelessWidget {
     return '${korisnik?.ime} ${korisnik?.prezime}';
   }
 
-  /* String _getTipNekretnineName(int? tipNekretnineId) {
-    TipNekretnine? tipNekretnine = tipNekretnineResult?.result.firstWhere(
-      (element) => element.tipNekretnineId == tipNekretnineId,
-      // Default value
-    );
-
-    return tipNekretnine?.nazivTipa ??
-        'Unknown Type'; // Return the name or 'Unknown Type'
-  }*/
+  
 
   String _getBrTel(int? korisnikId) {
     Korisnik? korisnik = korisniciResult?.result.firstWhere(

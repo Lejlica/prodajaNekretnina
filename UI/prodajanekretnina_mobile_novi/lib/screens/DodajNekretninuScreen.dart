@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:prodajanekretnina_mobile_novi/models/kupci.dart';
-import 'package:prodajanekretnina_mobile_novi/models/nekretnine.dart';
 import 'package:prodajanekretnina_mobile_novi/models/tipoviNekretnina.dart';
 import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
-import 'package:prodajanekretnina_mobile_novi/models/slike.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-
-import 'package:prodajanekretnina_mobile_novi/models/drzave.dart';
-import 'package:prodajanekretnina_mobile_novi/models/lokacije.dart';
 import 'package:prodajanekretnina_mobile_novi/models/search_result.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnikNekretninaWish_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/nekretnine_provider.dart';
@@ -15,28 +8,16 @@ import 'package:prodajanekretnina_mobile_novi/providers/drzave_provide.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/tipNekr_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/gradovi_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/slike_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnici_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/kupci_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/tipAkcije_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/nekretninaTipAkcije_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/komentariAgentima_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/screens/AgentDetaljiScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/utils/util.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/glavni_ekran.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'dart:io';
-
-
-import 'dart:convert';
-
 import 'package:image_picker/image_picker.dart';
-
-import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
 
 class DodajNekretninuScreen extends StatefulWidget {
   final Korisnik? korisnik;
@@ -55,11 +36,10 @@ class _DodajNekretninuScreenState extends State<DodajNekretninuScreen> {
   late GradoviProvider _gradoviProvider;
   late TipNekretninaProvider _tipNekretnineProvider;
   late TipAkcijeProvider _tipAkcijeProvider;
-late NekretninaTipAkcijeProvider _nekretninaTipAkcijeProvider;
+  late NekretninaTipAkcijeProvider _nekretninaTipAkcijeProvider;
   late DrzaveProvider _drzaveProvider;
-  //late SlikeProvider _slikeProvider;
-String? base64Image;
-List<String> base64Images = []; // sve odabrane slike
+  String? base64Image;
+  List<String> base64Images = []; 
 
   List<dynamic> data = [];
   List<dynamic> korisniciData = [];
@@ -265,20 +245,18 @@ var tmpnekrTipAkcijeData = await _nekretninaTipAkcijeProvider?.get(null);
               : false,
       'brojUgovora': _propertybrojUgovoraController.text,
       'detaljanOpis': _propertyDescriptionController.text,
-      // Add more fields as needed
+    
     };
 
-    // Send the property data to _nekretnineProvider.insert(request)
-    // You may need to handle the HTTP request here or in a separate provider.
-    // Example:
+   
 
     await _nekretnineProvider.insert(propertyData);
 
-    // Clear the input fields after submission
+   
     _propertyTitleController.clear();
     _propertyDescriptionController.clear();
     _propertyPriceController.clear();
-    // Clear other input fields as needed
+   
   }
 
   int? pronadiLokacijaId() {
@@ -286,7 +264,7 @@ var tmpnekrTipAkcijeData = await _nekretninaTipAkcijeProvider?.get(null);
       print(
           "Drzava ${lokacija.drzavaId}, selectedDrzavaId ${selectedDrzavaId}, Grad ${lokacija.gradId}, selectedGradId ${selectedGradId},Ulica ${lokacija.ulica}, selectedUlica ${selectedUlica}, PB ${lokacija.postanskiBroj}, selectedPostanski ${selectedPostanski}");
 
-      // Pretpostavljam da imate listu lokacija pod nazivom lokacijeData
+    
       if (lokacija.drzavaId == selectedDrzavaId &&
           lokacija.gradId == selectedGradId &&
           lokacija.ulica == selectedUlica &&
@@ -298,7 +276,7 @@ var tmpnekrTipAkcijeData = await _nekretninaTipAkcijeProvider?.get(null);
       }
     }
 
-    return null; // Vraća null ako nema odgovarajućeg podudaranja
+    return null; 
   }
 final _formKey = GlobalKey<FormState>();
 
@@ -311,7 +289,7 @@ final _formKey = GlobalKey<FormState>();
         title: "Dodaj nekretninu",
         child: CustomScrollView(slivers: [
         SliverPadding(
-          padding: EdgeInsets.all(16.0), // <-- Dodaje padding na cijelu formu
+          padding: EdgeInsets.all(16.0), 
           sliver: SliverList(
             delegate: SliverChildListDelegate(
               [
@@ -325,7 +303,7 @@ final _formKey = GlobalKey<FormState>();
                             child: Center(
                               child: Wrap(
                                 alignment:
-                                    WrapAlignment.center, // Centrirajte naslov
+                                    WrapAlignment.center, 
                                 children: [
                                   Text(
                                     'U formu ispod unesite podatke o Vašoj nekretnini',
@@ -348,7 +326,7 @@ final _formKey = GlobalKey<FormState>();
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
 
-      // Naziv nekretnine
+    
       TextFormField(
         controller: _propertyTitleController,
         decoration: InputDecoration(
@@ -364,7 +342,7 @@ final _formKey = GlobalKey<FormState>();
       ),
       SizedBox(height: 12),
 
-      // Cijena i Kvadratura
+  
       Row(
         children: [
           Expanded(
@@ -412,7 +390,7 @@ final _formKey = GlobalKey<FormState>();
       ),
       SizedBox(height: 12),
 
-      // Broj soba i Broj spavaćih soba
+     
       Row(
         children: [
           Expanded(
@@ -460,7 +438,7 @@ final _formKey = GlobalKey<FormState>();
       ),
       SizedBox(height: 12),
 
-      // Sprat i Broj ugovora
+     
       Row(
         children: [
           Expanded(
@@ -503,7 +481,7 @@ final _formKey = GlobalKey<FormState>();
       ),
       SizedBox(height: 12),
 
-      // Detaljan opis
+    
       TextFormField(
         controller: _propertyDescriptionController,
         decoration: InputDecoration(
@@ -596,7 +574,7 @@ Form(
       children: [
         
 
-        // Naziv nekretnine
+      
         TextFormField(
           controller: _propertyTitleController,
           decoration: InputDecoration(
@@ -615,7 +593,7 @@ Form(
         ),
         const SizedBox(height: 16),
 
-        // Cijena i kvadratura
+      
         Row(
           children: [
             Expanded(
@@ -661,7 +639,7 @@ Form(
         ),
         const SizedBox(height: 16),
 
-        // Broj soba i broj spavaćih soba
+       
         Row(
           children: [
             Expanded(
@@ -954,24 +932,7 @@ tipoviAkcijeData.isEmpty
   ),
 )
 ,), SizedBox(height: 10),
-/*ElevatedButton.icon(
-  onPressed: () async {
-    base64Image = await pickAndEncodeImage();
-     
-    setState(() {}); // da bi UI reagovao (npr. da se prikaže preview)
-  },
-  icon: Icon(Icons.image, color: Colors.white),
-  label: Text('Dodaj sliku'),
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.orange,
-    foregroundColor: Colors.white,
-    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12),
-    ),
-    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-  ),
-),*/
+
 ElevatedButton.icon(
   onPressed: () async {
     final selectedImages = await pickAndEncodeImages();
@@ -1014,7 +975,7 @@ SizedBox(height: 10),
      if (_formKey.currentState!.validate()) {
       print("Forma validna");
 
-    // Provjera da li su uneseni ulica i poštanski broj
+  
     if (_nazivUliceController.text.trim().isEmpty || _postanskiController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Molimo unesite i ulicu i poštanski broj!')),
@@ -1033,7 +994,7 @@ if (base64Images == null || base64Images!.isEmpty) {
 }
 
    
-      // ➤ Provjeri postoji li lokacija već
+      
       bool lokacijaPostoji = lokacijeData?.any((lok) =>
         lok.ulica == _nazivUliceController.text.trim() &&
         lok.postanskiBroj == _postanskiController.text.trim() &&
@@ -1041,7 +1002,7 @@ if (base64Images == null || base64Images!.isEmpty) {
         lok.drzavaId == selectedDrzavaId
       ) ?? false;
 
-      // ➤ Ako ne postoji, dodaj novu lokaciju
+    
       if (!lokacijaPostoji) {
         Map<String, dynamic> novaLokacija = {
           'ulica': _nazivUliceController.text.trim(),
@@ -1053,7 +1014,7 @@ if (base64Images == null || base64Images!.isEmpty) {
         await _lokacijeProvider.insert(novaLokacija);
       }
 
-      // ➤ Učitaj ažurirane lokacije
+     
       var tmpLokacijeData = await _lokacijeProvider.get(null);
       setState(() {
         lokacijeData = tmpLokacijeData!;
@@ -1074,7 +1035,7 @@ for (var lokacija in tmpLokacijeData) {
     print("LokacijaId: ${lokacija.lokacijaId}");
 
     lokacijaId = lokacija.lokacijaId;
-    break; // prekidamo petlju jer smo našli lokaciju
+    break; 
   }
 }
 
@@ -1084,7 +1045,7 @@ if (lokacijaId == null) {
   print("ℹ️ Pohranjen lokacijaId: $lokacijaId");
 }
 
-      // ➤ Nastavi sa dodavanjem nekretnine
+      
       DateTime currentDate = DateTime.now();
       String iso8601Date = currentDate.toIso8601String();
 
@@ -1093,7 +1054,7 @@ if (lokacijaId == null) {
         'korisnikId': korisnikId(),
         'tipNekretnineId': selectedPropertyTypeId,
         'kategorijaId': 1,
-        'lokacijaId': lokacijaId, // Koristi pronađeni lokacijaId ili 1 ako nije pronađen
+        'lokacijaId': lokacijaId, 
         'datumDodavanja': iso8601Date,
         'datumIzmjene': iso8601Date,
         'cijena': double.tryParse(_propertyPriceController.text) ?? 0.0,
@@ -1128,9 +1089,7 @@ propertyData.forEach((key, value) {
 
         await _nekretninaTipAkcijeProvider.insert(nekrTipAkcijeData);
 
-       /*if (base64Image != null && base64Image!.isNotEmpty) {
-  await uploadImageToApi(Future.value(novaNekretninaId));
-       }*/
+       
       for (var base64Image in base64Images) {
       await uploadSingleImage(base64Image, novaNekretninaId);
     }
@@ -1161,7 +1120,7 @@ propertyData.forEach((key, value) {
         }
 
 
-        // ➤ Reset forme i polja
+ 
         _propertyDescriptionController.clear();
         _propertyPriceController.clear();
         _propertykvadraturaController.clear();
@@ -1195,8 +1154,8 @@ propertyData.forEach((key, value) {
    icon: Icon(Icons.add, color: Colors.white),
   label: Text('Dodaj nekretninu'),
   style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.blue, // Plava pozadina
-    foregroundColor: Colors.white, // Boja teksta i ikone
+    backgroundColor: Colors.blue, 
+    foregroundColor: Colors.white,
     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(12),
@@ -1236,7 +1195,7 @@ Future<void> uploadSingleImage(String base64Image, int nekretninaId) async {
     String password = Authorization.password ?? "";
 
     HttpClient client = HttpClient();
-    // Dozvoli nevalidan sertifikat (npr. za localhost)
+   
     client.badCertificateCallback =
         (X509Certificate cert, String host, int port) => true;
 
@@ -1268,9 +1227,9 @@ Future<void> uploadSingleImage(String base64Image, int nekretninaId) async {
 }
   Future<void> uploadImageToApi(Future<int?> nekretninaIdFuture) async {
     try {
-      String base64Image = await pickAndEncodeImage(); // Wait for the result
+      String base64Image = await pickAndEncodeImage(); 
       int? nekretninaId =
-          await nekretninaIdFuture; // Await the result of the Future
+          await nekretninaIdFuture; 
 
       print('BASE64: $base64Image');
 
@@ -1303,7 +1262,7 @@ Future<void> uploadSingleImage(String base64Image, int nekretninaId) async {
         print('Image upload failed. Status code: ${response.statusCode}');
       }
 
-      // Close the client
+      
       client.close();
     } catch (e) {
       print('Error during image upload: $e');
@@ -1315,21 +1274,21 @@ Future<void> uploadSingleImage(String base64Image, int nekretninaId) async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      // Read the file as bytes
+     
       Uint8List imageBytes = await pickedFile.readAsBytes();
 
-      // Convert the bytes to base64
+     
       String base64Image = base64Encode(imageBytes);
 
       return base64Image.toString();
     } else {
       print('No image selected.');
-      return ''; // or handle accordingly
+      return ''; 
     }
   }
   Future<List<String>> pickAndEncodeImages() async {
   final picker = ImagePicker();
-  final pickedFiles = await picker.pickMultiImage(); // omogući više slika
+  final pickedFiles = await picker.pickMultiImage(); 
 
   if (pickedFiles.isNotEmpty) {
     List<String> base64Images = [];

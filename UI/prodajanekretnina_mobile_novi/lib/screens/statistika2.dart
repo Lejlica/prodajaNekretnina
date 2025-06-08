@@ -2,50 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:prodajanekretnina_mobile_novi/models/agencija.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/agencije_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/models/korisnikAgencija.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnikAgencija_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnici_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/models/search_result.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:prodajanekretnina_mobile_novi/models/drzave.dart';
-import 'package:prodajanekretnina_mobile_novi/models/gradovi.dart';
-import 'package:crypto/crypto.dart';
-import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
-
-import 'package:prodajanekretnina_mobile_novi/models/nekretninaAgenti.dart';
-
-
-import 'package:prodajanekretnina_mobile_novi/models/search_result.dart';
-import 'package:prodajanekretnina_mobile_novi/models/slike.dart';
-import 'package:prodajanekretnina_mobile_novi/models/tipoviNekretnina.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/drzave_provide.dart';
-
-import 'package:prodajanekretnina_mobile_novi/providers/gradovi_provider.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-
-import 'package:prodajanekretnina_mobile_novi/providers/korisnici_provider.dart';
 import 'dart:convert';
-import 'package:prodajanekretnina_mobile_novi/providers/nekretninaAgenti_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/lokacije_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/nekretnine_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/tipoviNekretnina_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/glavni_ekran.dart';
 import 'package:provider/provider.dart';
-
-import 'package:prodajanekretnina_mobile_novi/providers/slike_provider.dart';
-import '../utils/util.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 
 class SalesStatisticssScreen extends StatefulWidget {
@@ -56,13 +18,13 @@ class SalesStatisticssScreen extends StatefulWidget {
 }
 
 class _SalesStatisticssScreenState extends State<SalesStatisticssScreen> {
-  //final _formKey = GlobalKey<FormBuilderState>();
+  
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;
   late AgencijaProvider _agencijaProvider;
   late KorisnikAgencijaProvider _korisnikAgencijaProvider;
   bool isLoading = true;
- // SearchResult<Korisnik>? korisniciResult;
+
    
     List<dynamic> korisniciData = [];
      List<dynamic> agencijeData = [];
@@ -84,9 +46,9 @@ Future<void> _loadSalesData() async {
   _agencijaProvider = context.read<AgencijaProvider>();
   _korisnikAgencijaProvider = context.read<KorisnikAgencijaProvider>();
 
-  await initForm();         // <- prvo učitaj sve potrebne podatke
-  await initSalesData();    // <- tek onda izračunaj prodaje
-  setState(() {});          // <- osvježi UI
+  await initForm();         
+  await initSalesData();    
+  setState(() {});          
 }
 
 
@@ -105,7 +67,7 @@ Future<void> _loadSalesData() async {
     print("tmpAgencijeData $tmpAgencijeData");
     print("tmpKorisniciAgencijeData $tmpKorisniciAgencijeData");
 
-    // ⬇⬇⬇ OVO JE NAJVAŽNIJE ⬇⬇⬇
+  
     setState(() {
       korisniciData = tmpKorisniciData!;
     agencijeData = tmpAgencijeData!;
@@ -169,12 +131,7 @@ Future<void> _loadSalesData() async {
     return totalSales;
   }
 
-  /*final Map<String?, int> salesData = {
-    'Agencija 1': 20,
-    'Agencija 2': 50,
-    'Agencija 3': 30,
-    // Dodajte stvarne podatke o prodaji za svaku agenciju
-  };*/
+  
   Map<int?, int> salesData = {};
   Future<void> initSalesData() async {
     for (Agencija agencija in agencijeData ?? []) {
@@ -182,7 +139,7 @@ Future<void> _loadSalesData() async {
       salesData[agencijaId] = Saberi(agencijaId) ?? 0;
     }
 
-    // Opcionalno: Ako želite osvježiti widget nakon što se podaci popune, koristite setState
+    
     setState(() {});
   }
 
@@ -198,8 +155,8 @@ Future<void> _loadSalesData() async {
   }
 
   return ListView.builder(
-    shrinkWrap: true, // ako se koristi unutar drugog scrollable widgeta kao što je Column
-    physics: const NeverScrollableScrollPhysics(), // ako je deo većeg skrolabilnog dela
+    shrinkWrap: true, 
+    physics: const NeverScrollableScrollPhysics(), 
     itemCount: agencijeNazivi.length,
     itemBuilder: (context, index) {
       return Container(

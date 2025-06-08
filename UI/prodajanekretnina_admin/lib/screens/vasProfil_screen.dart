@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:prodajanekretnina_admin/models/drzave.dart';
 import 'package:prodajanekretnina_admin/models/gradovi.dart';
 import 'package:crypto/crypto.dart';
 import 'package:prodajanekretnina_admin/models/korisnici.dart';
-
 import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_admin/models/lokacije.dart';
 import 'package:prodajanekretnina_admin/models/nekretnine.dart';
-
 import 'package:prodajanekretnina_admin/models/search_result.dart';
 import 'package:prodajanekretnina_admin/models/slike.dart';
 import 'package:prodajanekretnina_admin/models/tipoviNekretnina.dart';
 import 'package:prodajanekretnina_admin/providers/drzave_provide.dart';
-
 import 'package:prodajanekretnina_admin/providers/gradovi_provider.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-
 import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
 import 'dart:convert';
 import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
@@ -31,13 +25,6 @@ import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
 import '../utils/util.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 
 class VasProfilScreen extends StatefulWidget {
@@ -55,29 +42,16 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;
-  late TipoviNekretninaProvider _tipoviNekretninaProvider;
-  late LokacijeProvider _lokacijeProvider;
-  // late KupciProvider _kupciProvider;
-  late GradoviProvider _gradoviProvider;
-  late DrzaveProvider _drzaveProvider;
-  late NekretnineProvider _nekretnineProvider;
-  late SlikeProvider _slikeProvider;
-
-  late NekretninaAgentiProvider _nekretninaAgentiProvider;
-
   late TextEditingController _imeController;
   late TextEditingController _prezimeController;
   late TextEditingController _telefonController;
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
-  late TextEditingController _passwordPotvrdaController;
   late TextEditingController _korisnickoImeController;
   bool isLoading = true;
-
   SearchResult<Korisnik>? korisniciResult;
   SearchResult<TipNekretnine>? tipoviResult;
   SearchResult<Lokacija>? lokacijeResult;
-
   SearchResult<Grad>? gradoviResult;
   SearchResult<Drzava>? drzaveResult;
   SearchResult<Slika>? slikeResult;
@@ -93,7 +67,6 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
     _emailController = TextEditingController();
     _telefonController = TextEditingController();
     _passwordController = TextEditingController();
-    _passwordPotvrdaController = TextEditingController();
     _imeController = TextEditingController();
     _prezimeController = TextEditingController();
 
@@ -112,15 +85,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
       'korisnikAgentId': agent?.korisnikId.toString()
     };
 
-    _nekretnineProvider = NekretnineProvider();
-    // _kupciProvider = context.read<KupciProvider>();
     _korisniciProvider = context.read<KorisniciProvider>();
-    _tipoviNekretninaProvider = context.read<TipoviNekretninaProvider>();
-    _lokacijeProvider = context.read<LokacijeProvider>();
-
-    _gradoviProvider = context.read<GradoviProvider>();
-    _drzaveProvider = context.read<DrzaveProvider>();
-    _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
     initForm();
   }
 
@@ -163,25 +128,23 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
 
                   String username = Authorization.username ?? "";
 
-                  // Podaci su dohvaćeni, možete ih koristiti
+                 
                   Korisnik? kora = korisnikk();
                   bajtovii = kora!.bajtoviSlike.toString();
                   bytes = base64.decode(bajtovii ?? '');
                   print("bytes $bytes");
-                  // Inicijalizacija kontrolera s podacima korisnika
+                  
                   _korisnickoImeController.text =
                       kora.korisnickoIme.toString();
                   _emailController.text = kora.email.toString();
                   _telefonController.text = kora.telefon.toString();
-                  // _passwordController.text = kora!.password.toString();
-                  // _passwordPotvrdaController.text =
-                  //kora!.passwordPotvrda.toString();
+                 
                   _imeController.text = kora.ime.toString();
                   _prezimeController.text = kora.prezime.toString();
-                  // Vratite željeni widget koji koristi inicijalizirane kontrolere
+                  
                   return _formBuild();
                 } else {
-                  // Podaci se još uvijek dohvaćaju
+               
                   return const CircularProgressIndicator();
                 }
               },
@@ -239,17 +202,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
     return digest.toString();
   }
 
-  /* Korisnik? kora = korisnikk();
-        print("kuki ${kora}");
-        _korisnickoImeController =
-            TextEditingController(text: kora!.korisnickoIme);
-        _emailController = TextEditingController(text: kora!.email);
-        _telefonController = TextEditingController(text: kora!.telefon);
-        _passwordController = TextEditingController(text: kora!.password);
-        _passwordPotvrdaController =
-            TextEditingController(text: kora!.passwordPotvrda);
-        _imeController = TextEditingController(text: kora!.ime);
-        _prezimeController = TextEditingController(text: kora!.prezime);*/
+  
   String? bajtovi() {
     List<dynamic> filteredData = data.result.where((korisnik) {
       print('Korisnickooooime: ${korisnik.korisnickoIme}');
@@ -267,7 +220,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
   }
 
   FormBuilder _formBuild() {
-    Korisnik? kora = korisnikk();
+
     return FormBuilder(
       key: _formKey,
       initialValue: _initialValue,
@@ -612,7 +565,11 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                             ],
                           );
                         },
-                      );
+                      ).then((_) async {
+  // Ovdje se izvršava kod nakon što se zatvori dijalog
+  await initForm(); // ponovo učitaj podatke
+  setState(() {});  // osvježi UI
+});
                                         },
                     
                      icon: const Icon(Icons.save_alt, size: 20),
@@ -688,7 +645,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
       return base64Image.toString();
     } else {
       print('No image selected.');
-      return ''; // or handle accordingly
+      return ''; 
     }
   }
 }

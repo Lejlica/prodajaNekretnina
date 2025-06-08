@@ -4,27 +4,20 @@ import 'package:prodajanekretnina_admin/screens/assigned_proptoagent.dart';
 import 'package:provider/provider.dart';
 import 'package:prodajanekretnina_admin/main.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
-import 'package:prodajanekretnina_admin/main.dart';
 import 'package:prodajanekretnina_admin/models/korisnici.dart';
-import 'package:prodajanekretnina_admin/screens/dodaj_agenta_screen.dart';
 import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_admin/providers/korisnici_uloge_provider.dart';
 import 'package:prodajanekretnina_admin/screens/dodaj_nekr2.dart';
-import 'package:prodajanekretnina_admin/screens/dodaj_uredi_nekretninu.dart';
-
 import '../utils/util.dart';
 import 'package:prodajanekretnina_admin/screens/nekretnine_lista_screen.dart';
 import 'package:prodajanekretnina_admin/screens/rijeseni_problemi.dart';
 import 'package:prodajanekretnina_admin/screens/vasProfil_screen.dart';
 import 'package:prodajanekretnina_admin/screens/zahtjevi_za_prodaju.dart';
 import 'package:prodajanekretnina_admin/screens/zahtjevi_za_obilazak_detalji.dart';
-import 'package:prodajanekretnina_admin/screens/zahtjevi_za_obilazak.dart';
 import 'package:prodajanekretnina_admin/screens/zahtjevi_za_iznajmljivanje.dart';
 import 'package:prodajanekretnina_admin/screens/prijavljeni_problemi.dart';
-import 'package:prodajanekretnina_admin/screens/statistika_agent_screen.dart';
 import 'package:prodajanekretnina_admin/screens/statistika2.dart';
 import 'package:prodajanekretnina_admin/screens/izvjestajProdaja_screen.dart';
-
 import 'package:prodajanekretnina_admin/screens/lista_agenata_screen.dart';
 
 class MasterScreenWidget extends StatefulWidget {

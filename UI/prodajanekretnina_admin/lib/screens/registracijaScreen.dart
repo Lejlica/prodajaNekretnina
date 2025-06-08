@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:http_parser/http_parser.dart';
 import 'dart:ui';  // za ImageFilter
-
 import 'package:prodajanekretnina_admin/models/drzave.dart';
 import 'package:prodajanekretnina_admin/models/gradovi.dart';
-
 import 'package:prodajanekretnina_admin/models/korisnici.dart';
-
 import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_admin/models/lokacije.dart';
 import 'package:prodajanekretnina_admin/models/nekretnine.dart';
@@ -17,28 +13,19 @@ import 'package:prodajanekretnina_admin/models/tipoviNekretnina.dart';
 import 'package:prodajanekretnina_admin/models/korisnici_uloge.dart';
 import 'package:prodajanekretnina_admin/providers/drzave_provide.dart';
 import 'package:prodajanekretnina_admin/providers/gradovi_provider.dart';
-
 import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_admin/providers/korisnici_uloge_provider.dart';
 import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
 import 'package:prodajanekretnina_admin/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/nekretnine_provider.dart';
 import 'package:prodajanekretnina_admin/providers/tipoviNekretnina_provider.dart';
-import 'package:prodajanekretnina_admin/screens/glavni_ekran.dart';
 import 'package:prodajanekretnina_admin/main.dart';
-
 import 'package:provider/provider.dart';
 import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
 import '../utils/util.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 
 class RegistracijaScreen extends StatefulWidget {
@@ -68,15 +55,8 @@ class _RegistracijaScreenState extends State<RegistracijaScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;
-  late TipoviNekretninaProvider _tipoviNekretninaProvider;
-  late LokacijeProvider _lokacijeProvider;
   String? selectedImagePath;
-  late GradoviProvider _gradoviProvider;
-  late DrzaveProvider _drzaveProvider;
-  late NekretnineProvider _nekretnineProvider;
-  late SlikeProvider _slikeProvider;
   late KorisniciUlogeProvider _korisniciUlogeProvider;
-  late NekretninaAgentiProvider _nekretninaAgentiProvider;
   bool isLoading = true;
 
   SearchResult<Korisnik>? korisniciResult;
@@ -108,15 +88,11 @@ class _RegistracijaScreenState extends State<RegistracijaScreen> {
       'korisnikAgentId': agent?.korisnikId.toString()
     };
 
-    _nekretnineProvider = NekretnineProvider();
+   
 
     _korisniciProvider = context.read<KorisniciProvider>();
-    _tipoviNekretninaProvider = context.read<TipoviNekretninaProvider>();
-    _lokacijeProvider = context.read<LokacijeProvider>();
     _korisniciUlogeProvider = KorisniciUlogeProvider();
-    _gradoviProvider = context.read<GradoviProvider>();
-    _drzaveProvider = context.read<DrzaveProvider>();
-    _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
+   
     initForm();
   }
 

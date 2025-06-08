@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:prodajanekretnina_admin/models/drzave.dart';
 import 'package:prodajanekretnina_admin/models/gradovi.dart';
 import 'package:prodajanekretnina_admin/models/kategorijeNekretnina.dart';
@@ -26,21 +25,10 @@ import 'package:prodajanekretnina_admin/providers/nekretnine_provider.dart';
 import 'package:prodajanekretnina_admin/providers/status_provider.dart';
 import 'package:prodajanekretnina_admin/providers/problemi_provider.dart';
 import 'package:prodajanekretnina_admin/providers/tipoviNekretnina_provider.dart';
-import 'package:prodajanekretnina_admin/screens/glavni_ekran.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
 import '../utils/util.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'dart:typed_data';
 
 class PrijavljeniProblemiScreen extends StatefulWidget {
   Problem? problem;

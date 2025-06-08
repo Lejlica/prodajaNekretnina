@@ -4,7 +4,6 @@ import 'package:prodajanekretnina_admin/models/korisnikAgencija.dart';
 import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_admin/models/nekretninaTipAkcije.dart';
 import 'package:prodajanekretnina_admin/models/nekretnine.dart';
-import 'package:prodajanekretnina_admin/models/obilazak.dart';
 import 'package:prodajanekretnina_admin/models/korisnici.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
 import 'package:prodajanekretnina_admin/models/slike.dart';
@@ -22,16 +21,13 @@ import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:prodajanekretnina_admin/models/lokacije.dart';
 import 'package:prodajanekretnina_admin/models/gradovi.dart';
-
 import 'package:prodajanekretnina_admin/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/gradovi_provider.dart';
 import 'package:prodajanekretnina_admin/providers/tipoviNekretnina_provider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../utils/util.dart';
 
 class ZahtjeviZaIznajmljivanjeDetaljiScreen extends StatefulWidget {
@@ -62,6 +58,7 @@ class _ZahtjeviZaIznajmljivanjeDetaljiScreenState
   SearchResult<Lokacija>? lokacijeResult;
 List<int> nekretninaIdAgencije = [];
   late GradoviProvider _gradoviProvider;
+   List<int> agentiAgencije = [];
   SearchResult<Grad>? gradoviResult;
 
   bool isLoading = true;
@@ -341,6 +338,7 @@ int ulogaId = 0;
         korisniciResult: korisniciResult,
         nekretnineProvider: _nekretnineProvider,
         ulogaId: ulogaId,
+        agentiAgencije: agentiAgencije,
       ),
     ),
   );
@@ -400,6 +398,7 @@ int ulogaId = 0;
         korisniciResult: korisniciResult,
         nekretnineProvider: _nekretnineProvider,
         ulogaId: ulogaId,
+        agentiAgencije: agentiAgencije,
       ),
     ),
   );
@@ -545,7 +544,7 @@ int? agencijaIdd() {
   }
 List<int> NadjiNekretnineZaAgenciju() {
   // 1. Nađi sve korisnike koji pripadaju agenciji
-  List<int> agentiAgencije = korisnikAgencijaResult!.result
+   agentiAgencije = korisnikAgencijaResult!.result
       .where((entry) => entry.agencijaId == pripadajucaAgencija)
       .map((entry) => entry.korisnikId!)
       .toList();
@@ -617,7 +616,7 @@ int ulogaId = 0;
 
   late GradoviProvider _gradoviProvider;
   SearchResult<Grad>? gradoviResult;
-
+final List<int> agentiAgencije;
   bool isLoading = true;
 
   NekretninaDetailScreen({super.key, 
@@ -625,6 +624,7 @@ int ulogaId = 0;
     required this.korisniciResult,
     required this.nekretnineProvider,
 required this.ulogaId,
+required this.agentiAgencije,
     //required this.tipNekretnineResult,
   }) : _nekretninaAgentiProvider = NekretninaAgentiProvider();
   void _launchEmail(int korisnikId) async {
@@ -664,96 +664,7 @@ String? selectedAgentId;
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 10),
-                    /*Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Informacije o nekretnini',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Text('Nekretnina ID: ${nekretnina.nekretninaId}'),
-                            Text(
-                                'Datum dodavanja: ${_formatDate(nekretnina.datumDodavanja)}'),
-                            Text(
-                                'Datum izmjene: ${_formatDate(nekretnina.datumIzmjene)}'),
-                            Text('Tip akcije: Prodaja'),
-                            Text('Cijena: ${nekretnina.cijena}'),
-                            Text(
-                                'Odobrena: ${nekretnina.isOdobrena == true ? 'Odobrena' : 'Nije odobrena'}'),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 20),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Informacije o prodavcu',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                                'Ime i prezime: ${_getKorisnikName(nekretnina.korisnikId)}'),
-                            Text('Email: ${_getEmail(nekretnina.korisnikId)}'),
-                            Text(
-                                'Broj telefona: ${_getBrTel(nekretnina.korisnikId)}'),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: FormBuilderDropdown<String>(
-                                name: 'korisnikId',
-                                decoration: InputDecoration(
-                                  labelText: 'Dodajte agenta za nekretninu',
-                                  suffix: IconButton(
-                                    icon: const Icon(Icons.close),
-                                    onPressed: () {
-                                      _formKey
-                                          .currentState!.fields['korisnikId']
-                                          ?.reset();
-                                    },
-                                  ),
-                                  hintText: 'Odaberite agenta',
-                                ),
-                                onChanged: (newValue) async {
-                                  Map<String, dynamic> request = {
-                                    'korisnikId': newValue,
-                                    'nekretninaId': nekretnina.nekretninaId,
-                                  };
-                                  print('new value ${newValue}');
-                                  print('new value ${request}');
-                                  var agentId = request['korisnikId'];
-                                  if (agentId != null) {
-                                    await _nekretninaAgentiProvider
-                                        .insert(request);
-                                  }
-                                },
-                                items: korisniciResult?.result
-                                        .map((Korisnik k) => DropdownMenuItem(
-                                              alignment:
-                                                  AlignmentDirectional.center,
-                                              value: k.korisnikId.toString(),
-                                              child: Text(k.ime.toString()),
-                                            ))
-                                        .toList() ??
-                                    [],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),*/
+                  
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -1127,12 +1038,14 @@ String? selectedAgentId;
       selectedAgentId = newValue;
     
   },
-  items: korisniciResult?.result.map((Korisnik k) {
-    return DropdownMenuItem(
-      value: k.korisnikId.toString(),
-      child: Text('${k.ime} ${k.prezime}'),
-    );
-  }).toList() ?? [],
+  items: korisniciResult?.result
+        .where((k) => agentiAgencije.contains(k.korisnikId))
+        .map((Korisnik k) => DropdownMenuItem<String>(
+              alignment: AlignmentDirectional.center,
+              value: k.korisnikId.toString(),
+              child: Text(k.ime ?? ''),
+            ))
+        .toList() ?? [],
 ),
             ),
           ],
@@ -1207,6 +1120,7 @@ String? selectedAgentId;
                       'tipNekretnineId': nekretnina.tipNekretnineId,
                       'datumDodavanja': nekretnina.datumDodavanja,
                       'datumIzmjene': nekretnina.datumIzmjene,
+                      'stateMachine':'draft'
                     };
 
                     var result = await nekretnineProvider.update(

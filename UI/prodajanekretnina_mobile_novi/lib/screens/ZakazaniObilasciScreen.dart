@@ -1,24 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:prodajanekretnina_mobile_novi/models/kupci.dart';
-import 'package:prodajanekretnina_mobile_novi/models/nekretnine.dart';
 import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
-import 'package:prodajanekretnina_mobile_novi/models/slike.dart';
-import 'package:prodajanekretnina_mobile_novi/models/search_result.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/nekretnine_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/slike_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/obilazak_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/gradovi_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/kupci_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/komentariAgentima_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/screens/AgentDetaljiScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/utils/util.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/glavni_ekran.dart';
 import 'package:provider/provider.dart';
-import 'dart:convert';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:typed_data';
 import 'package:intl/intl.dart';
 
 class ZakazaniObilasciScreen extends StatefulWidget {
@@ -127,14 +116,14 @@ class _ZakazaniObilasciScreenState extends State<ZakazaniObilasciScreen> {
 
   List<Widget> buildObilasciWidgets() {
     
-    // Create a list of widgets representing obilasci details
+  
     List<Widget> obilasciWidgets = [];
 
-    // Define the desired font size
-    double fontSize = 18.0; // Change the font size as needed
+    
+    double fontSize = 18.0; 
 
     for (var obilazak in data) {
-      // Check if the obilazak belongs to the current user
+    
       if (obilazak.korisnikId == korisnikId()) {
         obilasciWidgets.add(
           Card(

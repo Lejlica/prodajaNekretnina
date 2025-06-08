@@ -3,7 +3,6 @@ using ProdajaNekretnina.Model;
 using ProdajaNekretnina.Model.Requests;
 using ProdajaNekretnina.Model.SearchObjects;
 using ProdajaNekretnina.Services;
-using ProdajaNekretnina.Services.RabbitMQ;
 
 namespace ProdajaNekretnina.Controllers
 {

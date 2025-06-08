@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:prodajanekretnina_mobile_novi/main.dart';
-import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
-
 import 'package:prodajanekretnina_mobile_novi/utils/util.dart';
-import 'package:prodajanekretnina_mobile_novi/screens/NekretnineDetaljiScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/NekretnineListScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/VasProfilScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/WishListaScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/DodajNekretninuScreen.dart';
-import 'package:prodajanekretnina_mobile_novi/screens/payment_success_page.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/ZakazaniObilasciScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/PrijavljeniProblemiScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/ObjavljeneNekretnineScreen.dart';
-import 'package:prodajanekretnina_mobile_novi/screens/RegistracijaScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/statistika2.dart';
-import 'package:prodajanekretnina_mobile_novi/screens/makePayment.dart';
 
 class MasterScreenWidget extends StatefulWidget {
   Widget? child;
@@ -127,9 +121,9 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
       style: const TextStyle(color: Colors.white, fontSize: 16),
     ),
     onTap: () {
-      Navigator.pop(context); // Zatvori drawer
+      Navigator.pop(context); 
       if (logout) {
-  _clearAppState().then((_) {
+      _clearAppState().then((_) {
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => destination),
       (Route<dynamic> route) => false,

@@ -5,7 +5,6 @@ import 'package:prodajanekretnina_admin/models/korisnikAgencija.dart';
 import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_admin/models/nekretninaTipAkcije.dart';
 import 'package:prodajanekretnina_admin/models/nekretnine.dart';
-import 'package:prodajanekretnina_admin/models/obilazak.dart';
 import 'package:prodajanekretnina_admin/models/korisnici.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
 import 'package:prodajanekretnina_admin/models/slike.dart';
@@ -20,20 +19,16 @@ import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
 import 'package:prodajanekretnina_admin/providers/tipAkcije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
-import 'package:prodajanekretnina_admin/screens/saljiMail.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:prodajanekretnina_admin/models/lokacije.dart';
 import 'package:prodajanekretnina_admin/models/gradovi.dart';
-
 import 'package:prodajanekretnina_admin/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/gradovi_provider.dart';
 import 'package:prodajanekretnina_admin/providers/tipoviNekretnina_provider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../utils/util.dart';
 
 class ZahtjeviZaProdajuDetaljiScreen extends StatefulWidget {
@@ -48,7 +43,7 @@ class ZahtjeviZaProdajuDetaljiScreen extends StatefulWidget {
 
 class _ZahtjeviZaProdajuDetaljiScreenState
     extends State<ZahtjeviZaProdajuDetaljiScreen> {
-  late ObilazakProvider _obilazakProvider;
+
   SearchResult<Nekretnina>? result;
   final TextEditingController _nekretninaIdController = TextEditingController();
   late KorisniciProvider _korisniciProvider;
@@ -57,6 +52,7 @@ class _ZahtjeviZaProdajuDetaljiScreenState
   late NekretninaAgentiProvider _nekretninaAgentiProvider;
   late NekretnineProvider _nekretnineProvider;
   late TipAkcijeProvider _tipAkcijeProvider;
+  List<int> agentiAgencije = [];
   late TipoviNekretninaProvider _tipoviNekretninaProvider;
   late LokacijeProvider _lokacijeProvider;
   SearchResult<Lokacija>? lokacijeResult;
@@ -80,7 +76,6 @@ List<int> nekretninaIdAgencije = [];
     _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
     _korisniciProvider = context.read<KorisniciProvider>();
     _korisniciUlogeProvider = context.read<KorisniciUlogeProvider>();
-    _obilazakProvider = context.read<ObilazakProvider>();
     _nekretninaTipAkcijeProvider = context.read<NekretninaTipAkcijeProvider>();
     _nekretnineProvider = context.read<NekretnineProvider>();
     _tipAkcijeProvider = context.read<TipAkcijeProvider>();
@@ -116,7 +111,6 @@ List<int> nekretninaIdAgencije = [];
       List<int> nekretnineIdsForProdaja = [];
 NadjiKojojAgencijiPripadaKorisnik();
 nekretninaIdAgencije = NadjiNekretnineZaAgenciju();
-      // Iterate through tipAkcije items to find matching nekretninaId values
       for (var nekretninaTipAkcije in nekretninaTipAkcijeResult!.result) {
         if (nekretninaTipAkcije.tipAkcijeId == 1) {
           nekretnineIdsForProdaja.add(nekretninaTipAkcije.nekretninaId!);
@@ -214,21 +208,21 @@ print("Nekretnine koje pripadaju agenciji: $filtriraneNekretnineIds");
     if (await canLaunch('mailto:$email')) {
       await launch('mailto:$email');
     } else {
-      // Ne može se otvoriti email, dodajte odgovarajući tretman ovdje
+   
     }
   }
 
   String _formatDate(String? dateString) {
     if (dateString == null) {
-      return 'N/A'; // Return 'N/A' if the date is null
+      return 'N/A'; 
     }
 
-    DateTime date = DateTime.parse(dateString); // Parse the String to DateTime
+    DateTime date = DateTime.parse(dateString); 
     return DateFormat('dd.MM.yyyy. HH:mm').format(date)+ 'h';
   }
 
   Widget _buildBody() {
-    // Filter nekretnine based on nekretninaTipAkcijeResult
+    
     List<Nekretnina> filteredNekretnine = result?.result
             .where((nekretnina) => nekretninaTipAkcijeResult!.result.any(
                 (tipAkcije) =>
@@ -303,19 +297,7 @@ print("Nekretnine koje pripadaju agenciji: $filtriraneNekretnineIds");
                       .map(
                         (Nekretnina e) => DataRow(
                           onSelectChanged: (selected) async{
-                            /*if (selected == true) {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => NekretninaDetailScreen(
-                                    nekretnina: e,
-                                    korisniciResult: korisniciResult,
-                                    nekretnineProvider: _nekretnineProvider,
-ulogaId: ulogaId,
-                                    //tipNekretnineResult: tipoviNekretninaResult,
-                                  ),
-                                ),
-                              );
-                            }*/
+                           
                             if (selected == true) {
   var result = await Navigator.of(context).push(
     MaterialPageRoute(
@@ -324,13 +306,14 @@ ulogaId: ulogaId,
         korisniciResult: korisniciResult,
         nekretnineProvider: _nekretnineProvider,
         ulogaId: ulogaId,
+        agentiAgencije: agentiAgencije,
       ),
     ),
   );
 
   if (result == true) {
-    // osvježi podatke iz providera ili API-ja
-     await initForm(); // funkcija koja ponovo učitava listu
+  
+     await initForm(); 
     setState(() {});
   }
 }
@@ -355,9 +338,9 @@ ulogaId: ulogaId,
                                   '${getMail(e.korisnikId)}',
                                   style: const TextStyle(
                                     color: Colors
-                                        .blue, // Postavite boju teksta na plavu ili drugu po želji
+                                        .blue, 
                                     decoration: TextDecoration
-                                        .underline, // Dodajte podcrtavanje
+                                        .underline, 
                                   ),
                                 ),
                               ),
@@ -376,7 +359,7 @@ ulogaId: ulogaId,
           icon: Icon(Icons.arrow_forward, color: Colors.blue),
           tooltip: 'Odobri zahtjev',
         onPressed: () async {
-  // Čekaj da se korisnik vrati sa detaljnog ekrana i dobije rezultat
+ 
   final result = await Navigator.of(context).push(
     MaterialPageRoute(
       builder: (context) => NekretninaDetailScreen(
@@ -384,6 +367,7 @@ ulogaId: ulogaId,
         korisniciResult: korisniciResult,
         nekretnineProvider: _nekretnineProvider,
         ulogaId: ulogaId,
+        agentiAgencije: agentiAgencije,
       ),
     ),
   );
@@ -471,7 +455,7 @@ String? selectedAgentId;
   Widget _buildKorisnikNameCell(int? korisnikId) {
     Korisnik? korisnik = korisniciResult?.result.firstWhere(
       (element) => element.korisnikId == korisnikId,
-      // Default value
+     
     );
 
     return Text('${korisnik?.ime} ${korisnik?.prezime}');
@@ -480,7 +464,7 @@ String? selectedAgentId;
   Widget _buildKorisnikEmailCell(int? korisnikId) {
     Korisnik? korisnik = korisniciResult?.result.firstWhere(
       (element) => element.korisnikId == korisnikId,
-      // Default value
+    
     );
 
     return Text('${korisnik?.email}');
@@ -489,7 +473,7 @@ String? selectedAgentId;
   String? getMail(int? korisnikId) {
     Korisnik? korisnik = korisniciResult?.result.firstWhere(
       (element) => element.korisnikId == korisnikId,
-      // Default value
+      
     );
 
     return korisnik?.email.toString();
@@ -520,8 +504,8 @@ int? agencijaIdd() {
     }
   }
 List<int> NadjiNekretnineZaAgenciju() {
-  // 1. Nađi sve korisnike koji pripadaju agenciji
-  List<int> agentiAgencije = korisnikAgencijaResult!.result
+
+  agentiAgencije = korisnikAgencijaResult!.result
       .where((entry) => entry.agencijaId == pripadajucaAgencija)
       .map((entry) => entry.korisnikId!)
       .toList();
@@ -559,25 +543,7 @@ int? NadjiKojojAgencijiPripadaKorisnik() {
     }
     return pripadajucaAgencija ;
   }
-  Widget _buildAgentNameCell(int? nekretninaId) {
-    NekretninaAgenti? agent = nekretninaAgentiResult?.result.firstWhere(
-      (element) => element.nekretninaId == nekretninaId,
-    );
-
-    if (agent != null) {
-      Korisnik? korisnik = korisniciResult?.result.firstWhere(
-        (element) => element.korisnikId == agent.korisnikId,
-      );
-
-      if (korisnik != null) {
-        return Text('${korisnik.ime} ${korisnik.prezime}');
-      } else {
-        return const Text('Unknown Agent');
-      }
-    } else {
-      return const Text('Unknown Agent');
-    }
-  }
+  
    int id=0;
   Korisnik? korisnikk() {
     
@@ -615,19 +581,16 @@ int ulogaId = 0;
 }
 
 class NekretninaDetailScreen extends StatelessWidget {
+
   final _formKey = GlobalKey<FormBuilderState>();
   final Nekretnina nekretnina;
-
   final SearchResult<Korisnik>? korisniciResult;
   final NekretnineProvider nekretnineProvider;
   final NekretninaAgentiProvider _nekretninaAgentiProvider;
-int ulogaId;
-  late LokacijeProvider _lokacijeProvider;
+  final List<int> agentiAgencije;
+  int ulogaId;
   SearchResult<Lokacija>? lokacijeResult;
-
-  late GradoviProvider _gradoviProvider;
   SearchResult<Grad>? gradoviResult;
-
   bool isLoading = true;
 
   NekretninaDetailScreen({super.key, 
@@ -635,8 +598,8 @@ int ulogaId;
     required this.korisniciResult,
     required this.nekretnineProvider,
     required this.ulogaId,
-
-    //required this.tipNekretnineResult,
+required this.agentiAgencije
+    
   }) : _nekretninaAgentiProvider = NekretninaAgentiProvider();
   void _launchEmail(int korisnikId) async {
     String email = _getEmail(korisnikId);
@@ -644,7 +607,7 @@ int ulogaId;
     if (await canLaunch('mailto:$email')) {
       await launch('mailto:$email');
     } else {
-      // Ne može se otvoriti email, dodajte odgovarajući tretman ovdje
+    
     }
   }
 String? selectedAgentId;
@@ -675,96 +638,7 @@ String? selectedAgentId;
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 10),
-                    /*Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Informacije o nekretnini',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Text('Nekretnina ID: ${nekretnina.nekretninaId}'),
-                            Text(
-                                'Datum dodavanja: ${_formatDate(nekretnina.datumDodavanja)}'),
-                            Text(
-                                'Datum izmjene: ${_formatDate(nekretnina.datumIzmjene)}'),
-                            Text('Tip akcije: Prodaja'),
-                            Text('Cijena: ${nekretnina.cijena}'),
-                            Text(
-                                'Odobrena: ${nekretnina.isOdobrena == true ? 'Odobrena' : 'Nije odobrena'}'),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 20),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Informacije o prodavcu',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                                'Ime i prezime: ${_getKorisnikName(nekretnina.korisnikId)}'),
-                            Text('Email: ${_getEmail(nekretnina.korisnikId)}'),
-                            Text(
-                                'Broj telefona: ${_getBrTel(nekretnina.korisnikId)}'),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: FormBuilderDropdown<String>(
-                                name: 'korisnikId',
-                                decoration: InputDecoration(
-                                  labelText: 'Dodajte agenta za nekretninu',
-                                  suffix: IconButton(
-                                    icon: const Icon(Icons.close),
-                                    onPressed: () {
-                                      _formKey
-                                          .currentState!.fields['korisnikId']
-                                          ?.reset();
-                                    },
-                                  ),
-                                  hintText: 'Odaberite agenta',
-                                ),
-                                onChanged: (newValue) async {
-                                  Map<String, dynamic> request = {
-                                    'korisnikId': newValue,
-                                    'nekretninaId': nekretnina.nekretninaId,
-                                  };
-                                  print('new value ${newValue}');
-                                  print('new value ${request}');
-                                  var agentId = request['korisnikId'];
-                                  if (agentId != null) {
-                                    await _nekretninaAgentiProvider
-                                        .insert(request);
-                                  }
-                                },
-                                items: korisniciResult?.result
-                                        .map((Korisnik k) => DropdownMenuItem(
-                                              alignment:
-                                                  AlignmentDirectional.center,
-                                              value: k.korisnikId.toString(),
-                                              child: Text(k.ime.toString()),
-                                            ))
-                                        .toList() ??
-                                    [],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),*/
+                    
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -781,7 +655,7 @@ String? selectedAgentId;
 
                                 if (slike != null &&
                                     slike.result.isNotEmpty) {
-                                  // Create a list of image URLs from the data
+                                 
                                   List<String> imageUrls = slike.result
                                       .where((slika) =>
                                           slika.nekretninaId ==
@@ -789,17 +663,17 @@ String? selectedAgentId;
                                       .map((slika) => slika.bajtoviSlike ?? "")
                                       .toList();
 
-                                  // Check if there are images to display in the carousel
+                                
                                   if (imageUrls.isNotEmpty) {
                                     return CarouselSlider(
                                       options: CarouselOptions(
                                         height:
-                                            200.0, // Adjust the height of the slider as needed
+                                            200.0, 
                                         autoPlay:
-                                            true, // Enable auto-playing of images
+                                            true, 
                                         enlargeCenterPage: true,
                                         viewportFraction:
-                                            0.5, // Adjust the size of the images
+                                            0.5, 
                                         aspectRatio: 16 / 9,
                                       ),
                                       items: imageUrls.map((imageUrl) {
@@ -807,7 +681,7 @@ String? selectedAgentId;
                                           builder: (BuildContext context) {
                                             return AspectRatio(
                                               aspectRatio: 16 /
-                                                  9, // Set the desired aspect ratio
+                                                  9, 
                                               child: Container(
                                                 width: MediaQuery.of(context)
                                                     .size
@@ -857,12 +731,12 @@ String? selectedAgentId;
                             children: [
                               const Icon(
                                 Icons
-                                    .local_hotel, // Hotel icon represents rooms
-                                color: Colors.blue, // Set the color to blue
+                                    .local_hotel, 
+                                color: Colors.blue, 
                               ),
                               const SizedBox(
                                   width:
-                                      8), // Adjust the space between icon and text
+                                      8), 
                               Text(
                                 'Sobe ${nekretnina.brojSoba ?? ""} ',
                                 style: const TextStyle(
@@ -889,19 +763,19 @@ String? selectedAgentId;
                                   ],
                                 )
                               : const SizedBox
-                                  .shrink(), // This will create an empty space if parkingMjesto is false
+                                  .shrink(), 
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
                               const Icon(
-                                Icons.stairs, // Hotel icon represents rooms
-                                color: Colors.blue, // Set the color to blue
+                                Icons.stairs,
+                                color: Colors.blue, 
                               ),
                               const SizedBox(
                                   width:
-                                      8), // Adjust the space between icon and text
+                                      8), 
                               Text(
                                 'Sprat ${nekretnina.sprat ?? ""} ',
                                 style: const TextStyle(
@@ -916,12 +790,12 @@ String? selectedAgentId;
                             children: [
                               const Icon(
                                 Icons
-                                    .crop_square, // Hotel icon represents rooms
-                                color: Colors.blue, // Set the color to blue
+                                    .crop_square, 
+                                color: Colors.blue,
                               ),
                               const SizedBox(
                                   width:
-                                      8), // Adjust the space between icon and text
+                                      8), 
                               Text(
                                 'Kvadratura ${nekretnina.kvadratura ?? ""} ',
                                 style: const TextStyle(
@@ -948,7 +822,7 @@ String? selectedAgentId;
                                   ],
                                 )
                               : const SizedBox
-                                  .shrink(), // This will create an empty space if parkingMjesto is false
+                                  .shrink(), 
                         ),
                       ],
                     ),
@@ -972,7 +846,7 @@ String? selectedAgentId;
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // LEFT COLUMN - PROPERTY INFO
+           
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1026,7 +900,7 @@ String? selectedAgentId;
 
             const SizedBox(width: 40),
 
-            // RIGHT COLUMN - SELLER INFO
+          
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1111,45 +985,7 @@ String? selectedAgentId;
           children: [
             Expanded(
               child: 
-              /*FormBuilderDropdown<String>(
-                validator: (value) {
-            if (value == null || value.isEmpty) {
-              return "Prazno polje";
-            }
-            return null;
-          },
-                name: 'korisnikId',
-                decoration: InputDecoration(
-                  labelText: 'Odaberite agenta',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      _formKey.currentState!.fields['korisnikId']?.reset();
-                    },
-                  ),
-                ),
-                onChanged: (newValue) async {
-                  Map<String, dynamic> request = {
-                    'korisnikId': newValue,
-                    'nekretninaId': nekretnina.nekretninaId,
-                  };
-                  print('Dodavanje agenta: $request');
-                  if (newValue != null) {
-                    await _nekretninaAgentiProvider.insert(request);
-                  }
-                },
-    
-                items: korisniciResult?.result.map((Korisnik k) {
-                  return DropdownMenuItem(
-                    alignment: AlignmentDirectional.center,
-                    value: k.korisnikId.toString(),
-                    child: Text('${k.ime} ${k.prezime}'),
-                  );
-                }).toList() ?? [],
-              ),*/
+              
               FormBuilderDropdown<String>(
   name: 'korisnikId',
   decoration: InputDecoration(
@@ -1163,12 +999,14 @@ String? selectedAgentId;
       selectedAgentId = newValue;
     
   },
-  items: korisniciResult?.result.map((Korisnik k) {
-    return DropdownMenuItem(
-      value: k.korisnikId.toString(),
-      child: Text('${k.ime} ${k.prezime}'),
-    );
-  }).toList() ?? [],
+ items: korisniciResult?.result
+        .where((k) => agentiAgencije.contains(k.korisnikId))
+        .map((Korisnik k) => DropdownMenuItem<String>(
+              alignment: AlignmentDirectional.center,
+              value: k.korisnikId.toString(),
+              child: Text(k.ime ?? ''),
+            ))
+        .toList() ?? [],
 ),
             ),
           ],
@@ -1196,7 +1034,7 @@ String? selectedAgentId;
               ? null
               : () async {
                if (selectedAgentId == null) {
-      // Prikaz poruke korisniku da mora izabrati agenta
+     
      showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -1206,7 +1044,7 @@ String? selectedAgentId;
                 actions: [
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop(); // Zatvori dijalog
+                      Navigator.of(context).pop(); 
                     },
                     child: const Text('OK'),
                   ),
@@ -1214,7 +1052,7 @@ String? selectedAgentId;
               );
             },
           );
-          return; // Prekini dalje izvršavanje
+          return;
         }
 
 
@@ -1225,7 +1063,7 @@ String? selectedAgentId;
     print('Dodavanje agenta: $request');
     try {
       await _nekretninaAgentiProvider.insert(request);
-      // Možeš dodati potvrdu ili osvježavanje
+     
     } catch (e) {
       print('Greška prilikom dodavanja agenta: $e');
     }
@@ -1243,49 +1081,17 @@ String? selectedAgentId;
                       'tipNekretnineId': nekretnina.tipNekretnineId,
                       'datumDodavanja': nekretnina.datumDodavanja,
                       'datumIzmjene': nekretnina.datumIzmjene,
+                      'stateMachine':'draft',
                     };
 
                     var result = await nekretnineProvider.update(
                       nekretnina.nekretninaId!,
                       request,
                     );
+                    Navigator.pop(context, true);
                    int korisnikId = nekretnina.korisnikId!;
-                 Korisnik? korisnik = korisniciResult!.result.firstWhere(
-  (k) => k.korisnikId == korisnikId,
-  
-);
-
-// ako je korisnik pronađen, uzmi email
-String? email = korisnik?.email;
-
-if (email != null) {
-  print('Email korisnika: $email');
-} else {
-  print('Korisnik sa ID $korisnikId nije pronađen');
-}
-                    // 2. Otvori dialog za unos maila
-    final emailModel = await showDialog<EmailModel>(
-      context: context,
-      builder: (context) => EmailInputDialog(recipientEmail: 'maric.lejla@edu.fit.ba'),
-    );
-
-    if (emailModel != null) {
-      // 3. Posalji email
-      await nekretnineProvider.sendConfirmationEmail(emailModel);
-
-      // Obavijesti korisnika
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Nekretnina odobrena i email poslan!')),
-      );
-      Navigator.pop(context, true); // Zatvori ekran i vrati true za refresh
-    }
-
-
-
-  
-
-
-
+                   Korisnik? korisnik = korisniciResult!.result.firstWhere(
+                    (k) => k.korisnikId == korisnikId);
                     print('Kliknuli ste "Odobri": $request');
                   } catch (e) {
                     print('Greška prilikom odobravanja: $e');
@@ -1336,10 +1142,10 @@ Widget _infoRow(String label, String value) {
 
   String _formatDate(String? dateString) {
     if (dateString == null) {
-      return 'N/A'; // Return 'N/A' if the date is null
+      return 'N/A'; 
     }
 
-    DateTime date = DateTime.parse(dateString); // Parse the String to DateTime
+    DateTime date = DateTime.parse(dateString); 
     return DateFormat('dd.MM.yyyy.').format(date);
   }
 
@@ -1352,16 +1158,7 @@ Widget _infoRow(String label, String value) {
     return '${korisnik?.ime} ${korisnik?.prezime}';
   }
 
-  /* String _getTipNekretnineName(int? tipNekretnineId) {
-    TipNekretnine? tipNekretnine = tipNekretnineResult?.result.firstWhere(
-      (element) => element.tipNekretnineId == tipNekretnineId,
-      // Default value
-    );
-
-    return tipNekretnine?.nazivTipa ??
-        'Unknown Type'; // Return the name or 'Unknown Type'
-  }*/
-
+  
   String _getBrTel(int? korisnikId) {
     Korisnik? korisnik = korisniciResult?.result.firstWhere(
       (element) => element.korisnikId == korisnikId,
@@ -1374,7 +1171,7 @@ Widget _infoRow(String label, String value) {
   String _getEmail(int? korisnikId) {
     Korisnik? korisnik = korisniciResult?.result.firstWhere(
       (element) => element.korisnikId == korisnikId,
-      // Default value
+     
     );
 
     return '${korisnik?.email}';

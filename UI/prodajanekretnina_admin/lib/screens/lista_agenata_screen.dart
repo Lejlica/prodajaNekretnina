@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:prodajanekretnina_admin/models/agencija.dart';
 import 'package:prodajanekretnina_admin/models/korisnikAgencija.dart';
 import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_admin/models/nekretninaTipAkcije.dart';
 import 'package:prodajanekretnina_admin/models/nekretnine.dart';
-import 'package:prodajanekretnina_admin/models/obilazak.dart';
 import 'package:prodajanekretnina_admin/models/korisnici.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
 import 'package:prodajanekretnina_admin/models/slike.dart';
@@ -19,74 +17,27 @@ import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
 import 'package:prodajanekretnina_admin/providers/tipAkcije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:prodajanekretnina_admin/models/lokacije.dart';
 import 'package:prodajanekretnina_admin/models/gradovi.dart';
 import 'package:prodajanekretnina_admin/providers/agencije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/gradovi_provider.dart';
-import 'package:prodajanekretnina_admin/screens/dodaj_agenta_screen.dart';
 import 'package:prodajanekretnina_admin/providers/tipoviNekretnina_provider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
-import 'package:intl/intl.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../utils/util.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:prodajanekretnina_admin/models/drzave.dart';
-import 'package:prodajanekretnina_admin/models/gradovi.dart';
 import 'package:prodajanekretnina_admin/models/kategorijeNekretnina.dart';
-import 'package:prodajanekretnina_admin/models/korisnici.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:prodajanekretnina_admin/models/korisnici_uloge.dart';
-import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
-import 'package:prodajanekretnina_admin/models/lokacije.dart';
-import 'package:prodajanekretnina_admin/models/nekretnine.dart';
-import 'package:prodajanekretnina_admin/models/search_result.dart';
-import 'package:prodajanekretnina_admin/models/slike.dart';
-import 'package:prodajanekretnina_admin/models/tipoviNekretnina.dart';
 import 'package:prodajanekretnina_admin/providers/drzave_provide.dart';
-import 'package:prodajanekretnina_admin/providers/gradovi_provider.dart';
 import 'package:prodajanekretnina_admin/providers/kategorijeNekretnina_provider.dart';
-import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_admin/providers/korisnici_uloge_provider.dart';
-import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
-import 'package:prodajanekretnina_admin/providers/lokacije_provider.dart';
-import 'package:prodajanekretnina_admin/providers/nekretnine_provider.dart';
-import 'package:prodajanekretnina_admin/providers/tipoviNekretnina_provider.dart';
-import 'package:prodajanekretnina_admin/providers/korisnikAgencija_provider.dart';
-import 'package:prodajanekretnina_admin/models/korisnikAgencija.dart';
-import 'package:prodajanekretnina_admin/screens/glavni_ekran.dart';
-import 'package:provider/provider.dart';
-import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
-import 'package:prodajanekretnina_admin/providers/agencije_provider.dart';
-import 'package:prodajanekretnina_admin/models/agencija.dart';
-import '../utils/util.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'dart:typed_data';
 
 class AgentCard extends StatelessWidget {
   final String ime;
@@ -427,18 +378,7 @@ class DodajAgentaScreen extends StatefulWidget {
   State<DodajAgentaScreen> createState() => _DodajAgentaScreenState();
 }
 
-/*Future<Uint8List?> pickImageFromGallery() async {
-  final picker = ImagePicker();
-  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-  if (pickedFile != null) {
-    // Read the selected image as bytes
-    Uint8List? bytes = await pickedFile.readAsBytes();
-    return bytes;
-  }
-
-  return null;
-}*/
 
 class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
@@ -861,7 +801,7 @@ return FormBuilder(
     return;
   }
 
-  // 3. Ako je sve ispravno — nastavi unos
+
   Korisnik insertedKorisnik = await _korisniciProvider.insert(request);
   int? insertedKorisnikId = insertedKorisnik.korisnikId;
   _formKey.currentState?.reset();
@@ -969,298 +909,7 @@ return FormBuilder(
         ),
       ),
     );}
-  /*FormBuilder _formBuild() {
-    String username = Authorization.username ?? "";
-    return FormBuilder(
-      key: _formKey,
-      initialValue: _initialValue,
-      child: Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              const Text(
-                "Dodaj agenta",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  
-                  fontFamily: 'Roboto',
-                  color: Colors.black,
-                ),
-              ),
-              FormBuilderTextField(
-                name: 'ime',
-                decoration: const InputDecoration(labelText: 'Ime *'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Molimo unesite neki tekst';
-                  }
-                  return null;
-                },
-              ),
-              FormBuilderTextField(
-                name: 'prezime',
-                decoration: const InputDecoration(labelText: 'Prezime *'),
-              ),
-              FormBuilderTextField(
-                name: 'email',
-                decoration: const InputDecoration(labelText: 'Email *'),
-              ),
-              FormBuilderTextField(
-                name: 'telefon',
-                decoration: const InputDecoration(
-                  labelText: 'Telefon *',
-                  helperText: 'Format: 000-000-0000',
-                  helperStyle:
-                      TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-                ),
-              ),
-              FormBuilderTextField(
-                name: 'korisnickoIme',
-                decoration: const InputDecoration(labelText: 'Korisničko ime *'),
-              ),
-              FormBuilderField(
-                        name: 'imageId',
-                        builder: ((field) {
-                          return InputDecorator(
-                            decoration: InputDecoration(
-                              labelText: 'Odaberite sliku',
-                              errorText: field.errorText,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(
-                                      4.0), // Smanjite vrednost za manje zaobljenje
-                                ),
-                                child: ListTile(
-                                  leading: const Icon(Icons.photo),
-                                  title: const Text(
-                                    "Odaberite sliku",
-                                    style: TextStyle(
-                                        fontSize:
-                                            14), // Postavite željenu veličinu fonta
-                                  ),
-                                  trailing: const Icon(Icons.file_upload),
-                                  onTap: () async {
-                                    selectedImagePath =
-                                        await pickAndEncodeImage();
-                                    setState(() {});
-                                  },
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                      ),
-              FormBuilderTextField(
-                name: 'password',
-                decoration: const InputDecoration(labelText: 'Lozinka *'),
-                obscureText: true,
-              ),
-              FormBuilderTextField(
-                name: 'passwordPotvrda',
-                decoration: const InputDecoration(labelText: 'Potvrdite lozinku *'),
-                obscureText: true,
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              Row(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        // Create a request object with form field values
-                        Map<String, dynamic> request = {
-                          'ime': _formKey.currentState?.fields['ime']?.value,
-                          'prezime':
-                              _formKey.currentState?.fields['prezime']?.value,
-                          'email':
-                              _formKey.currentState?.fields['email']?.value,
-                          'telefon':
-                              _formKey.currentState?.fields['telefon']?.value,
-                          'korisnickoIme': _formKey
-                              .currentState?.fields['korisnickoIme']?.value,
-                          'password':
-                              _formKey.currentState?.fields['password']?.value,
-                          'passwordPotvrda': _formKey
-                              .currentState?.fields['passwordPotvrda']?.value,
-                        };
-                         if (selectedImagePath != null &&
-                          selectedImagePath!.isNotEmpty) {
-                        // Dodajte podatke o slici zahtevu
-                        request['bajtoviSlike'] = selectedImagePath;
-                      }
-                        List<Korisnik> filteredKorisnici = korisniciResult
-                                ?.result
-                                .where((korisnik) =>
-                                    korisnik.korisnickoIme ==
-                                    _formKey.currentState
-                                        ?.fields['korisnickoIme']?.value)
-                                .toList() ??
-                            [];
-                        final RegExp phoneRegex =
-                            RegExp(r'^\d{3}-\d{3}-\d{4}$');
-                        if (filteredKorisnici.isEmpty) {
-                          if (phoneRegex.hasMatch(_formKey
-                              .currentState?.fields['telefon']?.value)) {
-                            Korisnik insertedKorisnik =
-                                await _korisniciProvider.insert(request);
-                            int? insertedKorisnikId;
-                            insertedKorisnikId = insertedKorisnik.korisnikId;
-                            _formKey.currentState?.reset();
-                          
-                            if (insertedKorisnikId != -1) {
-                              Map<String, dynamic> ulogeRequest = {
-                                'korisnikId': insertedKorisnikId,
-                                'ulogaId': 2,
-                              };
-
-                              // Call the insert method from korisniciUlogeProvider
-                              _korisniciUlogeProvider.insert(ulogeRequest);
-                            }
-
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text("Potvrda"),
-                                  content: SingleChildScrollView(
-                                    child: FormBuilderDropdown<String>(
-                                      name: 'korisnikAgencijaId',
-                                      decoration: InputDecoration(
-                                        labelText: 'Agencija*',
-                                        suffix: IconButton(
-                                          icon: const Icon(Icons.close),
-                                          onPressed: () {
-                                            _formKey.currentState!
-                                                .fields['korisnikAgencijaId']
-                                                ?.reset();
-                                          },
-                                        ),
-                                        hintText: 'Odaberite agenciju',
-                                      ),
-                                      onChanged: (newValue) {
-                                        _formKey.currentState
-                                            ?.fields['korisnikAgencijaId']
-                                            ?.didChange(newValue);
-                                        selectedAgencijaId = newValue ?? '';
-                                      },
-                                      items: agencijeResult?.result
-                                              .map((Agencija k) =>
-                                                  DropdownMenuItem(
-                                                    alignment:
-                                                        AlignmentDirectional
-                                                            .center,
-                                                    value:
-                                                        k.agencijaId.toString(),
-                                                    child: Text(
-                                                        k.naziv.toString()),
-                                                  ))
-                                              .toList() ??
-                                          [],
-                                    ),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Map<String, dynamic>
-                                            korisnikAgencijaRequest = {
-                                          'korisnikId': insertedKorisnikId,
-                                          'agencijaId': selectedAgencijaId,
-                                        };
-
-                                        _korisnikAgencijaProvider
-                                            .insert(korisnikAgencijaRequest);
-
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                ListaAgenataScreen(),
-                                          ),
-                                        );
-                                      },
-                                      child: const Text("OK"),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text("Upozorenje"),
-                                  content: const Text(
-                                      "Neispravan format telefona Zahtijevani format je: 000-000-0000"),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context)
-                                            .pop(); // Close the alert dialog
-                                      },
-                                      child: const Text("OK"),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text("Upozorenje"),
-                                content: const Text(
-                                    "Korisničko ime već postoji. Molimo odaberite drugo."),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Close the alert dialog
-                                    },
-                                    child: const Text("OK"),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-
-                        //_korisniciProvider.insert(request);
-                      },
-                      child: const Text('Potvrdi'),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Close the dialog
-                    },
-                    child: const Text(
-                      'Odustani',
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }*/
+ 
 
   Lokacija? lokacija;
   void getGrad() {

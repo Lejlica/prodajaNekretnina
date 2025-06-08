@@ -7,46 +7,9 @@ import 'package:prodajanekretnina_admin/providers/korisnikAgencija_provider.dart
 import 'package:prodajanekretnina_admin/models/korisnici.dart';
 import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:prodajanekretnina_admin/models/drzave.dart';
-import 'package:prodajanekretnina_admin/models/gradovi.dart';
-import 'package:crypto/crypto.dart';
-import 'package:prodajanekretnina_admin/models/korisnici.dart';
-
-import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
-import 'package:prodajanekretnina_admin/models/lokacije.dart';
-import 'package:prodajanekretnina_admin/models/nekretnine.dart';
-
-import 'package:prodajanekretnina_admin/models/search_result.dart';
-import 'package:prodajanekretnina_admin/models/slike.dart';
-import 'package:prodajanekretnina_admin/models/tipoviNekretnina.dart';
-import 'package:prodajanekretnina_admin/providers/drzave_provide.dart';
-
-import 'package:prodajanekretnina_admin/providers/gradovi_provider.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-
-import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
 import 'dart:convert';
-import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
-import 'package:prodajanekretnina_admin/providers/lokacije_provider.dart';
-import 'package:prodajanekretnina_admin/providers/nekretnine_provider.dart';
-import 'package:prodajanekretnina_admin/providers/tipoviNekretnina_provider.dart';
 import 'package:prodajanekretnina_admin/screens/glavni_ekran.dart';
 import 'package:provider/provider.dart';
-import 'package:prodajanekretnina_admin/screens/izmjena_lozinke_screen.dart';
-import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
-import '../utils/util.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 
 class SalesStatisticsScreen extends StatefulWidget {
@@ -57,7 +20,7 @@ class SalesStatisticsScreen extends StatefulWidget {
 }
 
 class _SalesStatisticsScreenState extends State<SalesStatisticsScreen> {
-  //final _formKey = GlobalKey<FormBuilderState>();
+  
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;
   late AgencijaProvider _agencijaProvider;

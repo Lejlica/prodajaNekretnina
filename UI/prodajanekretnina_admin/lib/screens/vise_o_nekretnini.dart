@@ -1,34 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
-import 'package:prodajanekretnina_admin/models/nekretninaTipAkcije.dart';
 import 'package:prodajanekretnina_admin/models/nekretnine.dart';
 import 'package:prodajanekretnina_admin/models/obilazak.dart';
-import 'package:prodajanekretnina_admin/models/korisnici.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
 import 'package:prodajanekretnina_admin/models/slike.dart';
-import 'package:prodajanekretnina_admin/models/tipAkcije.dart';
-import 'package:prodajanekretnina_admin/models/tipoviNekretnina.dart';
-import 'package:prodajanekretnina_admin/providers/nekretninaTipAkcije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/nekretnine_provider.dart';
 import 'package:prodajanekretnina_admin/providers/obilazak_provider.dart';
-import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
-import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
-import 'package:prodajanekretnina_admin/providers/tipAkcije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
-import 'package:prodajanekretnina_admin/screens/nekretnine_lista_screen.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:prodajanekretnina_admin/models/lokacije.dart';
 import 'package:prodajanekretnina_admin/models/gradovi.dart';
-
 import 'package:prodajanekretnina_admin/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/gradovi_provider.dart';
-import 'package:prodajanekretnina_admin/providers/tipoviNekretnina_provider.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../utils/util.dart';
 
 
@@ -57,12 +41,12 @@ class _ViseONekretniniScreenState extends State<ViseONekretniniScreen> {
   @override
   void initState() {
     super.initState();
-    // Inicijalizuj potrebne providere
+ 
     _lokacijeProvider = context.read<LokacijeProvider>();
     _nekretnineProvider = context.read<NekretnineProvider>();
     _gradoviProvider = context.read<GradoviProvider>();
 _obilazakProvider = context.read<ObilazakProvider>();
-    // Pozovi initForm za async učitavanje podataka
+    
     initForm();
   }
 
@@ -135,96 +119,7 @@ obilazakResult = await _obilazakProvider.get();
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 10),
-                    /*Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Informacije o nekretnini',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Text('Nekretnina ID: ${nekretnina.nekretninaId}'),
-                            Text(
-                                'Datum dodavanja: ${_formatDate(nekretnina.datumDodavanja)}'),
-                            Text(
-                                'Datum izmjene: ${_formatDate(nekretnina.datumIzmjene)}'),
-                            Text('Tip akcije: Prodaja'),
-                            Text('Cijena: ${nekretnina.cijena}'),
-                            Text(
-                                'Odobrena: ${nekretnina.isOdobrena == true ? 'Odobrena' : 'Nije odobrena'}'),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 20),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Informacije o prodavcu',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                                'Ime i prezime: ${_getKorisnikName(nekretnina.korisnikId)}'),
-                            Text('Email: ${_getEmail(nekretnina.korisnikId)}'),
-                            Text(
-                                'Broj telefona: ${_getBrTel(nekretnina.korisnikId)}'),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: FormBuilderDropdown<String>(
-                                name: 'korisnikId',
-                                decoration: InputDecoration(
-                                  labelText: 'Dodajte agenta za nekretninu',
-                                  suffix: IconButton(
-                                    icon: const Icon(Icons.close),
-                                    onPressed: () {
-                                      _formKey
-                                          .currentState!.fields['korisnikId']
-                                          ?.reset();
-                                    },
-                                  ),
-                                  hintText: 'Odaberite agenta',
-                                ),
-                                onChanged: (newValue) async {
-                                  Map<String, dynamic> request = {
-                                    'korisnikId': newValue,
-                                    'nekretninaId': nekretnina.nekretninaId,
-                                  };
-                                  print('new value ${newValue}');
-                                  print('new value ${request}');
-                                  var agentId = request['korisnikId'];
-                                  if (agentId != null) {
-                                    await _nekretninaAgentiProvider
-                                        .insert(request);
-                                  }
-                                },
-                                items: korisniciResult?.result
-                                        .map((Korisnik k) => DropdownMenuItem(
-                                              alignment:
-                                                  AlignmentDirectional.center,
-                                              value: k.korisnikId.toString(),
-                                              child: Text(k.ime.toString()),
-                                            ))
-                                        .toList() ??
-                                    [],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),*/
+                    
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -241,7 +136,7 @@ obilazakResult = await _obilazakProvider.get();
 
                                 if (slike != null &&
                                     slike.result.isNotEmpty) {
-                                  // Create a list of image URLs from the data
+                               
                                   List<String> imageUrls = slike.result
                                       .where((slika) =>
                                           slika.nekretninaId ==
@@ -249,17 +144,17 @@ obilazakResult = await _obilazakProvider.get();
                                       .map((slika) => slika.bajtoviSlike ?? "")
                                       .toList();
 
-                                  // Check if there are images to display in the carousel
+                                  
                                   if (imageUrls.isNotEmpty) {
                                     return CarouselSlider(
                                       options: CarouselOptions(
                                         height:
-                                            200.0, // Adjust the height of the slider as needed
+                                            200.0,
                                         autoPlay:
-                                            true, // Enable auto-playing of images
+                                            true, 
                                         enlargeCenterPage: true,
                                         viewportFraction:
-                                            0.5, // Adjust the size of the images
+                                            0.5, 
                                         aspectRatio: 16 / 9,
                                       ),
                                       items: imageUrls.map((imageUrl) {
@@ -267,7 +162,7 @@ obilazakResult = await _obilazakProvider.get();
                                           builder: (BuildContext context) {
                                             return AspectRatio(
                                               aspectRatio: 16 /
-                                                  9, // Set the desired aspect ratio
+                                                  9, 
                                               child: Container(
                                                 width: MediaQuery.of(context)
                                                     .size
@@ -317,12 +212,12 @@ obilazakResult = await _obilazakProvider.get();
                             children: [
                               const Icon(
                                 Icons
-                                    .local_hotel, // Hotel icon represents rooms
-                                color: Colors.blue, // Set the color to blue
+                                    .local_hotel, 
+                                color: Colors.blue, 
                               ),
                               const SizedBox(
                                   width:
-                                      8), // Adjust the space between icon and text
+                                      8), 
                               Text(
                                 'Sobe ${widget.nekretnina.brojSoba ?? ""} ',
                                 style: const TextStyle(
@@ -349,19 +244,19 @@ obilazakResult = await _obilazakProvider.get();
                                   ],
                                 )
                               : const SizedBox
-                                  .shrink(), // This will create an empty space if parkingMjesto is false
+                                  .shrink(), 
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
                               const Icon(
-                                Icons.stairs, // Hotel icon represents rooms
-                                color: Colors.blue, // Set the color to blue
+                                Icons.stairs, 
+                                color: Colors.blue, 
                               ),
                               const SizedBox(
                                   width:
-                                      8), // Adjust the space between icon and text
+                                      8), 
                               Text(
                                 'Sprat ${widget.nekretnina.sprat ?? ""} ',
                                 style: const TextStyle(
@@ -376,12 +271,12 @@ obilazakResult = await _obilazakProvider.get();
                             children: [
                               const Icon(
                                 Icons
-                                    .crop_square, // Hotel icon represents rooms
-                                color: Colors.blue, // Set the color to blue
+                                    .crop_square, 
+                                color: Colors.blue, 
                               ),
                               const SizedBox(
                                   width:
-                                      8), // Adjust the space between icon and text
+                                      8),
                               Text(
                                 'Kvadratura ${widget.nekretnina.kvadratura ?? ""} ',
                                 style: const TextStyle(
@@ -408,7 +303,7 @@ obilazakResult = await _obilazakProvider.get();
                                   ],
                                 )
                               : const SizedBox
-                                  .shrink(), // This will create an empty space if parkingMjesto is false
+                                  .shrink(), 
                         ),
                       ],
                     ),
@@ -460,7 +355,7 @@ obilazakResult = await _obilazakProvider.get();
 ,
             const SizedBox(width: 40),
 
-            // RIGHT COLUMN - SELLER INFO
+           
             Expanded(
   child: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -488,7 +383,7 @@ obilazakResult = await _obilazakProvider.get();
         ),
         SizedBox(height: 30),
         Row(
-  mainAxisAlignment: MainAxisAlignment.center, // Centriranje po horizontali
+  mainAxisAlignment: MainAxisAlignment.center, 
   children: [
     const Icon(Icons.verified, size: 20, color: Colors.grey),
     const SizedBox(width: 8),
@@ -527,7 +422,7 @@ obilazakResult = await _obilazakProvider.get();
             Visibility(
                 visible: widget.nekretnina.isOdobrena == null ||
                     widget.nekretnina.isOdobrena ==
-                        false, // Karta će biti vidljiva samo kada je isOdobrena false
+                        false, 
                 child: Card(
   shape: RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(12),
@@ -610,26 +505,11 @@ Widget _infoRow(String label, String value) {
 
   String _formatDate(String? dateString) {
     if (dateString == null) {
-      return 'N/A'; // Return 'N/A' if the date is null
+      return 'N/A'; 
     }
 
-    DateTime date = DateTime.parse(dateString); // Parse the String to DateTime
+    DateTime date = DateTime.parse(dateString); 
     return DateFormat('dd.MM.yyyy.').format(date);
   }
-
-  
-
-  /* String _getTipNekretnineName(int? tipNekretnineId) {
-    TipNekretnine? tipNekretnine = tipNekretnineResult?.result.firstWhere(
-      (element) => element.tipNekretnineId == tipNekretnineId,
-      // Default value
-    );
-
-    return tipNekretnine?.nazivTipa ??
-        'Unknown Type'; // Return the name or 'Unknown Type'
-  }*/
-
-  
-
  
 }

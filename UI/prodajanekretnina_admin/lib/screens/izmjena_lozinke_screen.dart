@@ -1,42 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:prodajanekretnina_admin/models/drzave.dart';
 import 'package:prodajanekretnina_admin/models/gradovi.dart';
 import 'package:crypto/crypto.dart';
 import 'package:prodajanekretnina_admin/models/korisnici.dart';
-
 import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_admin/models/lokacije.dart';
-import 'package:prodajanekretnina_admin/models/nekretnine.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
 import 'package:prodajanekretnina_admin/models/slike.dart';
 import 'package:prodajanekretnina_admin/models/tipoviNekretnina.dart';
 import 'package:prodajanekretnina_admin/providers/drzave_provide.dart';
 import 'package:prodajanekretnina_admin/providers/gradovi_provider.dart';
-
 import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
 import 'dart:convert';
 import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
 import 'package:prodajanekretnina_admin/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/nekretnine_provider.dart';
 import 'package:prodajanekretnina_admin/providers/tipoviNekretnina_provider.dart';
-import 'package:prodajanekretnina_admin/screens/glavni_ekran.dart';
 import 'package:provider/provider.dart';
-import 'package:prodajanekretnina_admin/screens/izmjena_lozinke_screen.dart';
-
 import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
 import '../utils/util.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'dart:typed_data';
+
 
 class promjenaLozinkeScreen extends StatefulWidget {
   Korisnik? korisnik;
@@ -138,12 +124,12 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
               child: SizedBox(
                 width: MediaQuery.of(context)
                     .size
-                    .width, // Set the width of the container
+                    .width, 
                 child: Row(
                   children: [
                     SizedBox(
                       width: MediaQuery.of(context).size.width *
-                          0.5, // Set the width for the image
+                          0.5, 
                       child: Image.asset(
                         "assets/images/pswd.jpg",
                         fit: BoxFit.cover,
@@ -161,14 +147,10 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.done) {
-                              // Podaci su dohvaćeni, možete ih koristiti
-
-                              // Inicijalizacija kontrolera s podacima korisnika
-
-                              // Vratite željeni widget koji koristi inicijalizirane kontrolere
+                              
                               return _formBuild();
                             } else {
-                              // Podaci se još uvijek dohvaćaju
+                              
                               return const CircularProgressIndicator();
                             }
                           },
@@ -220,17 +202,7 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
     return digest.toString();
   }
 
-  /* Korisnik? kora = korisnikk();
-        print("kuki ${kora}");
-        _korisnickoImeController =
-            TextEditingController(text: kora!.korisnickoIme);
-        _emailController = TextEditingController(text: kora!.email);
-        _telefonController = TextEditingController(text: kora!.telefon);
-        _passwordController = TextEditingController(text: kora!.password);
-        _passwordPotvrdaController =
-            TextEditingController(text: kora!.passwordPotvrda);
-        _imeController = TextEditingController(text: kora!.ime);
-        _prezimeController = TextEditingController(text: kora!.prezime);*/
+ 
   bool _passwordsMatch = true;
   final bool _passwordsMatchh = false;
   bool arePasswordsMatching() {
@@ -251,7 +223,7 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
               height: 500,
               width: 300,
               decoration: const BoxDecoration(
-                  // Add your decoration properties here
+                 
                   ),
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -260,9 +232,9 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                     const Text(
                       "Promjena lozinke",
                       style: TextStyle(
-                        fontSize: 20.0, // Adjust the font size as needed
+                        fontSize: 20.0, 
                         fontWeight:
-                            FontWeight.bold, // Adjust the font weight if needed
+                            FontWeight.bold, 
                       ),
                     ),
                     const SizedBox(
@@ -377,7 +349,7 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                                 _formKey.currentState?.reset();
                                 _passwordPotvrdaController.clear();
   
-                                // Uspješno izvršena promjena lozinke, prikaži success alert
+                               
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {

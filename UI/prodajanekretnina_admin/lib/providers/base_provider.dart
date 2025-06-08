@@ -196,17 +196,6 @@ abstract class BaseProvider<T> with ChangeNotifier {
     });
     return query;
   }
-   Future<void> sendConfirmationEmail(EmailModel emailModel) async {
-  final url = '$_baseUrl/Nekretnine/SendConfirmationEmail';
-  final response = await http.post(
-    Uri.parse(url),
-    headers: createHeaders(),
-    body: jsonEncode(emailModel.toJson()),
-  );
-
-  if (response.statusCode != 200) {
-    throw Exception('Greška prilikom slanja emaila');
-  }
-}
+  
 
 }

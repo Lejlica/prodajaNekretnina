@@ -1,11 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:prodajanekretnina_admin/models/obilazak.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
 import 'package:prodajanekretnina_admin/screens/glavni_ekran.dart';
 import 'package:prodajanekretnina_admin/providers/obilazak_provider.dart';
-import 'package:prodajanekretnina_admin/providers/nekretnine_provider.dart';
 import 'package:prodajanekretnina_admin/screens/zahtjevi_za_obilazak_detalji.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -22,7 +20,6 @@ class ZahtjeviZaObilazakScreen extends StatefulWidget {
 class _ZahtjeviZaObilazakScreenState extends State<ZahtjeviZaObilazakScreen> {
   late ObilazakProvider _obilazakProvider;
   SearchResult<Obilazak>? result;
-  final TextEditingController _nekretninaIdController = TextEditingController();
  
   
   @override
@@ -57,37 +54,7 @@ void initState() {
     );
   }
 
- /* Widget _buildSearch() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              decoration: const InputDecoration(labelText: "ID nekretnine"),
-              controller: _nekretninaIdController,
-            ),
-          ),
-          ElevatedButton(
-              onPressed: () async {
-                print("login proceed");
-                // Navigator.of(context).pop();
 
-                var data = await _obilazakProvider.get(filter: {
-                  'nekretninaId': _nekretninaIdController.text,
-                });
-
-                setState(() {
-                  result = data;
-                });
-
-                // print("data: ${data.result[0].naziv}");
-              },
-              child: const Text("Pretraga")),
-        ],
-      ),
-    );
-  }*/
 bool isOdobrenaChecked = false;
 Widget _buildSearch() {
     return Padding(
@@ -97,7 +64,7 @@ Widget _buildSearch() {
         height: 80,
         padding: const EdgeInsets.all(16.0),
         child: Row(
-  mainAxisAlignment: MainAxisAlignment.start, // ili spaceEvenly ako želiš ravnomerno
+  mainAxisAlignment: MainAxisAlignment.start, 
   children: [
     Checkbox(
       value: isOdobrenaChecked,
@@ -108,7 +75,7 @@ Widget _buildSearch() {
       },
     ),
     const Text("Odobrena"),
-    const SizedBox(width: 10), // Manji razmak nego 40
+    const SizedBox(width: 10), 
     ElevatedButton(
       onPressed: () async {
         var data = await _obilazakProvider.get(
@@ -184,7 +151,7 @@ Widget _buildSearch() {
                           cells: [
                             DataCell(Text(e.obilazakId?.toString() ?? "")),
                             DataCell(Text(
-                        // Formatiranje datuma na "dd.MM.yyyy HH:mm" + "h"
+                        
                         DateFormat('dd.MM.yyyy HH:mm')
                             .format(DateTime.parse(e.vrijemeObilaska?.toString() ?? "")) +
                             "h",

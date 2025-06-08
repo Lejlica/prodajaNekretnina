@@ -1,23 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:prodajanekretnina_mobile_novi/models/kupci.dart';
-import 'package:prodajanekretnina_mobile_novi/models/nekretnine.dart';
 import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
-import 'package:prodajanekretnina_mobile_novi/models/slike.dart';
-import 'package:prodajanekretnina_mobile_novi/models/search_result.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/nekretnine_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/slike_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/recenzija_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/kupci_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/komentariAgentima_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/screens/AgentDetaljiScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/utils/util.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/glavni_ekran.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:typed_data';
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AgentDetaljiScreen extends StatefulWidget {
@@ -108,15 +99,15 @@ class _AgentDetaljiScreenState extends State<AgentDetaljiScreen> {
     }
   }
 
-  num? currentRating = 0; // Početni rejting
-  int totalRatings = 0; // Broj datih rejtinga
-  num? totalRatingSum = 0; // Sum of all ratings
+  num? currentRating = 0; 
+  int totalRatings = 0; 
+  num? totalRatingSum = 0;
 
   void updateRating(int newRating) {
     setState(() {
       totalRatings++;
       totalRatingSum =
-          (totalRatingSum ?? 0) + newRating; // Add a null check here
+          (totalRatingSum ?? 0) + newRating; 
       print("total klikova ${totalRatings}");
     });
   }
@@ -180,7 +171,7 @@ class _AgentDetaljiScreenState extends State<AgentDetaljiScreen> {
       print("updatujemo na ${newRating}");
       await _recenzijaProvider.update(recenzijaId(username), request);
     } else {
-      // Handle the case when filteredData is empty
+    
       print("No data for the agent and buyer combination");
       var result = await _recenzijaProvider.insert(request);
     }
@@ -219,7 +210,7 @@ class _AgentDetaljiScreenState extends State<AgentDetaljiScreen> {
     totalRating = vratiSumuVrijednostiZvjezdica();
     numberOfRatings = vratiNmberOfRatings();
 
-    // Ovdje možete izračunati prosjek ocjena ako vam je to potrebno
+  
     if (numberOfRatings != 0) {
       return averageRating = totalRating / numberOfRatings;
     } else {
@@ -282,9 +273,9 @@ class _AgentDetaljiScreenState extends State<AgentDetaljiScreen> {
                               style: TextStyle(
                                 fontSize: 15,
                                 color: Colors
-                                    .blue, // Change the color to blue for the link
+                                    .blue, 
                                 decoration: TextDecoration
-                                    .underline, // Underline the link
+                                    .underline, 
                               ),
                             ),
                           ),
@@ -316,17 +307,17 @@ class _AgentDetaljiScreenState extends State<AgentDetaljiScreen> {
                   child: Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal:
-                            20.0), // Dodatni padding sa lijeve i desne strane
+                            20.0), 
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
                             Icon(Icons
-                                .home), // Dodajte ikonicu ovdje (ili odaberite odgovarajuću ikonicu)
+                                .home), 
                             SizedBox(
                                 width:
-                                    8), // Pravite razmak između ikonice i teksta
+                                    8), 
                             Text(
                               'Broj uspješno prodanih nekretnina: ${this.widget.korisnik?.brojUspjesnoProdanihNekretnina}',
                               style: TextStyle(
@@ -400,7 +391,7 @@ class _AgentDetaljiScreenState extends State<AgentDetaljiScreen> {
                                                     color: Colors.black,
                                                     fontSize: 16,
                                                     fontWeight: FontWeight
-                                                        .normal, // Stil za korisničko ime
+                                                        .normal, 
                                                   ),
                                                 ),
                                                 TextSpan(
@@ -409,7 +400,7 @@ class _AgentDetaljiScreenState extends State<AgentDetaljiScreen> {
                                                     color: Colors.black,
                                                     fontSize: 16,
                                                     fontWeight: FontWeight
-                                                        .bold, // Stil za sadržaj poruke
+                                                        .bold, 
                                                   ),
                                                 ),
                                               ],
@@ -451,10 +442,10 @@ class _AgentDetaljiScreenState extends State<AgentDetaljiScreen> {
                                         String iso8601Date =
                                             currentDate.toIso8601String();
 
-                                        // Extract kupacId from the first item in filteredData
+                                       
                                         int kupacId = filteredData.isNotEmpty
                                             ? filteredData[0].kupacId
-                                            : 0; // You should adjust this default value as needed
+                                            : 0; 
                                         print("FILTERED ${kupciData}");
                                         print(
                                             "KUPAC KI ${kupciData[0].korisnickoIme}");
@@ -465,7 +456,7 @@ class _AgentDetaljiScreenState extends State<AgentDetaljiScreen> {
                                           'korisnikId':
                                               this.widget.korisnik?.korisnikId,
                                           'kupacId':
-                                              kupacId, // Use the extracted kupacId
+                                              kupacId,
                                         };
 
                                         var result =
@@ -489,7 +480,7 @@ class _AgentDetaljiScreenState extends State<AgentDetaljiScreen> {
                                   return GestureDetector(
                                     onTap: () {
                                       int newRating = index + 1;
-                                      //totalRating += newRating;
+                                   
                                       _recenzijaProvider
                                           ?.get(null)
                                           ?.then((tmpRecenzijeData) {
@@ -509,7 +500,7 @@ class _AgentDetaljiScreenState extends State<AgentDetaljiScreen> {
 
                                       updateAgentRating(newRating);
 
-                                      // Ovdje možete izračunati prosjek ocjena ako vam je to potrebno
+                                     
                                       if (numberOfRatings != 0) {
                                         averageRating =
                                             totalRating / numberOfRatings;

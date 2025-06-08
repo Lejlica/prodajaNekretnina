@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:prodajanekretnina_admin/models/drzave.dart';
 import 'package:prodajanekretnina_admin/models/gradovi.dart';
 import 'package:prodajanekretnina_admin/models/kategorijeNekretnina.dart';
@@ -31,16 +30,10 @@ import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
 import '../utils/util.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'dart:typed_data';
 
 class NekretnineDetaljiScreen extends StatefulWidget {
   Nekretnina? nekretnina;
@@ -355,15 +348,14 @@ String formatDateForDotNet(DateTime date) {
         },
       );
     } else {
-      // Sva polja su popunjena, nastavite s daljnjom logikom.
-      // Ovdje možete dodati kod za spremanje podataka ili druge radnje.
+     
     }
   }
 
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-    return const Center(child: CircularProgressIndicator()); // Prikazivanje loading indikatora dok se podaci učitavaju
+    return const Center(child: CircularProgressIndicator()); 
     }
     return MasterScreenWidget(
       title: widget.nekretnina?.naziv.toString() ?? "",
@@ -1237,38 +1229,7 @@ SizedBox(height: 10),
 
             SizedBox(height: 10),                                      
                                                       
-                                                      /*Visibility(
-  visible: false, // <== Učini ga nevidljivim
-  maintainSize: true,
-  maintainAnimation: true,
-  maintainState: true,
-  child: Padding(
-    padding: const EdgeInsets.only(left: 80.0),
-    child: SizedBox(
-      width: MediaQuery.of(context).size.width * 0.2,
-      child: FormBuilderDropdown<String>(
-        name: 'korisnikAgentId',
-        decoration: const InputDecoration(
-          labelText: 'Agent',
-          hintText: 'Odaberite agenta',
-          border: OutlineInputBorder(),
-        ),
-        onChanged: (newValue) {
-          _formKey.currentState?.fields['korisnikAgentId'];
-        },
-        items: korisniciResult?.result
-                .map((Korisnik k) => DropdownMenuItem(
-                      alignment: AlignmentDirectional.center,
-                      value: k.korisnikId.toString(),
-                      child: Text(k.ime.toString()),
-                    ))
-                .toList() ??
-            [],
-      ),
-    ),
-  ),
-  
-),*/
+                                                    
 
                               Row(
   mainAxisAlignment: MainAxisAlignment.start,
@@ -1358,150 +1319,6 @@ SizedBox(height: 10),
                                                         0.2, // Adjust the thickness of the line
                                                   ),
                                                   const SizedBox(height: 30),
-                                                  /*const Text(
-                                                    "TIP NEKRETNINE",
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 16,
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(
-                                                        right: 5.0,
-                                                        top: 30,
-                                                        left:
-                                                            5.0), // Dodaj lijevu marginu
-                                                    child: SizedBox(
-                                                      width: 800,
-                                                      height: 200,
-                                                      child: Center(
-                                                        child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              SizedBox(
-                                                                width: 300,
-                                                                // Set the desired width for the first Card
-                                                                child: const Card(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: EdgeInsets
-                                                                            .all(
-                                                                            20.0),
-                                                                        child:
-                                                                            Text(
-                                                                          "SAMOSTALNA JEDINICA",
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                16,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      Padding(
-                                                                        padding: EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            Text(
-                                                                          "Zasebna stambena jedinica, poput stana ili kuće, koja ima vlastiti ulaz, kuhinju, kupatilo i druge sadržaje.",
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                14,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      /* Checkbox(
-                                                                        // Checkbox for the first Card
-                                                                        // Add your checkbox logic here
-                                                                        value:
-                                                                            samostalnaJedinicaChecked,
-                                                                        onChanged:
-                                                                            (bool?
-                                                                                value) {
-                                                                          setState(
-                                                                              () {
-                                                                            samostalnaJedinicaChecked =
-                                                                                value ?? false;
-                                                                            _initialValue['kategorijaId'] = samostalnaJedinicaChecked
-                                                                                ? '1'
-                                                                                : '2';
-                                                                          });
-                                                                        },
-                                                                      ),*/
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              const SizedBox(
-                                                                  width:
-                                                                      16), // Add some spacing between the cards
-                                                              SizedBox(
-                                                                width:
-                                                                    300, // Set the desired width for the second Card
-                                                                child: const Card(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: EdgeInsets
-                                                                            .all(
-                                                                            20.0),
-                                                                        child:
-                                                                            Text(
-                                                                          "VIŠEJEDINIČNA NEKRETNINA",
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                16,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      Padding(
-                                                                        padding: EdgeInsets
-                                                                            .all(
-                                                                            8.0),
-                                                                        child:
-                                                                            Text(
-                                                                          "Nekretnina sa dvije ili više odvojenih stambenih jedinica, a svaka jedinica obično ima vlastiti ulaz, kuhinju, kupatilo i druge sadržaje.",
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                14,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      /*Checkbox(
-                                                                          // Checkbox for the second Card
-                                                                          // Add your checkbox logic here
-                                                                          value:
-                                                                              visejedinicnaChecked,
-                                                                          onChanged:
-                                                                              (bool? value) {
-                                                                            setState(() {
-                                                                              visejedinicnaChecked = value ?? false;
-                                                                              _initialValue['kategorijaId'] = visejedinicnaChecked ? '2' : '1';
-                                                                            });
-                                                                          })*/
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ]),
-                                                      ),
-                                                    ),
-                                                  ),*/
                                                   
                                                  
                                                   
@@ -1570,8 +1387,7 @@ SizedBox(height: 10),
                                                                    ValueListenableBuilder(
                                                                     valueListenable: novogradnjaNotifier,
                                                                     builder:(context, value, _){ return Checkbox(
-                                                                      // Checkbox for the first Card
-                                                                      // Add your checkbox logic here
+                                                                     
                                                                       value:
                                                                           novogradnjaNotifier.value,
                                                                       onChanged:
@@ -1580,13 +1396,7 @@ SizedBox(height: 10),
                                                                                 novogradnjaNotifier.value = value ?? true;
                                                                                 _initialValue['novogradnja'] =
                                                                               novogradnjaNotifier.value;
-                                                                        /*setState(
-                                                                            () {
-                                                                          novogradnjaChecked =
-                                                                              value ?? true;
-                                                                          _initialValue['novogradnja'] =
-                                                                              novogradnjaChecked;
-                                                                        });*/
+                                                                       
                                                                       },
                                                                     );}),
                                                                   ]),
@@ -1600,8 +1410,8 @@ SizedBox(height: 10),
                                                               child: Row(
                                                                 children: [
                                                                   const Icon(Icons
-                                                                      .car_rental), // Ikona za parking mesto
-                                                                  // Tekst pored ikone
+                                                                      .car_rental), 
+                                                               
                                                                   ValueListenableBuilder(
                                                                     valueListenable: parkingMjestoNotifier,
                                                                     builder:(context, value, _){ return Checkbox(

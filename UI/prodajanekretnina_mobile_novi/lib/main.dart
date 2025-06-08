@@ -1,5 +1,4 @@
-import 'package:prodajanekretnina_mobile_novi/models/komentariAgentima.dart';
-import 'package:prodajanekretnina_mobile_novi/models/nekretninaAgenti.dart';
+
 import 'package:prodajanekretnina_mobile_novi/providers/agencije_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/komentariAgentima_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/nekretninaAgenti_provider.dart';
@@ -117,7 +116,7 @@ void main() {
 class HomePage extends StatelessWidget {
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  //late UserProvider _userProvider;
+  
   late NekretnineProvider _nekretnineProvider;
   @override
   Widget build(BuildContext context) {

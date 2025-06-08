@@ -90,77 +90,13 @@ namespace ProdajaNekretnina.Services
             CreateMap<Database.Agencija, Model.Agencija>();
             CreateMap<Model.Requests.AgencijaInsertRequest, Database.Agencija>();
             CreateMap<Model.Requests.AgencijaUpdateRequest, Database.Agencija>();
-
             CreateMap<Database.Kategorije, Model.Kategorije>();
-            //CreateMap<Model.Requests.KategorijaInsertRequest, Database.Nekretnina>();
             CreateMap<Model.Requests.KategorijaInsertRequest, Database.Kategorije>();
             CreateMap<Model.Requests.KategorijaUpdateRequest, Database.Kategorije>();
-            //CreateMap<Model.Requests.KategorijaUpdateRequest, Database.Nekretnina>();
-           
             CreateMap<Database.TipNekretnine, Model.TipNekretnine>();
             CreateMap<Model.Requests.TipInsertRequest, Database.TipNekretnine>();
             CreateMap<Model.Requests.TipUpdateRequest, Database.TipNekretnine>();
-
-    //        CreateMap<ProdajaNekretnina.Services.Database.Kategorije, ProdajaNekretnina.Model.Kategorije>()
-    //.ForMember(dest => dest.KategorijaId, opt => opt.MapFrom(src => src.KategorijaId));
-
-   //         CreateMap<ProdajaNekretnina.Model.Kategorije, ProdajaNekretnina.Services.Database.Kategorije>()
-   // .ForMember(dest => dest.KategorijaId, opt => opt.MapFrom(src => src.KategorijaId));
-   //         CreateMap<ProdajaNekretnina.Model.Nekretnina, ProdajaNekretnina.Services.Database.TipNekretnine>()
-   //.ForMember(dest => dest.TipNekretnineId, opt => opt.MapFrom(src => src.TipNekretnineId));
-
-    //        CreateMap<NekretnineInsertRequest, Nekretnina>();
-
-    //        CreateMap<ProdajaNekretnina.Model.Requests.NekretnineInsertRequest, ProdajaNekretnina.Services.Database.Nekretnina>();
-
-    //        CreateMap<ProdajaNekretnina.Model.Korisnici, ProdajaNekretnina.Services.Database.Korisnici>()
-    //.ForMember(dest => dest.KorisnikId, opt => opt.MapFrom(src => src.KorisnikId));
-
-    //        CreateMap<ProdajaNekretnina.Services.Database.Nekretnina, ProdajaNekretnina.Model.Nekretnina>()
-    //.ForMember(dest => dest.TipNekretnine, opt => opt.MapFrom(src => new ProdajaNekretnina.Model.TipNekretnine { TipNekretnineId = src.TipNekretnineId }));
-
-    //        CreateMap<ProdajaNekretnina.Services.Database.TipNekretnine, ProdajaNekretnina.Model.TipNekretnine>()
-    //            .ForMember(dest => dest.TipNekretnineId, opt => opt.MapFrom(src => src.TipNekretnineId));
-    //        CreateMap<ProdajaNekretnina.Services.Database.TipNekretnine, ProdajaNekretnina.Model.TipNekretnine>()
-    //            .ForMember(dest => dest.NazivTipa, opt => opt.MapFrom(src => src.NazivTipa));
-    //        CreateMap<TipNekretnine, Nekretnina>()
-    //.ForMember(dest => dest.TipNekretnineId, opt => opt.MapFrom(src => src.TipNekretnineId))
-    //;
-        
-
-
-    //        CreateMap<ProdajaNekretnina.Model.Requests.NekretnineInsertRequest, ProdajaNekretnina.Services.Database.Nekretnina>();
-    
-
-    //        CreateMap<ProdajaNekretnina.Model.TipNekretnine, ProdajaNekretnina.Services.Database.TipNekretnine>()
-    //            .ForMember(dest => dest.TipNekretnineId, opt => opt.MapFrom(src => src.TipNekretnineId));
-    //        CreateMap<ProdajaNekretnina.Model.TipNekretnine, ProdajaNekretnina.Services.Database.TipNekretnine>()
-    //           .ForMember(dest => dest.NazivTipa, opt => opt.MapFrom(src => src.NazivTipa));
-
-
             CreateMap<ProdajaNekretnina.Model.Requests.NekretnineInsertRequest, ProdajaNekretnina.Services.Database.Nekretnina>();
-
-    //        CreateMap<ProdajaNekretnina.Services.Database.Lokacija, ProdajaNekretnina.Model.Lokacija>()
-    //.ForMember(dest => dest.LokacijaId, opt => opt.MapFrom(src => src.LokacijaId));
-
-
-    //        CreateMap<ProdajaNekretnina.Model.Lokacija, ProdajaNekretnina.Services.Database.Lokacija>()
-    //.ForMember(dest => dest.LokacijaId, opt => opt.MapFrom(src => src.LokacijaId));
-
-    //        CreateMap<ProdajaNekretnina.Services.Database.Drzava, ProdajaNekretnina.Model.Drzava>()
-    //.ForMember(dest => dest.DrzavaId, opt => opt.MapFrom(src => src.DrzavaId));
-
-
-    //        CreateMap<ProdajaNekretnina.Model.Drzava, ProdajaNekretnina.Services.Database.Drzava>()
-    //.ForMember(dest => dest.DrzavaId, opt => opt.MapFrom(src => src.DrzavaId));
-
-    //        CreateMap<ProdajaNekretnina.Services.Database.Grad, ProdajaNekretnina.Model.Grad>()
-    //.ForMember(dest => dest.GradId, opt => opt.MapFrom(src => src.GradId));
-
-
-            //        CreateMap<ProdajaNekretnina.Model.Grad, ProdajaNekretnina.Services.Database.Grad>()
-            //.ForMember(dest => dest.GradId, opt => opt.MapFrom(src => src.GradId));
-           
 
 
         }

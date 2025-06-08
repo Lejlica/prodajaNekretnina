@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:prodajanekretnina_mobile_novi/models/drzave.dart';
 import 'package:prodajanekretnina_mobile_novi/models/gradovi.dart';
-import 'package:crypto/crypto.dart';
 import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
-
 import 'package:prodajanekretnina_mobile_novi/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_mobile_novi/models/lokacije.dart';
 import 'package:prodajanekretnina_mobile_novi/models/korisnikUloge.dart';
@@ -16,7 +13,6 @@ import 'package:prodajanekretnina_mobile_novi/models/tipoviNekretnina.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/drzave_provide.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnikUloge_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/gradovi_provider.dart';
-
 import 'package:prodajanekretnina_mobile_novi/providers/korisnici_provider.dart';
 import 'dart:convert';
 import 'package:prodajanekretnina_mobile_novi/providers/nekretninaAgenti_provider.dart';
@@ -25,19 +21,10 @@ import 'package:prodajanekretnina_mobile_novi/providers/nekretnine_provider.dart
 import 'package:prodajanekretnina_mobile_novi/providers/tipoviNekretnina_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/glavni_ekran.dart';
 import 'package:provider/provider.dart';
-import 'package:prodajanekretnina_mobile_novi/screens/promjenaLozinkeScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/main.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/slike_provider.dart';
 import '../utils/util.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 
 class RegistracijaScreen extends StatefulWidget {
@@ -50,32 +37,13 @@ class RegistracijaScreen extends StatefulWidget {
   State<RegistracijaScreen> createState() => _RegistracijaScreenState();
 }
 
-/*Future<Uint8List?> pickImageFromGallery() async {
-  final picker = ImagePicker();
-  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-  if (pickedFile != null) {
-    // Read the selected image as bytes
-    Uint8List? bytes = await pickedFile.readAsBytes();
-    return bytes;
-  }
-
-  return null;
-}*/
 
 class _RegistracijaScreenState extends State<RegistracijaScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;
-  late TipoviNekretninaProvider _tipoviNekretninaProvider;
-  late LokacijeProvider _lokacijeProvider;
   late KorisnikUlogeProvider _korisnikUlogeProvider;
-  late GradoviProvider _gradoviProvider;
-  late DrzaveProvider _drzaveProvider;
-  late NekretnineProvider _nekretnineProvider;
-  late SlikeProvider _slikeProvider;
 
-  late NekretninaAgentiProvider _nekretninaAgentiProvider;
   bool isLoading = true;
 
   SearchResult<Korisnik>? korisniciResult;
@@ -106,15 +74,10 @@ class _RegistracijaScreenState extends State<RegistracijaScreen> {
       'korisnikAgentId': agent?.korisnikId.toString()
     };
 
-    _nekretnineProvider = NekretnineProvider();
+ 
 
     _korisniciProvider = context.read<KorisniciProvider>();
-    _tipoviNekretninaProvider = context.read<TipoviNekretninaProvider>();
-    _lokacijeProvider = context.read<LokacijeProvider>();
 _korisnikUlogeProvider=context.read<KorisnikUlogeProvider>();
-    _gradoviProvider = context.read<GradoviProvider>();
-    _drzaveProvider = context.read<DrzaveProvider>();
-    _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
     initForm();
   }
 
@@ -324,24 +287,6 @@ Future.delayed(Duration(seconds: 2), () {
 }
 
 
-/*Widget _buildTextField(String name, String label, IconData icon, {bool obscure = false}) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8.0),
-    child: FormBuilderTextField(
-      name: name,
-      obscureText: obscure,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon),
-        filled: true,
-        fillColor: Colors.grey[100],
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    ),
-  );
-}*/
 Widget _buildTextField(String name, String label, IconData icon,
     {bool obscure = false}) {
   return Padding(
@@ -371,7 +316,7 @@ Widget _buildTextField(String name, String label, IconData icon,
             return 'Lozinka mora imati najmanje 6 karaktera.';
           }
         }
-        return null; // Ako nema greške
+        return null; 
       },
     ),
   );

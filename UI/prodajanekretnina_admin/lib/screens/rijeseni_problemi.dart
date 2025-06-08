@@ -22,22 +22,10 @@ import 'package:prodajanekretnina_admin/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/nekretnine_provider.dart';
 import 'package:prodajanekretnina_admin/providers/problemi_provider.dart';
 import 'package:prodajanekretnina_admin/providers/tipoviNekretnina_provider.dart';
-import 'package:prodajanekretnina_admin/screens/glavni_ekran.dart';
 import 'package:prodajanekretnina_admin/screens/prijavljeni_problemi.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
-import '../utils/util.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'dart:typed_data';
 
 class RijeseniProblemiScreen extends StatefulWidget {
   Problem? problem;
@@ -63,17 +51,13 @@ class RijeseniProblemiScreen extends StatefulWidget {
 }*/
 
 class _RijeseniProblemiScreenState extends State<RijeseniProblemiScreen> {
-  final TextEditingController _problemIdController = TextEditingController();
-  final _formKey = GlobalKey<FormBuilderState>();
-  Map<String, dynamic> _initialValue = {};
+
   late KorisniciProvider _korisniciProvider;
   late TipoviNekretninaProvider _tipoviNekretninaProvider;
   late LokacijeProvider _lokacijeProvider;
   late KategorijeNekretninaProvider _kategorijeNekretninaProvider;
   late GradoviProvider _gradoviProvider;
-  late DrzaveProvider _drzaveProvider;
   late NekretnineProvider _nekretnineProvider;
-  late SlikeProvider _slikeProvider;
   late NekretninaAgentiProvider _nekretninaAgentiProvider;
   late ProblemProvider _problemProvider;
   bool isLoading = true;
@@ -92,7 +76,7 @@ final TextEditingController _datumController = TextEditingController();
   void initState() {
     super.initState();
 
-    _initialValue = {};
+  
 
     _nekretnineProvider = NekretnineProvider();
     _kategorijeNekretninaProvider = KategorijeNekretninaProvider();
@@ -102,7 +86,6 @@ final TextEditingController _datumController = TextEditingController();
     _kategorijeNekretninaProvider =
         context.read<KategorijeNekretninaProvider>();
     _gradoviProvider = context.read<GradoviProvider>();
-    _drzaveProvider = context.read<DrzaveProvider>();
     _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
     _problemProvider = context.read<ProblemProvider>();
     initForm();

@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
-import 'package:prodajanekretnina_admin/models/nekretninaTipAkcije.dart';
-import 'package:prodajanekretnina_admin/models/problemi.dart';
 import 'package:prodajanekretnina_admin/providers/drzave_provide.dart';
 import 'package:prodajanekretnina_admin/providers/gradovi_provider.dart';
 import 'package:prodajanekretnina_admin/providers/korisnikAgencija_provider.dart';

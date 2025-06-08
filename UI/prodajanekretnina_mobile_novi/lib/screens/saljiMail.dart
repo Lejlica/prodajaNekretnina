@@ -28,7 +28,7 @@ class _PrijaviSmetnjuState extends State<PrijaviSmetnju> {
           child: Column(
             children: [
 
-              // Header kartica
+          
               Text(
                     "Posaljte obavijest o problemu agentu nekretnine",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: const Color.fromARGB(255, 0, 0, 0)),
@@ -37,7 +37,7 @@ class _PrijaviSmetnjuState extends State<PrijaviSmetnju> {
 
               SizedBox(height: 20),
 
-              // Email adresa unos
+             
               Card(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                 elevation: 2,
@@ -87,7 +87,7 @@ class _PrijaviSmetnjuState extends State<PrijaviSmetnju> {
 
               SizedBox(height: 20),
 
-              // Opis problema
+          
               Card(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                 elevation: 2,
@@ -133,7 +133,7 @@ class _PrijaviSmetnjuState extends State<PrijaviSmetnju> {
 
               SizedBox(height: 30),
 
-              // Dugme za slanje
+             
               Center(
                 child: ElevatedButton.icon(
                   onPressed: _posalji,

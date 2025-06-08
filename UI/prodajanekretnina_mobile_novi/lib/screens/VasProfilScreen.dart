@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:prodajanekretnina_mobile_novi/models/drzave.dart';
 import 'package:prodajanekretnina_mobile_novi/models/gradovi.dart';
 import 'package:crypto/crypto.dart';
-
 import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
-import 'package:prodajanekretnina_mobile_novi/models/kupci.dart';
 import 'package:prodajanekretnina_mobile_novi/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_mobile_novi/models/lokacije.dart';
 import 'package:prodajanekretnina_mobile_novi/models/nekretnine.dart';
-import 'package:prodajanekretnina_mobile_novi/models/kupci.dart';
 import 'package:prodajanekretnina_mobile_novi/models/search_result.dart';
 import 'package:prodajanekretnina_mobile_novi/models/slike.dart';
 import 'package:prodajanekretnina_mobile_novi/models/tipoviNekretnina.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/drzave_provide.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/kupci_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/gradovi_provider.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-
 import 'package:prodajanekretnina_mobile_novi/providers/korisnici_provider.dart';
 import 'dart:convert';
 import 'package:prodajanekretnina_mobile_novi/providers/nekretninaAgenti_provider.dart';
@@ -28,20 +22,10 @@ import 'package:prodajanekretnina_mobile_novi/providers/tipoviNekretnina_provide
 import 'package:prodajanekretnina_mobile_novi/screens/glavni_ekran.dart';
 import 'package:provider/provider.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/promjenaLozinkeScreen.dart';
-
 import 'package:prodajanekretnina_mobile_novi/providers/slike_provider.dart';
 import '../utils/util.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'dart:typed_data';
-
 
 class VasProfilScreen extends StatefulWidget {
   Nekretnina? nekretnina;
@@ -58,16 +42,8 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;
-  late TipoviNekretninaProvider _tipoviNekretninaProvider;
-  late LokacijeProvider _lokacijeProvider;
   late KupciProvider _kupciProvider;
-  late GradoviProvider _gradoviProvider;
-  late DrzaveProvider _drzaveProvider;
-  late NekretnineProvider _nekretnineProvider;
-  late SlikeProvider _slikeProvider;
   late Uint8List bytes;
-  late NekretninaAgentiProvider _nekretninaAgentiProvider;
-
   late TextEditingController _imeController;
   late TextEditingController _prezimeController;
   late TextEditingController _telefonController;
@@ -115,15 +91,9 @@ bool _imageInitialized = false;
       'korisnikAgentId': agent?.korisnikId.toString()
     };
 
-    _nekretnineProvider = NekretnineProvider();
+ 
     _kupciProvider = context.read<KupciProvider>();
     _korisniciProvider = context.read<KorisniciProvider>();
-    _tipoviNekretninaProvider = context.read<TipoviNekretninaProvider>();
-    _lokacijeProvider = context.read<LokacijeProvider>();
-
-    _gradoviProvider = context.read<GradoviProvider>();
-    _drzaveProvider = context.read<DrzaveProvider>();
-    _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
     initForm();
   }
 
@@ -136,7 +106,7 @@ bool _imageInitialized = false;
     try {
       var tmpKorisniciData = await _korisniciProvider?.get(null);
       var tmpKupciData = await _kupciProvider?.get(null);
-      var korisnik = korisnikk(Authorization.username.toString()); // ili await _korisniciProvider.getById(...) ako koristiš ID
+      var korisnik = korisnikk(Authorization.username.toString()); 
 
     if (korisnik != null &&
         korisnik.bajtoviSlike != null &&
@@ -170,7 +140,7 @@ bool _imageInitialized = false;
   future: _korisniciProvider?.get(null),
   builder: (context, snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting) {
-        // Dok se korisnik učitava, prikaži loading indikator
+      
         return Center(child: CircularProgressIndicator());
       } else if (snapshot.hasError) {
         return Center(child: Text('Došlo je do greške!'));
@@ -185,7 +155,7 @@ bool _imageInitialized = false;
   return const Center(child: Text('Niste prijavljeni ili korisnik nije pronađen.'));
 }
 
-      // 🔽 OVO DODAŠ OVDE — nakon što dobiješ korisnika
+     
      if (!_imageInitialized && kora?.bajtoviSlike != null) {
   bytes = base64.decode(kora!.bajtoviSlike!);
   base64Image = kora.bajtoviSlike!;
@@ -199,7 +169,7 @@ bool _imageInitialized = false;
       _imeController.text = kora.ime ?? '';
       _prezimeController.text = kora.prezime ?? '';
 
-      return _formBuild(); // Tvoj build metode
+      return _formBuild();
     } 
   },
 ),
@@ -251,23 +221,13 @@ bool _imageInitialized = false;
   }
 
   String hashPassword(String password) {
-    // Koristite odgovarajući algoritam za hashiranje, npr. SHA-256
+   
     var bytes = utf8.encode(password);
     var digest = sha256.convert(bytes);
     return digest.toString();
   }
 
-  /* Korisnik? kora = korisnikk();
-        print("kuki ${kora}");
-        _korisnickoImeController =
-            TextEditingController(text: kora!.korisnickoIme);
-        _emailController = TextEditingController(text: kora!.email);
-        _telefonController = TextEditingController(text: kora!.telefon);
-        _passwordController = TextEditingController(text: kora!.password);
-        _passwordPotvrdaController =
-            TextEditingController(text: kora!.passwordPotvrda);
-        _imeController = TextEditingController(text: kora!.ime);
-        _prezimeController = TextEditingController(text: kora!.prezime);*/
+ 
   String? bajtovi() {
     List<dynamic> filteredData = data!.where((korisnik) {
       print('Korisnickooooime: ${korisnik.korisnickoIme}');
@@ -294,7 +254,7 @@ bool _imageInitialized = false;
             child: Container(
                
                 decoration: BoxDecoration(
-                    // Add your decoration properties here
+                  
                     ),
                 child: SingleChildScrollView(
                     physics: AlwaysScrollableScrollPhysics(),
@@ -408,13 +368,13 @@ bool _imageInitialized = false;
                       FormBuilderTextField(
   name: 'korisnickoIme',
   controller: _korisnickoImeController,
-  enabled: false, // Onemogućava klik i uređivanje + zatamnjuje polje
+  enabled: false,
   decoration: InputDecoration(
     labelText: 'Korisničko ime',
     helperText: 'Ovo polje nije moguće mijenjati',
     prefixIcon: Icon(Icons.account_box),
     filled: true,
-    fillColor: Colors.grey.shade200, // Blago zatamnjena pozadina
+    fillColor: Colors.grey.shade200, 
   ),
 ),
 
@@ -429,13 +389,7 @@ bool _imageInitialized = false;
                         obscureText: true,
                       ),
 
-                      /* FormBuilderTextField(
-                        name: 'passwordPotvrda',
-                        controller: _passwordController,
-                        decoration:
-                            InputDecoration(labelText: 'Potvrdite lozinku'),
-                        obscureText: true,
-                      ),*/
+                     
                       SizedBox(
                         height: 16,
                       ),
@@ -484,7 +438,7 @@ bool _imageInitialized = false;
           'clientSecret': 'tvojClientSecret',
         };
 
-        //String base64Image = await pickAndEncodeImage();
+      
         if (base64Image != null && base64Image!.isNotEmpty) {
   request['bajtoviSlike'] = base64Image;
 }
@@ -655,7 +609,7 @@ SizedBox(height: 15),
   ),
  
   style: ElevatedButton.styleFrom(
-    backgroundColor: const Color.fromARGB(255, 255, 255, 255), // zelena - osjećaj sigurnosti
+    backgroundColor: const Color.fromARGB(255, 255, 255, 255),
     foregroundColor: Color(0xFF3F51B5),
     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
     shape: RoundedRectangleBorder(
@@ -701,16 +655,16 @@ String base64Image = '';
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      // Read the file as bytes
+     
       Uint8List imageBytes = await pickedFile.readAsBytes();
 
-      // Convert the bytes to base64
+     
        base64Image = base64Encode(imageBytes);
 
       return base64Image.toString();
     } else {
       print('No image selected.');
-      return ''; // or handle accordingly
+      return ''; 
     }
   }
 }

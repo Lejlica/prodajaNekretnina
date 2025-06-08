@@ -7,46 +7,9 @@ import 'package:prodajanekretnina_admin/providers/korisnikAgencija_provider.dart
 import 'package:prodajanekretnina_admin/models/korisnici.dart';
 import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:prodajanekretnina_admin/models/drzave.dart';
-import 'package:prodajanekretnina_admin/models/gradovi.dart';
-import 'package:crypto/crypto.dart';
-import 'package:prodajanekretnina_admin/models/korisnici.dart';
-
-import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
-import 'package:prodajanekretnina_admin/models/lokacije.dart';
-import 'package:prodajanekretnina_admin/models/nekretnine.dart';
-
-import 'package:prodajanekretnina_admin/models/search_result.dart';
-import 'package:prodajanekretnina_admin/models/slike.dart';
-import 'package:prodajanekretnina_admin/models/tipoviNekretnina.dart';
-import 'package:prodajanekretnina_admin/providers/drzave_provide.dart';
-
-import 'package:prodajanekretnina_admin/providers/gradovi_provider.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-
-import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
 import 'dart:convert';
-import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
-import 'package:prodajanekretnina_admin/providers/lokacije_provider.dart';
-import 'package:prodajanekretnina_admin/providers/nekretnine_provider.dart';
-import 'package:prodajanekretnina_admin/providers/tipoviNekretnina_provider.dart';
 import 'package:prodajanekretnina_admin/screens/glavni_ekran.dart';
 import 'package:provider/provider.dart';
-import 'package:prodajanekretnina_admin/screens/izmjena_lozinke_screen.dart';
-import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
-import '../utils/util.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 
 class SalesStatisticssScreen extends StatefulWidget {
@@ -57,7 +20,7 @@ class SalesStatisticssScreen extends StatefulWidget {
 }
 
 class _SalesStatisticssScreenState extends State<SalesStatisticssScreen> {
-  //final _formKey = GlobalKey<FormBuilderState>();
+
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;
   late AgencijaProvider _agencijaProvider;
@@ -80,9 +43,9 @@ Future<void> _loadSalesData() async {
   _agencijaProvider = context.read<AgencijaProvider>();
   _korisnikAgencijaProvider = context.read<KorisnikAgencijaProvider>();
 
-  await initForm();         // <- prvo učitaj sve potrebne podatke
-  await initSalesData();    // <- tek onda izračunaj prodaje
-  setState(() {});          // <- osvježi UI
+  await initForm();         
+  await initSalesData();    
+  setState(() {});         
 }
 
 
@@ -154,12 +117,7 @@ Future<void> _loadSalesData() async {
     return totalSales;
   }
 
-  /*final Map<String?, int> salesData = {
-    'Agencija 1': 20,
-    'Agencija 2': 50,
-    'Agencija 3': 30,
-    // Dodajte stvarne podatke o prodaji za svaku agenciju
-  };*/
+  
   Map<int?, int> salesData = {};
   Future<void> initSalesData() async {
     for (Agencija agencija in agencijeResult?.result ?? []) {
@@ -167,7 +125,7 @@ Future<void> _loadSalesData() async {
       salesData[agencijaId] = Saberi(agencijaId) ?? 0;
     }
 
-    // Opcionalno: Ako želite osvježiti widget nakon što se podaci popune, koristite setState
+    
     setState(() {});
   }
 
@@ -183,8 +141,8 @@ Future<void> _loadSalesData() async {
   }
 
   return ListView.builder(
-    shrinkWrap: true, // ako se koristi unutar drugog scrollable widgeta kao što je Column
-    physics: const NeverScrollableScrollPhysics(), // ako je deo većeg skrolabilnog dela
+    shrinkWrap: true, 
+    physics: const NeverScrollableScrollPhysics(), 
     itemCount: agencijeNazivi.length,
     itemBuilder: (context, index) {
       return Container(
@@ -268,7 +226,7 @@ Widget build(BuildContext context) {
                           topRight: Radius.circular(6),
                         ),
                         rodStackItems: [],
-                        // opcionalno
+                      
                       ),
                     ],
                     showingTooltipIndicators: [0],

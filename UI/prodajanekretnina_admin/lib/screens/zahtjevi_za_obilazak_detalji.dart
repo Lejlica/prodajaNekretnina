@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
-import 'package:prodajanekretnina_admin/models/nekretnine.dart';
 import 'package:prodajanekretnina_admin/models/obilazak.dart';
 import 'package:prodajanekretnina_admin/models/korisnici.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
@@ -9,7 +8,6 @@ import 'package:prodajanekretnina_admin/providers/korisnikAgencija_provider.dart
 import 'package:prodajanekretnina_admin/providers/obilazak_provider.dart';
 import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
-import 'package:prodajanekretnina_admin/screens/zahtjevi_za_obilazak.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
@@ -38,18 +36,11 @@ class _ZahtjeviZaObilazakDetaljiScreenState
   late KorisniciProvider _korisniciProvider;
   late NekretninaAgentiProvider _nekretninaAgentiProvider;
   bool isLoading = true;
-List<int> nekretninaIdAgencije = [];
+  List<int> nekretninaIdAgencije = [];
   SearchResult<KorisnikAgencija>? korisnikAgencijaResult;
   SearchResult<Korisnik>? korisniciResult;
   SearchResult<NekretninaAgenti>? nekretninaAgentiResult;
- /* @override
-  void initState() {
-    super.initState();
-    _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
-    _korisniciProvider = context.read<KorisniciProvider>();
-    _obilazakProvider = context.read<ObilazakProvider>();
-    initForm();
-  }*/
+ 
 
   Future<void> initForm() async {
     try {
@@ -84,7 +75,7 @@ void initState() {
   _obilazakProvider = ObilazakProvider();
   _korisnikAgencijaProvider = context.read<KorisnikAgencijaProvider>();
   _onRefresh();
-  initForm(); // pozivaš API ili postavljaš početne vrijednosti
+  initForm(); 
 }
 
   FutureOr<void> _onRefresh() async {
@@ -178,7 +169,7 @@ int? NadjiKojojAgencijiPripadaKorisnik() {
           const SizedBox(height: 16),
           Center(
   child: ConstrainedBox(
-    constraints: const BoxConstraints(maxWidth: 1000), // Prilagodi širinu po potrebi
+    constraints: const BoxConstraints(maxWidth: 1000), 
     child: SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: DataTable(
@@ -340,25 +331,7 @@ Widget _buildSearch() {
     return Text('${korisnik?.ime} ${korisnik?.prezime}');
   }
 
-  Widget _buildAgentNameCell(int? nekretninaId) {
-    NekretninaAgenti? agent = nekretninaAgentiResult?.result.firstWhere(
-      (element) => element.nekretninaId == nekretninaId,
-    );
-
-    if (agent != null) {
-      Korisnik? korisnik = korisniciResult?.result.firstWhere(
-        (element) => element.korisnikId == agent.korisnikId,
-      );
-
-      if (korisnik != null) {
-        return Text('${korisnik.ime} ${korisnik.prezime}');
-      } else {
-        return const Text('Unknown Agent');
-      }
-    } else {
-      return const Text('Unknown Agent');
-    }
-  }
+  
 }
 
 class ObilazakDetailScreen extends StatelessWidget {

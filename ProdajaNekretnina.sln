@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProdajaNekretnina.MailSende
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProdajaNekretnina.MailPublisher", "ProdajaNekretnina.MailPublisher\ProdajaNekretnina.MailPublisher.csproj", "{2BCC1F83-9B19-4F8A-90AF-C2F589F492F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMQConsumer", "RabbitMQConsumer\RabbitMQConsumer.csproj", "{F60EB043-842B-46F8-AEB7-E68F1EACC10A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,10 +39,6 @@ Global
 		{2BCC1F83-9B19-4F8A-90AF-C2F589F492F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BCC1F83-9B19-4F8A-90AF-C2F589F492F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BCC1F83-9B19-4F8A-90AF-C2F589F492F3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F60EB043-842B-46F8-AEB7-E68F1EACC10A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F60EB043-842B-46F8-AEB7-E68F1EACC10A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F60EB043-842B-46F8-AEB7-E68F1EACC10A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F60EB043-842B-46F8-AEB7-E68F1EACC10A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

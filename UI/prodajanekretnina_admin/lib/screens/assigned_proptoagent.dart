@@ -422,18 +422,4 @@ String formatDate(String? dateString) {
 
 } 
 
-// Example usage:
-// AssignedPropertiesScreen(
-//   assignedProperties: [
-//     {
-//       'naziv': 'Stan u centru',
-//       'lokacija': 'Sarajevo, Marijin Dvor',
-//       'cijena': 250000,
-//     },
-//     {
-//       'naziv': 'Kuća sa vrtom',
-//       'lokacija': 'Ilidža, Pejton',
-//       'cijena': 320000,
-//     },
-//   ],
-// );
+

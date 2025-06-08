@@ -1,17 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/slike_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/PrijaviProblemScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-
 import '../providers/nekretnine_provider.dart';
-import '../models/nekretnine.dart';
-import '../utils/util.dart'; // ili kako već dohvaćaš trenutnog korisnika
+import '../utils/util.dart'; 
 
 class ObjavljeneNekretnineScreen extends StatefulWidget {
   const ObjavljeneNekretnineScreen({Key? key}) : super(key: key);

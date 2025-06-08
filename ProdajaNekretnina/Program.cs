@@ -6,15 +6,7 @@ using ProdajaNekretnina.Model.SearchObjects;
 using ProdajaNekretnina.Services;
 using ProdajaNekretnina.Services.Database;
 using ProdajaNekretnina.Services.NekretnineStateMachine;
-using ProdajaNekretnina.Services.RabbitMQ;
 
-
-
-
-//paypal
-var client = new PayPalService();
-var authResponse = await client.GetAuthorizationRequest();
-client.SetToken(authResponse.access_token);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,8 +41,6 @@ builder.Services.AddTransient<IKorisnikAgencijaService, KorisnikAgencijaService>
 builder.Services.AddTransient<IAgencijaService, AgencijaService>();
 builder.Services.AddTransient<IKupovinaService, KupovinaService>();
 builder.Services.AddTransient<IReccomendResultService, ReccomendService>();
-builder.Services.AddTransient<PayPalService>();
-builder.Services.AddTransient<IRabbitMQProducer, RabbitMQProducer>();
 
 // Add services to the container.
 

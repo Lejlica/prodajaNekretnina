@@ -518,6 +518,7 @@ _nekretnineProvider = context.read<NekretnineProvider>();
     _korisnikAgencijaProvider = context.read<KorisnikAgencijaProvider>();
     _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
     initForm();
+     _initializeData();
      _performSearch();
   }
 
@@ -536,6 +537,38 @@ nekretninaIdAgencije = NadjiNekretnineZaAgenciju();
       print('Error in initForm: $e');
     }
   }
+  Future<void> _fetchData() async {
+  var data = await _nekretnineProvider.get(filter: {
+    'vlasnik': _vlasnikController.text,
+    'grad': _gradController.text,
+    'isOdobrena': true,
+    'cijenaOd': _cijenaOdController.text,
+    'cijenaDo': _cijenaDoController.text,
+  });
+
+  var filtriraniRezultati = data.result
+      .where((nekretnina) =>
+          nekretninaIdAgencije.contains(nekretnina.nekretninaId))
+      .toList();
+
+  print('Filtrirani ID-evi nekretnina: ${filtriraniRezultati.map((e) => e.nekretninaId).toList()}');
+  print('idag: ${nekretninaIdAgencije.toList()}');
+
+  setState(() {
+    result = data
+      ..result = filtriraniRezultati
+      ..count = filtriraniRezultati.length;
+  });
+
+  for (var nekretnina in data.result) {
+    print("Cijena: ${nekretnina.cijena}");
+  }
+}
+Future<void> _initializeData() async {
+  await initForm(); // Sačekaj da se sve pripremi
+  _fetchData();     // Tek tada pozovi pretragu
+}
+
  /* @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -846,7 +879,7 @@ Widget _buildSearchField({
           nekretnina: nekretnina,
           slike: slike,
           nekretninaId:
-              nekretnina?.nekretninaId, // Use the null-aware operator here
+              nekretnina?.nekretninaId, 
         ),
       ),
     );

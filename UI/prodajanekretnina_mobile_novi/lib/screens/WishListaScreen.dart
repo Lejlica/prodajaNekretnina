@@ -1,28 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:prodajanekretnina_mobile_novi/models/kupci.dart';
 import 'package:prodajanekretnina_mobile_novi/models/nekretnine.dart';
 import 'package:prodajanekretnina_mobile_novi/models/korisnici.dart';
-import 'package:prodajanekretnina_mobile_novi/models/obilazak.dart';
-import 'package:prodajanekretnina_mobile_novi/models/slike.dart';
-import 'package:prodajanekretnina_mobile_novi/models/search_result.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnikNekretninaWish_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/nekretnine_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/gradovi_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/slike_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnici_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/kupci_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/slike_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/providers/komentariAgentima_provider.dart';
-import 'package:prodajanekretnina_mobile_novi/screens/AgentDetaljiScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/NekretnineDetaljiScreen.dart';
 import 'package:prodajanekretnina_mobile_novi/utils/util.dart';
 import 'package:prodajanekretnina_mobile_novi/screens/glavni_ekran.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:typed_data';
-import 'package:intl/intl.dart';
 
 class WishListaScreen extends StatefulWidget {
   final Korisnik? korisnik;
@@ -79,7 +68,7 @@ void initState() {
       var tmpGradoviData = await _gradoviProvider?.get(null);
       var slikeData = await _slikeProvider?.get();
      
-     // var tmppreporuceneNekretnine = await _nekretnineProvider.recommend(userId);
+     
      
       
       setState(() {
@@ -90,7 +79,7 @@ void initState() {
         gradoviData = tmpGradoviData!;
         slikeData = slikeData!;
         
-       // preporuceneNekretnine = tmppreporuceneNekretnine;
+      
       });
        final userId=korisnikId()!;
       print("korisnikKora: $userId");
@@ -178,125 +167,7 @@ int kora=0;
     }
   }
 
-/*
-  List<Widget> buildObilasciWidgets() {
-    // Create a list of widgets representing obilasci details
-    List<Widget> obilasciWidgets = [];
 
-    // Define the desired font size
-    double fontSize = 18.0; // Change the font size as needed
-
-    for (var obilazak in data) {
-      // Check if the obilazak belongs to the current user
-      if (obilazak.korisnikId == korisnikId()) {
-        obilasciWidgets.add(
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey), // Add border
-              borderRadius: BorderRadius.all(
-                  Radius.circular(10.0)), // Add rounded corners
-            ),
-            margin: EdgeInsets.all(8.0), // Add margin for spacing
-            padding: EdgeInsets.all(8.0), // Add padding for spacing
-            child: Column(
-              children: [
-                ListTile(
-                  title: Text(
-                    "${nazivNekretnine(obilazak.nekretninaId)}",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  subtitle: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.location_on), // Location icon
-                      SizedBox(width: 8),
-
-                      Expanded(
-                        // Wrap in Expanded to take up available space
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${lokacijaNekretnine(obilazak.nekretninaId)}",
-                              style: TextStyle(
-                                  fontSize: fontSize), // Set the font size
-                              softWrap:
-                                  true, // Allow text to wrap to the next line
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                ElevatedButton(
-                  onPressed: () async {
-                    try {
-                      var result = await _korisnikNekretninaWishProvider
-                          .delete(obilazak.korisnikNekretninaWishId);
-
-                      // Check the result
-                      if (result) {
-                        // Deletion was successful
-                        print('Obilazak uspješno otkazan.');
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => WishListaScreen(),
-                          ),
-                        );
-
-                        // Refresh the content by calling initForm() and triggering a rebuild
-                        await initForm();
-                        setState(() {});
-                      } else {
-                        // Deletion failed
-                        print('Otkazivanje nije uspjelo obilazak.');
-                      }
-                    } catch (e) {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => WishListaScreen(),
-                        ),
-                      );
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text(
-                              'Uspješno ste uklonili nekretninu iz vaše liste želja!',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('Uredu'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                      // Handle unexpected errors
-                      print(
-                          'Error canceling obilazak: $e obilazakId ${obilazak.korisnikNekretninaWishId}');
-                    }
-                  },
-                  child: Text("Ukloni iz liste želja"),
-                ),
-                SizedBox(height: 5), // Add some spacing between entries
-              ],
-            ),
-          ),
-        );
-      }
-    }
-
-    return obilasciWidgets;
-  }*/
   
   Widget buildPreporuceneWidget() {
   return Column(
@@ -314,7 +185,7 @@ int kora=0;
         ),
       ),
       SizedBox(
-        height: 250, // Visina jednog preporučenog elementa
+        height: 250,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: preporuceneNekretnine.length,
@@ -350,9 +221,9 @@ int kora=0;
   child: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      // Slika ili carousel
+     
       Container(
-        height: 100, // Manja visina da ne pređe ukupan prostor
+        height: 100,
         child: Builder(
           builder: (context) {
             if (isLoading) {
@@ -383,7 +254,7 @@ int kora=0;
         ),
       ),
 
-      // Info
+    
       Padding(
         padding: const EdgeInsets.all(6.0),
         child: Column(
@@ -459,19 +330,39 @@ int kora=0;
   }
 
   List<Widget> buildObilasciWidgets() {
-    // Create a list of widgets representing obilasci details
+    
     List<Widget> obilasciWidgets = [];
-
-    // Define the desired font size
-    double fontSize = 18.0; // Change the font size as needed
+ if (data.isEmpty) {
+    obilasciWidgets.add(
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 20.0),
+        child: Center(
+          child: Column(
+            children: [
+              Icon(Icons.info_outline, size: 60, color: Colors.grey),
+              SizedBox(height: 16),
+              Text(
+                'Nemate nijednu nekretninu na listi želja.',
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    return obilasciWidgets;
+  }
+   
+    double fontSize = 18.0; 
 
     for (var obilazak in data) {
-      // Check if the obilazak belongs to the current user
+ 
       if (obilazak.korisnikId == korisnikId()) {
         obilasciWidgets.add(
           GestureDetector(
             onTap: () {
-              // Navigate to NekretnineDetaljiScreen when container is clicked
+           
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -492,7 +383,7 @@ int kora=0;
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Naziv nekretnine
+   
         Row(
           children: [
             Icon(Icons.home, color: Colors.deepPurple),
@@ -523,7 +414,7 @@ int kora=0;
         ),
         SizedBox(height: 16),
 
-        // Dugme za uklanjanje iz liste želja
+       
         Align(
           alignment: Alignment.centerRight,
           child: ElevatedButton.icon(
@@ -532,9 +423,9 @@ int kora=0;
                         var result = await _korisnikNekretninaWishProvider
                             .delete(obilazak.korisnikNekretninaWishId);
 
-                        // Check the result
+                       
                         if (result) {
-                          // Deletion was successful
+                         
                           print('Obilazak uspješno otkazan.');
                           Navigator.of(context).pop();
                           Navigator.of(context).pushReplacement(
@@ -543,11 +434,11 @@ int kora=0;
                             ),
                           );
 
-                          // Refresh the content by calling initForm() and triggering a rebuild
+                         
                           await initForm();
                           setState(() {});
                         } else {
-                          // Deletion failed
+                          
                           print('Otkazivanje nije uspjelo obilazak.');
                         }
                       } catch (e) {
@@ -582,7 +473,7 @@ int kora=0;
 );
 
                          
-                        // Handle unexpected errors
+                       
                         print(
                             'Error canceling obilazak: $e obilazakId ${obilazak.korisnikNekretninaWishId}');
                       }
@@ -626,7 +517,7 @@ Widget build(BuildContext context) {
           delegate: SliverChildListDelegate(
             [
               if (preporuceneNekretnine.isNotEmpty) buildPreporuceneWidget(),
-              ...buildObilasciWidgets(), // sve ostale nekretnine
+              ...buildObilasciWidgets(),
             ],
           ),
         ),
