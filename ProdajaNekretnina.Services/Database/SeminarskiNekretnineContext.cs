@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+
 using ProdajaNekretnina.Services.Database;
 
 namespace ProdajaNekretnina.Services.Database;
@@ -56,9 +57,11 @@ public partial class SeminarskiNekretnineContext : DbContext
     public virtual DbSet<KorisnikAgencija> KorisnikAgencijas { get; set; }
     public virtual DbSet<ReccomendResult> ReccomendResults { get; set; }
     public virtual DbSet<KorisnikNekretninaWish> KorisnikNekretninaWishes { get; set; }
+    public virtual DbSet<Kupovina> Kupovine { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=.;Database=seminarskiNekretnine;Trusted_Connection=True; TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Server=db;Database=200120;User=sa;Password=YourStrong@Passw0rd;MultipleActiveResultSets=True;Encrypt=False;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

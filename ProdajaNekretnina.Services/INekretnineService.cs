@@ -14,6 +14,6 @@ namespace ProdajaNekretnina.Services
         Task<Nekretnina> Hide(int id);
 
         Task<List<string>> AllowedActions(int id);
-        public List<Model.Nekretnina> Recommend(int userId);
+        public List<Model.Nekretnina> RecommendNekretnina(int userId);
     }
 }

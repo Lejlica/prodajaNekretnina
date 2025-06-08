@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:prodajanekretnina_admin/models/korisnici.dart';
+import 'package:prodajanekretnina_admin/models/korisnikAgencija.dart';
+import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_admin/models/nekretnine.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
 import 'package:prodajanekretnina_admin/models/slike.dart';
 import 'package:prodajanekretnina_admin/models/lokacije.dart';
 import 'package:prodajanekretnina_admin/models/gradovi.dart';
 import 'package:prodajanekretnina_admin/models/tipAkcije.dart';
+import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
+import 'package:prodajanekretnina_admin/providers/korisnikAgencija_provider.dart';
+import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
 import 'package:prodajanekretnina_admin/providers/nekretnine_provider.dart';
 import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
 import 'package:prodajanekretnina_admin/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/gradovi_provider.dart';
 import 'package:prodajanekretnina_admin/providers/tipAkcije_provider.dart';
 import 'package:prodajanekretnina_admin/screens/glavni_ekran.dart';
-import 'package:prodajanekretnina_admin/screens/dodaj_nekr2.dart';
+import '../utils/util.dart';
 import 'package:prodajanekretnina_admin/models/nekretninaTipAkcije.dart';
 import 'package:prodajanekretnina_admin/providers/nekretninaTipAkcije_provider.dart';
 import 'package:prodajanekretnina_admin/screens/nekretnine_detalji.dart';
+import 'package:prodajanekretnina_admin/screens/vise_o_nekretnini.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 
@@ -46,25 +53,37 @@ class _CustomCardState extends State<CustomCard> {
   late PageController _pageController;
   SearchResult<Lokacija>? lokacijeResult;
   late LokacijeProvider _lokacijeProvider;
-
+late NekretnineProvider _nekretnineProvider;
+SearchResult<Nekretnina>? nekretnineResult;
+late KorisnikAgencijaProvider _korisnikAgencijaProvider;
+late KorisniciProvider _korisniciProvider;
+late NekretninaAgentiProvider _nekretninaAgentiProvider;
+SearchResult<NekretninaAgenti>? nekretninaAgentiResult;
+  SearchResult<KorisnikAgencija>? korisnikAgencijaResult;
+   SearchResult<Korisnik>? korisniciResult;
   late GradoviProvider _gradoviProvider;
   late NekretninaTipAkcijeProvider _nekretninaTipAkcijeProvider;
   late TipAkcijeProvider _tipAkcijeProvider;
   SearchResult<Grad>? gradoviResult;
   SearchResult<NekretninaTipAkcije>? nekretninaTipAkcijeResult;
   SearchResult<TipAkcije>? tipAkcijeResult;
-
+List<int> nekretninaIdAgencije = [];
   bool isLoading = true;
   @override
   void initState() {
     super.initState();
+_nekretnineProvider = context.read<NekretnineProvider>();
 
     _pageController = PageController(initialPage: 0);
     _lokacijeProvider = context.read<LokacijeProvider>();
     _gradoviProvider = context.read<GradoviProvider>();
     _nekretninaTipAkcijeProvider = context.read<NekretninaTipAkcijeProvider>();
     _tipAkcijeProvider = context.read<TipAkcijeProvider>();
+    _korisniciProvider = context.read<KorisniciProvider>();
+    _korisnikAgencijaProvider = context.read<KorisnikAgencijaProvider>();
+    _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
     initForm();
+     
   }
 
   Future initForm() async {
@@ -77,7 +96,18 @@ class _CustomCardState extends State<CustomCard> {
 
       nekretninaTipAkcijeResult = await _nekretninaTipAkcijeProvider.get();
       tipAkcijeResult = await _tipAkcijeProvider.get();
-
+      
+nekretnineResult = await _nekretnineProvider.get(filter: {
+        'isOdobrena': true,
+      });
+      korisniciResult = await _korisniciProvider.get();
+      korisnikAgencijaResult = await _korisnikAgencijaProvider.get();
+      nekretninaAgentiResult = await _nekretninaAgentiProvider.get();
+korisnikId();
+      agencijaIdd();
+      NadjiKojojAgencijiPripadaKorisnik();
+nekretninaIdAgencije = NadjiNekretnineZaAgenciju();
+await _performSearch();
       setState(() {isLoading = false;});
     } catch (e) {
       print('Error in initForm: $e');
@@ -89,7 +119,69 @@ class _CustomCardState extends State<CustomCard> {
     _pageController.dispose();
     super.dispose();
   }
+int korisnikID=0;
+  String username = Authorization.username ?? "";
+  int? korisnikId() {
+    List<dynamic> filteredData = korisniciResult!.result
+        .where((korisnik) => korisnik.korisnickoIme == username)
+        .toList();
+    if (filteredData.isNotEmpty) {
+      korisnikID = filteredData[0].korisnikId!;
+      print('korisnikIDDD: $korisnikID');
+      return filteredData[0].korisnikId;
+    } else {
+      return null;
+    }
+  }
 
+int? agencijaIdd() {
+    List<dynamic> filteredData = korisnikAgencijaResult!.result
+        .where((korisnik) => korisnik.korisnikId == korisnikId())
+        .toList();
+    if (filteredData.isNotEmpty) {
+      return filteredData[0].agencijaId;
+    } else {
+      return null;
+    }
+  }
+List<int> NadjiNekretnineZaAgenciju() {
+  // 1. Nađi sve korisnike koji pripadaju agenciji
+  List<int> agentiAgencije = korisnikAgencijaResult!.result
+      .where((entry) => entry.agencijaId == pripadajucaAgencija)
+      .map((entry) => entry.korisnikId!)
+      .toList();
+      print('agentiAgencije: ${agentiAgencije}');
+
+  
+ List<int> nekretnineAgencije = [];
+     for (var entry in agentiAgencije) {
+  nekretnineAgencije = nekretninaAgentiResult!.result
+      .where((na) => na.korisnikId == entry)
+      .map((na) => na.nekretninaId!)
+      .toList();
+
+  // sada možeš dalje koristiti nekretnineAgencije
+}
+
+      
+print('nekretnineAgencije: ${nekretnineAgencije}');
+  return nekretnineAgencije;
+}
+
+  int? pripadajucaAgencija;
+int? NadjiKojojAgencijiPripadaKorisnik() {
+    for (var entry in korisnikAgencijaResult!.result) {
+      print(
+          'entry.agencijaId: ${entry.agencijaId}, agencijaId: ${agencijaIdd()}');
+      print('Before if condition');
+      if (entry.korisnikId == korisnikID) {
+        print('Inside if condition');
+        print('korisnik pripada agenciji: ${entry.agencijaId}');
+        pripadajucaAgencija = entry.agencijaId;
+      }
+    }
+    return pripadajucaAgencija ;
+  }
   Grad? grad;
 
   String? getNazivGrad() {
@@ -183,8 +275,8 @@ class _CustomCardState extends State<CustomCard> {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => NekretnineDetaljiScreen(
-              nekretnina: widget.nekretnina,
+            builder: (context) => ViseONekretniniScreen(
+              nekretnina: widget.nekretnina!,
             ),
           ),
         );
@@ -311,6 +403,30 @@ class _CustomCardState extends State<CustomCard> {
       ),
     );
   }
+Future<void> _performSearch() async {
+  // Dohvati sve odobrene nekretnine
+  var data = await _nekretnineProvider.get(filter: {
+    'isOdobrena': true,
+  });
+
+  // Filtriraj lokalno nekretnine koje pripadaju agenciji
+  var filtriraniRezultati = data.result
+      .where((nekretnina) => nekretninaIdAgencije.contains(nekretnina.nekretninaId))
+      .toList();
+       for (var nekretnina in filtriraniRezultati) {
+  print('ID nekretnine iz: ${nekretnina.nekretninaId}');
+
+  // Ažuriraj nekretnineResult s filtriranim rezultatima
+  setState(() {
+    nekretnineResult = SearchResult<Nekretnina>()
+      ..result = filtriraniRezultati
+      ..count = filtriraniRezultati.length;
+  });
+ 
+}
+
+}
+
 
   Widget _buildImageSlider() {
     List<Slika> slike = widget.slike
@@ -371,9 +487,19 @@ class _NekretnineListScreenState extends State<NekretnineListScreen> {
   final TextEditingController _gradController = TextEditingController();
   final TextEditingController _vlasnikController =
       TextEditingController(); // Add this line
+       final TextEditingController _cijenaOdController =
+      TextEditingController();
+       final TextEditingController _cijenaDoController =
+      TextEditingController();
   Map<int, List<Slika>> slikeMap = {};
   List<Slika> slike = [];
-
+  late KorisnikAgencijaProvider _korisnikAgencijaProvider;
+late KorisniciProvider _korisniciProvider;
+late NekretninaAgentiProvider _nekretninaAgentiProvider;
+SearchResult<NekretninaAgenti>? nekretninaAgentiResult;
+  SearchResult<KorisnikAgencija>? korisnikAgencijaResult;
+   SearchResult<Korisnik>? korisniciResult;
+List<int> nekretninaIdAgencije = [];
   void _navigateToDetailsScreen(Nekretnina? nekretnina) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -383,12 +509,140 @@ class _NekretnineListScreenState extends State<NekretnineListScreen> {
       ),
     );
   }
+ void initState() {
+    super.initState();
+_nekretnineProvider = context.read<NekretnineProvider>();
 
-  @override
+    
+    _korisniciProvider = context.read<KorisniciProvider>();
+    _korisnikAgencijaProvider = context.read<KorisnikAgencijaProvider>();
+    _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
+    initForm();
+     _performSearch();
+  }
+
+  Future initForm() async {
+    try {
+      
+      korisniciResult = await _korisniciProvider.get();
+      korisnikAgencijaResult = await _korisnikAgencijaProvider.get();
+      nekretninaAgentiResult = await _nekretninaAgentiProvider.get();
+korisnikId();
+      agencijaIdd();
+      NadjiKojojAgencijiPripadaKorisnik();
+nekretninaIdAgencije = NadjiNekretnineZaAgenciju();
+      setState(() {});
+    } catch (e) {
+      print('Error in initForm: $e');
+    }
+  }
+ /* @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _nekretnineProvider = context.read<NekretnineProvider>();
+  }*/
+  bool _didFetchData = false;
+
+@override
+void didChangeDependencies() {
+  super.didChangeDependencies();
+  _nekretnineProvider = context.read<NekretnineProvider>();
+  _korisniciProvider = context.read<KorisniciProvider>();
+  _korisnikAgencijaProvider = context.read<KorisnikAgencijaProvider>();
+  _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
+
+  if (!_didFetchData) {
+    _performSearch();
+    _didFetchData = true;
   }
+}
+int korisnikID=0;
+  String username = Authorization.username ?? "";
+  int? korisnikId() {
+    List<dynamic> filteredData = korisniciResult!.result
+        .where((korisnik) => korisnik.korisnickoIme == username)
+        .toList();
+    if (filteredData.isNotEmpty) {
+      korisnikID = filteredData[0].korisnikId!;
+      print('korisnikIDDD: $korisnikID');
+      return filteredData[0].korisnikId;
+    } else {
+      return null;
+    }
+  }
+
+int? agencijaIdd() {
+    List<dynamic> filteredData = korisnikAgencijaResult!.result
+        .where((korisnik) => korisnik.korisnikId == korisnikId())
+        .toList();
+    if (filteredData.isNotEmpty) {
+      return filteredData[0].agencijaId;
+    } else {
+      return null;
+    }
+  }
+List<int> NadjiNekretnineZaAgenciju() {
+  // 1. Nađi sve korisnike koji pripadaju agenciji
+  List<int> agentiAgencije = korisnikAgencijaResult!.result
+      .where((entry) => entry.agencijaId == pripadajucaAgencija)
+      .map((entry) => entry.korisnikId!)
+      .toList();
+      print('agentiAgencije: ${agentiAgencije}');
+
+  
+ List<int> nekretnineAgencije = [];
+
+for (var entry in agentiAgencije) {
+  nekretnineAgencije.addAll(
+    nekretninaAgentiResult!.result
+        .where((na) => na.korisnikId == entry)
+        .map((na) => na.nekretninaId!)
+        .toList(),
+  );
+}
+
+
+      
+print('nekretnineAgencije: ${nekretnineAgencije}');
+  return nekretnineAgencije;
+}
+
+  int? pripadajucaAgencija;
+int? NadjiKojojAgencijiPripadaKorisnik() {
+    for (var entry in korisnikAgencijaResult!.result) {
+      print(
+          'entry.agencijaId: ${entry.agencijaId}, agencijaId: ${agencijaIdd()}');
+      print('Before if condition');
+      if (entry.korisnikId == korisnikID) {
+        print('Inside if condition');
+        print('korisnik pripada agenciji: ${entry.agencijaId}');
+        pripadajucaAgencija = entry.agencijaId;
+      }
+    }
+    return pripadajucaAgencija ;
+  }
+Future<void> _performSearch() async {
+  var data = await _nekretnineProvider.get(filter: {
+    'vlasnik': _vlasnikController.text,
+    'grad': _gradController.text,
+    'isOdobrena': true,
+    'cijenaOd': _cijenaOdController.text,
+    'cijenaDo': _cijenaDoController.text,
+  });
+var filtriraniRezultati = data.result
+      .where((nekretnina) => nekretninaIdAgencije.contains(nekretnina.nekretninaId))
+      .toList();
+      
+
+  // Ažuriraj nekretnineResult s filtriranim rezultatima
+  setState(() {
+    result = SearchResult<Nekretnina>()
+      ..result = filtriraniRezultati
+      ..count = filtriraniRezultati.length;
+  });
+  
+}
+
 
   Future<List<Slika>> _getSlikeForNekretnina(int nekretninaId) async {
     SearchResult<Slika> slikeResult = await SlikeProvider()
@@ -406,59 +660,126 @@ class _NekretnineListScreenState extends State<NekretnineListScreen> {
     );
   }
 
-  Widget _buildSearch() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              decoration: const InputDecoration(labelText: "Vlasnik"),
+ Widget _buildSearch() {
+  return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Pretraži nekretnine',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            _buildSearchField(
               controller: _vlasnikController,
+              label: 'Vlasnik',
+              icon: Icons.person,
             ),
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          Expanded(
-            child: TextField(
-              decoration: const InputDecoration(labelText: "Grad"),
+            const SizedBox(width: 8),
+            _buildSearchField(
               controller: _gradController,
+              label: 'Grad',
+              icon: Icons.location_city,
             ),
-          ),
-          ElevatedButton(
-              onPressed: () async {
-                print("login proceed");
-                var data = await _nekretnineProvider.get(filter: {
-                  'vlasnik': _vlasnikController.text,
-                  'grad': _gradController.text,
-                  'isOdobrena': true,
-                });
+            const SizedBox(width: 8),
+            _buildSearchField(
+              controller: _cijenaOdController,
+              label: 'Cijena od (BAM)',
+              icon: Icons.attach_money,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(width: 8),
+            _buildSearchField(
+              controller: _cijenaDoController,
+              label: 'Cijena do (BAM)',
+              icon: Icons.attach_money,
+              keyboardType: TextInputType.number,
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Align(
+  alignment: Alignment.centerRight,
+  child: ElevatedButton.icon(
+    onPressed: () async {
+      var data = await _nekretnineProvider.get(filter: {
+        'vlasnik': _vlasnikController.text,
+        'grad': _gradController.text,
+        'isOdobrena': true,
+        'cijenaOd': _cijenaOdController.text,
+        'cijenaDo': _cijenaDoController.text,
+      });
+      var filtriraniRezultati = data.result
+      .where((nekretnina) => nekretninaIdAgencije.contains(nekretnina.nekretninaId))
+      .toList();
+       print('Filtrirani ID-evi nekretnina: ${filtriraniRezultati.map((e) => e.nekretninaId).toList()}');
 
-                setState(() {
-                  result = data;
-                });
+ print('idag: ${nekretninaIdAgencije.toList()}');
+  // Ažuriraj nekretnineResult s filtriranim rezultatima
+  setState(() {
+    result = data
+      ..result = filtriraniRezultati
+      ..count = filtriraniRezultati.length;
+  });
 
-                print("data: ${data.result[0].cijena}");
-              },
-              child: const Text("Pretraga")),
-          const SizedBox(
-            width: 8,
-          ),
-          ElevatedButton(
-              onPressed: () async {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        DodajNekr2Screen(nekretnina: null),
-                  ),
-                );
-              },
-              child: const Text("Dodaj"))
-        ],
+      /*setState(() {
+        result = data;
+      });*/
+
+      for (var nekretnina in data.result) {
+        print("Cijena: ${nekretnina.cijena}");
+      }
+    },
+    icon: const Icon(Icons.search, color: Colors.white),
+    label: const Text(
+      'Pretraži',
+      style: TextStyle(fontSize: 16, color: Colors.white),
+    ),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: const Color.fromARGB(255, 87, 88, 171),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
       ),
-    );
-  }
+      elevation: 3,
+    ),
+  ),
+),
+
+      ],
+    ),
+  );
+}
+
+Widget _buildSearchField({
+  required TextEditingController controller,
+  required String label,
+  required IconData icon,
+  TextInputType keyboardType = TextInputType.text,
+}) {
+  return Expanded(
+    child: TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 10),
+      ),
+    ),
+  );
+}
+
 
   Widget _buildDataListView() {
     return Expanded(

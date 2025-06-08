@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using ProdajaNekretnina.Model.Requests;
 using ProdajaNekretnina.Model.SearchObjects;
@@ -13,20 +14,23 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
 
+
 namespace ProdajaNekretnina.Services
 {
     public class KorisniciService : BaseCRUDService<Model.Korisnici, Database.Korisnici, KorisniciSearchObject, KorisniciInsertRequest, KorisniciUpdateRequest>, IKorisniciService
     {
-        public KorisniciService(SeminarskiNekretnineContext context, IMapper mapper)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public KorisniciService(SeminarskiNekretnineContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
             : base(context, mapper)
         {
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public static void Main()
         {
-            bool isDesktopApp = IsDesktopApp();
+           // bool isDesktopApp = IsDesktopApp();
 
-            Console.WriteLine($"Is Desktop App: {isDesktopApp}");
+            //Console.WriteLine($"Is Desktop App: {isDesktopApp}");
         }
 
         public override async Task BeforeInsert(Korisnici entity, KorisniciInsertRequest insert)
@@ -71,7 +75,7 @@ namespace ProdajaNekretnina.Services
             return base.AddInclude(query, search);
         }
 
-        public static bool IsDesktopApp()
+        /*public static bool IsDesktopApp()
         {
             // Provjerite operativni sustav
             if (Environment.OSVersion.Platform == PlatformID.Win32NT ||
@@ -90,7 +94,7 @@ namespace ProdajaNekretnina.Services
 
 
             return false;
-        }
+        }*/
 
         public async Task<Model.Korisnici> Login(string username, string password)
         {
@@ -108,15 +112,15 @@ namespace ProdajaNekretnina.Services
                 return null;
             }
 
-            if (IsDesktopApp() && entity.KorisniciUloges.All(uloga => uloga.UlogaId != 1))
-            {
-                return null; // Prijavljivanje nije dozvoljeno na desktop aplikaciji
-            }
+            var appType = _httpContextAccessor.HttpContext?.Request?.Headers["App-Type"].ToString();
+            Console.WriteLine($"App-Type HEADER: {appType}");
 
-            if (!IsDesktopApp() && entity.KorisniciUloges.All(uloga => uloga.UlogaId != 2))
-            {
-                return null; // Prijavljivanje nije dozvoljeno na mobilnoj aplikaciji
-            }
+            if (appType == "Desktop" && entity.KorisniciUloges.All(u => u.UlogaId != 1 && u.UlogaId != 2))
+                return null; // Desktop prijava dozvoljena samo ulogama s ID 1 ili 2
+
+            if (appType == "Mobile" && entity.KorisniciUloges.All(u => u.UlogaId != 3))
+                return null; // Mobilna prijava dozvoljena samo ulogama s ID 3
+
 
             return _mapper.Map<Model.Korisnici>(entity);
         }

@@ -319,6 +319,9 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                               )
                             : Container(),
                       ),
+                      SizedBox(
+                        height: 16,
+                      ),
                 Padding(
                   padding: const EdgeInsets.only(left: 200, right: 200),
                   child: Row(
@@ -327,7 +330,11 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                         child: FormBuilderTextField(
                           name: 'ime',
                           controller: _imeController,
-                          decoration: const InputDecoration(labelText: 'Ime'),
+                          decoration: InputDecoration(
+        labelText: 'Ime',
+        prefixIcon: Icon(Icons.person),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
                         ),
                       ),
                       const SizedBox(
@@ -337,11 +344,18 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                         child: FormBuilderTextField(
                           name: 'prezime',
                           controller: _prezimeController,
-                          decoration: const InputDecoration(labelText: 'Prezime'),
+                          decoration: InputDecoration(
+        labelText: 'Prezime',
+        prefixIcon: Icon(Icons.person_outlined),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
                         ),
                       ),
                     ],
                   ),
+                ),
+                SizedBox(
+                  height: 16,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 200, right: 200),
@@ -351,7 +365,11 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                         child: FormBuilderTextField(
                           name: 'email',
                           controller: _emailController,
-                          decoration: const InputDecoration(labelText: 'Email'),
+                          decoration: InputDecoration(
+        labelText: 'Email',
+        prefixIcon: Icon(Icons.mail),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
                         ),
                       ),
                       const SizedBox(
@@ -361,11 +379,18 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                         child: FormBuilderTextField(
                           name: 'telefon',
                           controller: _telefonController,
-                          decoration: const InputDecoration(labelText: 'Telefon'),
+                          decoration: InputDecoration(
+        labelText: 'Telefon',
+        prefixIcon: Icon(Icons.phone),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
                         ),
                       ),
                     ],
                   ),
+                ),
+                 SizedBox(
+                  height: 16,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 200, right: 200),
@@ -375,8 +400,11 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                         child: FormBuilderTextField(
                           name: 'korisnickoIme',
                           controller: _korisnickoImeController,
-                          decoration:
-                              const InputDecoration(labelText: 'Korisničko ime'),
+                          decoration: InputDecoration(
+        labelText: 'Korisničko ime',
+        prefixIcon: Icon(Icons.account_circle),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
                         ),
                       ),
                       const SizedBox(
@@ -386,14 +414,19 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                         child: FormBuilderTextField(
                           name: 'password',
                           controller: _passwordController,
-                          decoration: const InputDecoration(
-                            labelText: 'Stara lozinka',
-                          ),
+                          decoration: InputDecoration(
+        labelText: 'Lozinka',
+        prefixIcon: Icon(Icons.password),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
                           obscureText: true,
                         ),
                       ),
                     ],
                   ),
+                ),
+                SizedBox(
+                  height: 16,
                 ),
                 Row(children: [
                   Padding(
@@ -401,41 +434,53 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.28,
                       child: FormBuilderField(
-                        name: 'imageId',
-                        builder: ((field) {
-                          return InputDecorator(
-                            decoration: InputDecoration(
-                              labelText: 'Odaberite sliku',
-                              errorText: field.errorText,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(
-                                      4.0), // Smanjite vrednost za manje zaobljenje
-                                ),
-                                child: ListTile(
-                                  leading: const Icon(Icons.photo),
-                                  title: const Text(
-                                    "Odaberite sliku",
-                                    style: TextStyle(
-                                        fontSize:
-                                            14), // Postavite željenu veličinu fonta
-                                  ),
-                                  trailing: const Icon(Icons.file_upload),
-                                  onTap: () async {
-                                    selectedImagePath =
-                                        await pickAndEncodeImage();
-                                    setState(() {});
-                                  },
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                      ),
+  name: 'imageId',
+  builder: (field) {
+    return InputDecorator(
+      decoration: InputDecoration(
+        labelText: 'Odaberite sliku',
+        
+        errorText: field.errorText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        contentPadding: const EdgeInsets.all(12),
+      ),
+      child: InkWell(
+        onTap: () async {
+          selectedImagePath = await pickAndEncodeImage();
+          setState(() {});
+        },
+        borderRadius: BorderRadius.circular(6),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            
+            
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Row(
+            children: const [
+              Icon(Icons.image_outlined),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  "Odaberite sliku",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              Icon(Icons.upload_file_rounded, color: Colors.grey),
+            ],
+          ),
+        ),
+      ),
+    );
+  },
+),
+
                     ),
                   ),
                 ]),
@@ -445,7 +490,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                 Row(children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 680),
-                    child: ElevatedButton(
+                    child: ElevatedButton.icon(
                       onPressed: () {
                         dynamic matchingKorisnik = data.result.firstWhere(
                           (korisnik) => korisnik.korisnickoIme == username,
@@ -461,16 +506,48 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                           );
                         }
                       },
-                      child: const Text(
-                        'Izmjena lozinke',
-                      ),
+                      icon: const Icon(Icons.lock_reset, size: 20),
+  label: const Text(
+    'Izmjena lozinke',
+    style: TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+    ),
+  ),
+                      style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.grey, // Zlatna boja
+    foregroundColor: Colors.black87,
+    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    elevation: 3,
+  ),
                     ),
                   ),
                   const SizedBox(
                     width: 10,
                   ),
-                  ElevatedButton(
+                  ElevatedButton.icon(
                     onPressed: () async {
+                      String? enteredPassword = _formKey.currentState?.fields['password']?.value;
+
+  if (enteredPassword == null || enteredPassword.trim().isEmpty) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text("Greška!"),
+        content: const Text("Da biste izvrsili promjene unesite Vasu lozinku!"),
+        actions: [
+          TextButton(
+            child: const Text("Uredu"),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
+    return; // Prekini izvršavanje ako je prazno
+  }
                       try {
                         Authorization.password = _passwordController.text;
                       } catch (e) {
@@ -537,14 +614,24 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                         },
                       );
                                         },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 82, 120, 150),
-                      // Postavite željenu boju ovdje
-                    ),
-                    child: const Text(
-                      'Sačuvaj izmjene',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    
+                     icon: const Icon(Icons.save_alt, size: 20),
+  label: const Text(
+    'Sačuvaj izmjene',
+    style: TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.indigo, // Zlatna
+    foregroundColor: Colors.white, // Tekst i ikona
+    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+    elevation: 3,
+  ),
                   ),
                 ]),
                 const SizedBox(

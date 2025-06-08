@@ -355,6 +355,41 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.ToTable("Kupci", (string)null);
                 });
 
+            modelBuilder.Entity("ProdajaNekretnina.Services.Database.Kupovina", b =>
+                {
+                    b.Property<int>("KupovinaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("KupovinaId"));
+
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("KorisnikId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("NekretninaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PayPalPaymentId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("KupovinaId");
+
+                    b.HasIndex("KorisnikId");
+
+                    b.HasIndex("NekretninaId");
+
+                    b.ToTable("Kupovine");
+                });
+
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.Lokacija", b =>
                 {
                     b.Property<int>("LokacijaId")
@@ -841,6 +876,21 @@ namespace ProdajaNekretnina.Services.Migrations
                         .HasForeignKey("NekretninaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Korisnik");
+
+                    b.Navigation("Nekretnina");
+                });
+
+            modelBuilder.Entity("ProdajaNekretnina.Services.Database.Kupovina", b =>
+                {
+                    b.HasOne("ProdajaNekretnina.Services.Database.Korisnici", "Korisnik")
+                        .WithMany()
+                        .HasForeignKey("KorisnikId");
+
+                    b.HasOne("ProdajaNekretnina.Services.Database.Nekretnina", "Nekretnina")
+                        .WithMany()
+                        .HasForeignKey("NekretninaId");
 
                     b.Navigation("Korisnik");
 

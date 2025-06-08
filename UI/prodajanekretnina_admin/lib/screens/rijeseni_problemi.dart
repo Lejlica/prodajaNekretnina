@@ -172,78 +172,160 @@ final TextEditingController _datumController = TextEditingController();
               child: Column(
                 children: filteredNekretnine.map((Problem e) {
                   return Center(
-                    child: SizedBox(
-                      width: 600, // Postavite željenu širinu za Card
-                      child: Card(
-                        color: const Color.fromARGB(128, 182, 211, 247),
-                        child: ListTile(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => ProblemDetailScreen(
-                                  problem: e,
-                                  korisniciResult: korisniciResult,
-                                  problemProvider: _problemProvider,
-                                  nekretnineResult: nekretnineResult,
-                                  lokacijeResult: lokacijeResult,
-                                  gradoviResult: gradoviResult,
-                                  //tipNekretnineResult: tipoviNekretninaResult,
-                                ),
-                              ),
-                            );
-                          },
-                          title: Center(
-                            child: Text(
-                              'Problem br. ${e.problemId?.toString() ?? ""}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          subtitle: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    Text(
-                                        'Rb. nekretnine: ${e.nekretninaId?.toString() ?? ""}'),
-                                    Text(
-                                        'Vlasnik: ${_getVlasnik(e.nekretninaId)}'),
-                                    Text(
-                                        'Datum prijave: ${_formatDate(e.datumPrijave)}'),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+  child: SizedBox(
+    width: 600,
+    child: Card(
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      color: const Color.fromARGB(180, 255, 255, 255),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ProblemDetailScreen(
+                problem: e,
+                korisniciResult: korisniciResult,
+                problemProvider: _problemProvider,
+                nekretnineResult: nekretnineResult,
+                lokacijeResult: lokacijeResult,
+                gradoviResult: gradoviResult,
+              ),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Naslov sa ID problema
+              Row(
+                children: [
+                  const Icon(Icons.report_problem_outlined, color: Colors.redAccent),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Problem br. ${e.problemId?.toString() ?? ""}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
-                  );
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // Informacije o nekretnini
+              Row(
+                children: [
+                  const Icon(Icons.home, size: 20, color: Colors.blue),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      'Rb. nekretnine: ${e.nekretninaId?.toString() ?? ""}',
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+
+              // Vlasnik
+              Row(
+                children: [
+                  const Icon(Icons.person_outline, size: 20, color: Colors.indigo),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      'Vlasnik: ${_getVlasnik(e.nekretninaId)}',
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+
+              // Datum prijave
+              Row(
+                children: [
+                  const Icon(Icons.calendar_month, size: 20, color: Colors.grey),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      'Datum prijave: ${_formatDate(e.datumPrijave)}',
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  ),
+);
+
                 }).toList(),
               ),
             ),
           ),
           const SizedBox(height: 16),
-          Text(
-            'Na čekanju: $brojNaCekanju',
-            style: const TextStyle(
-              fontSize: 20,
-              color: Colors.red,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          Container(
+  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+  margin: const EdgeInsets.only(bottom: 12),
+  decoration: BoxDecoration(
+    color: Colors.red.withOpacity(0.1),
+    borderRadius: BorderRadius.circular(12),
+    border: Border.all(color: Colors.redAccent),
+  ),
+  child: Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      const Icon(
+        Icons.warning_amber_rounded,
+        color: Colors.red,
+      ),
+      const SizedBox(width: 8),
+      Text(
+        'Na čekanju: $brojNaCekanju',
+        style: const TextStyle(
+          fontSize: 18,
+          color: Colors.red,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ],
+  ),
+),
+
           const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => PrijavljeniProblemiScreen(),
-                ),
-              );
-            },
-            child: const Text('Pregledaj prijavljene probleme'),
-          ),
+          ElevatedButton.icon(
+  style: ElevatedButton.styleFrom(
+    backgroundColor: const Color.fromARGB(255, 87, 88, 171),
+    foregroundColor: Colors.white,
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    elevation: 3,
+  ),
+  onPressed: () {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => PrijavljeniProblemiScreen(),
+      ),
+    );
+  },
+  icon: const Icon(Icons.list_alt), // ikonica za prikaz liste problema
+  label: const Text(
+    'Pregledaj prijavljene probleme',
+    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+  ),
+),
+SizedBox(height: 16),
         ],
       ),
     );
@@ -533,21 +615,7 @@ class ProblemDetailScreen extends StatelessWidget {
                         ),
                       ]),
                       const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Icon(Icons.location_on, color: Colors.grey, size: 20),
-                          const SizedBox(width: 5),
-                          const Text(
-                            'Lokacija: ',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 130, 130, 130),
-                            ),
-                          ),
-                          //Text(
-                          //  _getAdresaNekretnine(problem.nekretninaId),
-                          //),
-                        ],
-                      ),
+                      
                       const SizedBox(height: 10),
                       const Row(children: [
                         Text(

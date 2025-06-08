@@ -478,7 +478,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                         },
                         child: Text("Izmjena lozinke"),
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.grey, // Postavite ovde željenu boju
+                          backgroundColor: Colors.grey, // Postavite ovde željenu boju
                         ),
                       ),
                     ])))));

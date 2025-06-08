@@ -1,0 +1,80 @@
+services:
+#mssql docker
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong@Passw0rd
+      - MSSQL_PID=Developer   
+    ports:
+      - "1433:1433"
+    expose:
+      - "1433"
+    networks:
+      - prodajanekretnina
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - prodajanekretnina
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  prodajanekretnina-mail-sender:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./ProdajaNekretnina.MailSender/Dockerfile
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+      - SERVER_ADDRESS=smtp.gmail.com
+      - MAIL_SENDER=seminarskinekretnine@gmail.com
+      - MAIL_PASS=wnivtkyrbfpwwjki
+      - MAIL_PORT=587
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=lejla
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certifikat.pfx
+    networks:
+      - prodajanekretnina
+    ports:
+      - "7188:80"
+    depends_on:
+      - rabbitmq
+
+      
+  prodajanekretnina-api:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./ProdajaNekretnina/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Database=200120;User=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+      - SERVER_ADDRESS=smtp.gmail.com
+      - MAIL_SENDER=seminarskinekretnine@gmail.com
+      - MAIL_PASS=wnivtkyrbfpwwjki
+      - MAIL_PORT=587
+    volumes:
+      - ./certificate.pfx:/app/certificate.pfx
+    ports:
+      - "7189:7189"
+    networks:
+      - prodajanekretnina
+    depends_on:
+      - db
+      - rabbitmq
+
+networks:
+  prodajanekretnina:
+    driver: bridge

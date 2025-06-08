@@ -343,7 +343,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                                       child: FormBuilderDropdown<String>(
                                         name: 'korisnikAgencijaId',
                                         decoration: InputDecoration(
-                                          labelText: 'Agencija*',
+                                          labelText: 'Agencija* (ukoliko ne odaberete agenciju, agent neće biti prikazan u listi agenata)',
                                           suffix: IconButton(
                                             icon: const Icon(Icons.close),
                                             onPressed: () {

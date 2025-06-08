@@ -298,23 +298,36 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                       ),
                     Row(children: [
                       Expanded(
-                          child: ElevatedButton(
+                          child: ElevatedButton.icon(
                         onPressed: () async {
                           _passwordOldController.text = '';
                           _passwordController.text = '';
                           _passwordPotvrdaController.text = '';
                         },
-                        style: ButtonStyle(
-                          backgroundColor:
-                              WidgetStateProperty.all<Color>(Colors.grey),
-                        ),
-                        child: const Text('Odustani'),
+                        
+                        icon: const Icon(Icons.cancel, size: 20),
+  label: const Text(
+    'Odustani',
+    style: TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.grey, // Zlatna
+    foregroundColor: Colors.white, // Tekst i ikona
+    padding: const EdgeInsets.symmetric(horizontal:8, vertical: 14),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+    elevation: 3,
+  ),
                       )),
                       const SizedBox(
                         width: 10,
                       ),
                       Expanded(
-                        child: ElevatedButton(
+                        child: ElevatedButton.icon(
                           onPressed: () async {
                             _passwordsMatch = arePasswordsMatching();
                             try {
@@ -361,6 +374,9 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                               );
                               print("Success $success");
                               if (success == true) {
+                                _formKey.currentState?.reset();
+                                _passwordPotvrdaController.clear();
+  
                                 // Uspješno izvršena promjena lozinke, prikaži success alert
                                 showDialog(
                                   context: context,
@@ -426,7 +442,23 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                               );
                             }
                           },
-                          child: const Text('Sačuvaj'),
+                           icon: const Icon(Icons.save_alt, size: 20),
+  label: const Text(
+    'Sačuvaj izmjene',
+    style: TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.indigo, // Zlatna
+    foregroundColor: Colors.white, // Tekst i ikona
+    padding: const EdgeInsets.symmetric(horizontal:8, vertical: 14),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+    elevation: 3,
+  ),
                         ),
                       ),
                     ])

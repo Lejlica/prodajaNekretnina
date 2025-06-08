@@ -4,6 +4,7 @@ import "dart:io";
 import "package:flutter/material.dart";
 import "package:http/http.dart" as http;
 import "package:http/http.dart";
+import "package:prodajanekretnina_admin/models/emailModel.dart";
 import "package:prodajanekretnina_admin/models/kategorijeNekretnina.dart";
 import "package:prodajanekretnina_admin/models/search_result.dart";
 import "package:prodajanekretnina_admin/utils/util.dart";
@@ -15,7 +16,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
   BaseProvider(String endpoint) {
     _endpoint = endpoint;
     _baseUrl = const String.fromEnvironment("baseUrl",
-        defaultValue: "https://localhost:7125/");
+        defaultValue: "http://localhost:7189/");
   }
 
   Future<SearchResult<T>> get({dynamic filter}) async {
@@ -195,4 +196,17 @@ abstract class BaseProvider<T> with ChangeNotifier {
     });
     return query;
   }
+   Future<void> sendConfirmationEmail(EmailModel emailModel) async {
+  final url = '$_baseUrl/Nekretnine/SendConfirmationEmail';
+  final response = await http.post(
+    Uri.parse(url),
+    headers: createHeaders(),
+    body: jsonEncode(emailModel.toJson()),
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Greška prilikom slanja emaila');
+  }
+}
+
 }

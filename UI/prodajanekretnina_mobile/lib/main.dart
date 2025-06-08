@@ -62,8 +62,7 @@ void main() {
         primaryColor: Colors.deepPurple,
         textButtonTheme: TextButtonThemeData(
             style: TextButton.styleFrom(
-                primary: Colors.deepPurple,
-                textStyle: const TextStyle(
+                foregroundColor: Colors.deepPurple, textStyle: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     fontStyle: FontStyle.italic))),
@@ -71,8 +70,8 @@ void main() {
         // Define the default `TextTheme`. Use this to specify the default
         // text styling for headlines, titles, bodies of text, and more.
         textTheme: const TextTheme(
-          headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-          headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+          displayLarge: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+          headlineSmall: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
         ),
       ),
       supportedLocales: L10n.all,

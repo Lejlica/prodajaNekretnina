@@ -8,10 +8,12 @@ import 'package:prodajanekretnina_admin/models/korisnici.dart';
 import 'package:prodajanekretnina_admin/models/problemi.dart';
 import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_admin/models/lokacije.dart';
+import 'package:prodajanekretnina_admin/models/korisnikAgencija.dart';
 import 'package:prodajanekretnina_admin/models/nekretnine.dart';
 import 'package:prodajanekretnina_admin/models/status.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
 import 'package:prodajanekretnina_admin/models/slike.dart';
+import 'package:prodajanekretnina_admin/providers/korisnikAgencija_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:prodajanekretnina_admin/models/tipoviNekretnina.dart';
 import 'package:prodajanekretnina_admin/providers/drzave_provide.dart';
@@ -77,6 +79,7 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;
+   late KorisnikAgencijaProvider _korisnikAgencijaProvider;
   late TipoviNekretninaProvider _tipoviNekretninaProvider;
   late LokacijeProvider _lokacijeProvider;
   late KategorijeNekretninaProvider _kategorijeNekretninaProvider;
@@ -88,7 +91,7 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
   late StatusProvider _statusProvider;
   late ProblemProvider _problemProvider;
   bool isLoading = true;
-
+List<int> nekretninaIdAgencije = [];
   SearchResult<Korisnik>? korisniciResult;
   SearchResult<Nekretnina>? nekretnineResult;
   SearchResult<TipNekretnine>? tipoviResult;
@@ -100,6 +103,8 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
   SearchResult<Slika>? slikeResult;
   SearchResult<Problem>? problemiResult;
   SearchResult<NekretninaAgenti>? nekretninaAgentiResult;
+  SearchResult<KorisnikAgencija>? korisnikAgencijaResult;
+  
   @override
   void initState() {
     super.initState();
@@ -111,6 +116,8 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
     _korisniciProvider = context.read<KorisniciProvider>();
     _tipoviNekretninaProvider = context.read<TipoviNekretninaProvider>();
     _lokacijeProvider = context.read<LokacijeProvider>();
+    _korisnikAgencijaProvider =
+        context.read<KorisnikAgencijaProvider>();
     _kategorijeNekretninaProvider =
         context.read<KategorijeNekretninaProvider>();
     _gradoviProvider = context.read<GradoviProvider>();
@@ -142,9 +149,11 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
       gradoviResult = await _gradoviProvider.get();
       print(gradoviResult);
       nekretninaAgentiResult = await _nekretninaAgentiProvider.get();
-
+korisnikAgencijaResult = await _korisnikAgencijaProvider.get(); 
       print('nekrAgenti $nekretninaAgentiResult');
       problemiResult = await _problemProvider.get();
+       NadjiKojojAgencijiPripadaKorisnik();
+nekretninaIdAgencije = NadjiNekretnineZaAgenciju();
       setState(() {
         isLoading = false;
       });
@@ -162,13 +171,79 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
       body: _buildBody(),
     );
   }
+int korisnikID=0;
+  String username = Authorization.username ?? "";
+  int? korisnikId() {
+    List<dynamic> filteredData = korisniciResult!.result
+        .where((korisnik) => korisnik.korisnickoIme == username)
+        .toList();
+    if (filteredData.isNotEmpty) {
+      korisnikID = filteredData[0].korisnikId!;
+      print('korisnikIDDD: $korisnikID');
+      return filteredData[0].korisnikId;
+    } else {
+      return null;
+    }
+  }
 
+int? agencijaIdd() {
+    List<dynamic> filteredData = korisnikAgencijaResult!.result
+        .where((korisnik) => korisnik.korisnikId == korisnikId())
+        .toList();
+    if (filteredData.isNotEmpty) {
+      return filteredData[0].agencijaId;
+    } else {
+      return null;
+    }
+  }
+List<int> NadjiNekretnineZaAgenciju() {
+  // 1. Nađi sve korisnike koji pripadaju agenciji
+  List<int> agentiAgencije = korisnikAgencijaResult!.result
+      .where((entry) => entry.agencijaId == pripadajucaAgencija)
+      .map((entry) => entry.korisnikId!)
+      .toList();
+      print('agentiAgencije: ${agentiAgencije}');
+
+  
+ List<int> nekretnineAgencije = [];
+
+for (var entry in agentiAgencije) {
+  nekretnineAgencije.addAll(
+    nekretninaAgentiResult!.result
+        .where((na) => na.korisnikId == entry)
+        .map((na) => na.nekretninaId!)
+        .toList(),
+  );
+}
+
+
+      
+print('nekretnineAgencije: ${nekretnineAgencije}');
+  return nekretnineAgencije;
+}
+  int? pripadajucaAgencija;
+int? NadjiKojojAgencijiPripadaKorisnik() {
+    for (var entry in korisnikAgencijaResult!.result) {
+      print(
+          'entry.agencijaId: ${entry.agencijaId}, agencijaId: ${agencijaIdd()}');
+      print('Before if condition');
+      if (entry.korisnikId == korisnikID) {
+        print('Inside if condition');
+        print('korisnik pripada agenciji: ${entry.agencijaId}');
+        pripadajucaAgencija = entry.agencijaId;
+      }
+    }
+    return pripadajucaAgencija ;
+  }
   Widget _buildBody() {
     // Filter nekretnine based on nekretninaTipAkcijeResult
     List<Problem> filteredNekretnine = problemiResult?.result
             .where((status) => status.statusId != 3)
             .toList() ??
         [];
+        final filteredByAgencija = filteredNekretnine
+    .where((n) => nekretninaIdAgencije.contains(n.nekretninaId))
+    .toList();
 
     return Padding(
       padding: const EdgeInsets.all(5.0),
@@ -180,82 +255,144 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical, // Changed to vertical
               child: Column(
-                children: filteredNekretnine.map((Problem e) {
+                children: filteredByAgencija.map((Problem e) {
                   return SizedBox(
                     width: 700,
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => ProblemDetailScreen(
-                              problem: e,
-                              korisniciResult: korisniciResult,
-                              nekretnineResult: nekretnineResult,
-                              
-                              
-                              lokacijeResult: lokacijeResult,
-                              gradoviResult: gradoviResult,
-                              problemProvider: _problemProvider,
-                              statusResult: statusResult,
-                              //tipNekretnineResult: tipoviNekretninaResult,
+                      onTap: () async {
+  var result = await Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => ProblemDetailScreen(
+        problem: e,
+        korisniciResult: korisniciResult,
+        nekretnineResult: nekretnineResult,
+        lokacijeResult: lokacijeResult,
+        gradoviResult: gradoviResult,
+        problemProvider: _problemProvider,
+        statusResult: statusResult,
+      ),
+    ),
+  );
+
+  if (result == true) {
+    await initForm(); // ponovo učita podatke
+    setState(() {});  // osvježi UI
+  }
+},
+
+                      child: Card(
+  elevation: 4,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(12),
+  ),
+  color: const Color.fromARGB(220, 250, 250, 250),
+  child: Padding(
+    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Levi deo - ID problema
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.report_problem, color: Colors.redAccent),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Problem #${e.problemId?.toString() ?? ""}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  const Icon(Icons.calendar_today, size: 16, color: Colors.blueGrey),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Datum: ${_formatDates(e.datumPrijave)}',
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        // Srednji deo - Nekretnina i vlasnik
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.home_work, size: 16, color: Colors.teal),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Nekretnina: ${e.nekretninaId?.toString() ?? ""}',
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  const Icon(Icons.person, size: 16, color: Colors.indigo),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Vlasnik: ${_getVlasnik(e.nekretninaId)}',
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        // Desni deo - Status
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                   _getIconForStatus(e.statusId!),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        text: 'Status: ',
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 14,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: _getStringStatusa(e.statusId),
+                            style: const TextStyle(
+                              color: Colors.deepOrangeAccent,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
-                        );
-                      },
-                      child: Card(
-                        color: const Color.fromARGB(128, 253, 253, 254),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 14),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  'Problem br. ${e.problemId?.toString() ?? ""}:',
-                                  textAlign: TextAlign.left,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold, // Set to bold
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                        'Rb. nekretnine: ${e.nekretninaId?.toString() ?? ""}'),
-                                    Text(
-                                        'Vlasnik: ${_getVlasnik(e.nekretninaId)}'),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        'Datum prijave: ${_formatDate(e.datumPrijave)}'),
-                                    Text.rich(
-                                      TextSpan(
-                                        text: 'Status rješavanja problema: ',
-                                        style: TextStyle(color: Colors.black), // osnovna boja
-                                        children: [
-                                          TextSpan(
-                                            text: _getStringStatusa(e.statusId),
-                                            style: TextStyle(color: Colors.deepOrangeAccent), // crvena boja samo za status
-                                          ),
-                                        ],
-                                      ),
-                                    ),  
-
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        ],
                       ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  ),
+),
                     ),
                   );
                 }).toList(),
@@ -267,7 +404,7 @@ class _PrijavljeniProblemiScreenState extends State<PrijavljeniProblemiScreen> {
     );
   }
 
-  String _formatDate(String? dateString) {
+  String _formatDates(String? dateString) {
     if (dateString == null) {
       return 'N/A'; // Return 'N/A' if the date is null
     }
@@ -311,7 +448,7 @@ void selectDate(BuildContext context) async {
         _datumController.text =
             DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(selectedDate.value!);
       }
-    }
+    }//ovdje
 
   Widget _buildSearch() {
   return Center(
@@ -413,6 +550,22 @@ void selectDate(BuildContext context) async {
       return const Text('Unknown Agent');
     }
   }
+
+  Icon _getIconForStatus(int statusId) {
+  switch (statusId) {
+    case 1: // npr. U toku
+      return Icon(Icons.timelapse, size: 16, color: Colors.orange);
+    case 2: // Zavrsen
+      return Icon(Icons.check_circle_outline, size: 16, color: Colors.green);
+    case 3: // Procesiran
+      return Icon(Icons.autorenew, size: 16, color: Colors.blue);
+    case 4: // Na cekanju
+      return Icon(Icons.pause_circle_outline, size: 16, color: Colors.grey);
+    default:
+      return Icon(Icons.info_outline, size: 16, color: Colors.orange);
+  }
+}
+
 }
 
 class ProblemDetailScreen extends StatelessWidget {
@@ -582,7 +735,7 @@ class ProblemDetailScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.parse(problem.datumPrijave?.toString() ?? ""))} PM GMT',
+                          '${DateFormat('dd.MM.yyyy. HH:mm').format(DateTime.parse(problem.datumPrijave?.toString() ?? ""))}h',
                         ),
                       ]),
                       const SizedBox(height: 10),
@@ -675,7 +828,7 @@ class ProblemDetailScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('Odaberite status rješavanja problema:'),
+                                const Text('Status (ukoliko oznacite Zavrsen problem ce biti uklonjen iz liste): '),
                                 DropdownButtonFormField<int>(
                                   value: selectedStatusId,
                                   onChanged: (newValue) {
@@ -779,7 +932,8 @@ class ProblemDetailScreen extends StatelessWidget {
                                         actions: [
                                           TextButton(
                                             onPressed: () {
-                                              Navigator.of(context).pop();
+                                              Navigator.pop(context);
+                                            Navigator.of(context).pop(true);
                                             },
                                             child: Text('U redu'),
                                           ),
@@ -800,6 +954,7 @@ class ProblemDetailScreen extends StatelessWidget {
                                           TextButton(
                                             onPressed: () {
                                               Navigator.of(context).pop();
+                                              Navigator.of(context).pop(true);
                                             },
                                             child: const Text('U redu'),
                                           ),
@@ -837,7 +992,7 @@ class ProblemDetailScreen extends StatelessWidget {
     }
 
     DateTime date = DateTime.parse(dateString); // Parse the String to DateTime
-   return DateFormat('dd.MM.yyyy. HH:mm').format(date)+ 'h';
+   return DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(date)+ 'h';
   }
 
   String _getStringStatusa(int? statusId) {

@@ -16,9 +16,16 @@ namespace ProdajaNekretnina.Services
         public SlikaService(SeminarskiNekretnineContext context, IMapper mapper) : base(context, mapper)
         {
         }
+        public override IQueryable<Database.Slika> AddFilter(IQueryable<Database.Slika> query, SlikaSearchObject? search = null)
+        {
+            var filteredQuery = base.AddFilter(query, search);
 
-        
+            if (search?.nekretninaId != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.NekretninaId == search.nekretninaId.Value);
+            }
+            return filteredQuery;
 
-
+        }
     }
 }

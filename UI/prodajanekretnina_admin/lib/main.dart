@@ -105,6 +105,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     _nekretnineProvider = context.read<NekretnineProvider>();
     return Scaffold(
       appBar: AppBar(
@@ -200,7 +201,7 @@ class LoginPage extends StatelessWidget {
                                 Authorization.password = password;
 
                                 try {
-                                  await _nekretnineProvider.get();
+                                 // await _nekretnineProvider.get();
 
                                   Navigator.of(context).push(
                                     MaterialPageRoute(

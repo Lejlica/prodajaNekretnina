@@ -94,7 +94,7 @@ class AgentCard extends StatelessWidget {
   final String telefon;
   final String email;
   final int brojUspjesnoProdanihNekretnina;
-  final Uint8List bytes; // Slika agenta
+  final String bajtoviSlike; // Slika agenta
 
   const AgentCard({super.key, 
     required this.ime,
@@ -102,11 +102,19 @@ class AgentCard extends StatelessWidget {
     required this.telefon,
     required this.email,
     required this.brojUspjesnoProdanihNekretnina,
-    required this.bytes,
+    required this.bajtoviSlike,
   });
 
   @override
   Widget build(BuildContext context) {
+    Uint8List? imageBytes;
+    try {
+      if (bajtoviSlike.isNotEmpty) {
+        imageBytes = Uint8List.fromList(base64.decode(bajtoviSlike));
+      }
+    } catch (e) {
+      print('Greška prilikom dekodiranja slike: $e');
+    }
     return Card(
       elevation: 5,
       margin: const EdgeInsets.all(10),
@@ -114,9 +122,14 @@ class AgentCard extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            CircleAvatar(
+             CircleAvatar(
               radius: 50,
-              backgroundImage: MemoryImage(bytes),
+              backgroundImage: imageBytes != null && imageBytes.isNotEmpty
+                  ? MemoryImage(imageBytes)
+                  : null,
+              child: imageBytes == null || imageBytes.isEmpty
+                  ? const Icon(Icons.person, size: 50)
+                  : null,
             ),
             const SizedBox(height: 10),
             Text(
@@ -124,22 +137,23 @@ class AgentCard extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 41, 40, 41)
               ),
             ),
             const SizedBox(height: 5),
             Text(
               'Telefon: $telefon',
-              style: const TextStyle(fontSize: 16, color: Colors.grey),
+              style: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 41, 40, 41)),
             ),
             const SizedBox(height: 5),
             Text(
               'E-mail: $email',
-              style: const TextStyle(fontSize: 16, color: Colors.grey),
+              style: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 41, 40, 41)),
             ),
             const SizedBox(height: 5),
             Text(
               'Prodane nekretnine: $brojUspjesnoProdanihNekretnina',
-              style: const TextStyle(fontSize: 16, color: Colors.grey),
+              style: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 41, 40, 41)),
             ),
           ],
         ),
@@ -218,7 +232,9 @@ class _ListaAgenataScreenState extends State<ListaAgenataScreen> {
       korisnikAgencijaResult = await _korisnikAgencijaProvider.get();
       print(korisnikAgencijaResult);
       List<int> nekretnineIdsForProdaja = [];
+      NadjiKojojAgencijiPripadaKorisnik();
       NadjiKorisnikIds();
+     
       print('korisnikIds after initForm: $korisnikIds');
       
       // Iterate through tipAkcije items to find matching nekretninaId values
@@ -239,13 +255,15 @@ class _ListaAgenataScreenState extends State<ListaAgenataScreen> {
       print('Error in initForm: $e');
     }
   }
-
+int korisnikID=0;
   String username = Authorization.username ?? "";
   int? korisnikId() {
     List<dynamic> filteredData = korisniciResult!.result
         .where((korisnik) => korisnik.korisnickoIme == username)
         .toList();
     if (filteredData.isNotEmpty) {
+      korisnikID = filteredData[0].korisnikId!;
+      print('korisnikIDDD: $korisnikID');
       return filteredData[0].korisnikId;
     } else {
       return null;
@@ -268,7 +286,7 @@ class _ListaAgenataScreenState extends State<ListaAgenataScreen> {
       print(
           'entry.agencijaId: ${entry.agencijaId}, agencijaId: ${agencijaIdd()}');
       print('Before if condition');
-      if (entry.agencijaId == agencijaIdd()) {
+      if (entry.agencijaId == pripadajucaAgencija) {
         print('Inside if condition');
         print('entry.korisnikId: ${entry.korisnikId}');
         korisnikIds.add(entry.korisnikId);
@@ -277,102 +295,126 @@ class _ListaAgenataScreenState extends State<ListaAgenataScreen> {
     print('korisnikIds: $korisnikIds');
     return korisnikIds;
   }
-
+  int? pripadajucaAgencija;
+int? NadjiKojojAgencijiPripadaKorisnik() {
+    for (var entry in korisnikAgencijaResult!.result) {
+      print(
+          'entry.agencijaId: ${entry.agencijaId}, agencijaId: ${agencijaIdd()}');
+      print('Before if condition');
+      if (entry.korisnikId == korisnikID) {
+        print('Inside if condition');
+        print('korisnik pripada agenciji: ${entry.agencijaId}');
+        pripadajucaAgencija = entry.agencijaId;
+      }
+    }
+    return pripadajucaAgencija ;
+  }
   List<int?> korisnikIds = [];
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Lista agenata'),
-      ),
-      body: isLoading
-          ? const CircularProgressIndicator()
-          : GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
-              ),
-              itemCount: korisnikIds.length +
-                  1, // Dodajte jedan za karticu za dodavanje novog agenta
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  // Kartica za dodavanje novog agenta
-                  return buildAddAgentCard();
-                } else {
-                  int? korisnikId = korisnikIds[index - 1];
-                  return SizedBox(
-                    width: 120,
-                    height: 120,
-                    child: buildAgentCard(korisnikId),
-                  );
-                }
-              },
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('Lista agenata'),
+    ),
+    body: isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 10.0,
             ),
-    );
-  }
-
-  Widget buildAddAgentCard() {
-    return ElevatedButton(
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return DodajAgentaScreen();
-          },
-        );
-      },
-      child: const SizedBox(
-        width: 120,
-        height: 180,
-        child: Center(
-          child: Icon(
-            Icons.add,
-            size: 48.0,
-            color: Colors.blue,
-          ),
-        ),
+            itemCount: korisnikIds.length + 1,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return buildAddAgentCard();
+              } else {
+                int? korisnikId = korisnikIds[index - 1];
+               return Container(
+  
+  margin: const EdgeInsets.all(8),
+  
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Color.fromRGBO(243, 238, 166, 0.749),
+          Color.fromARGB(255, 96, 72, 16),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
       ),
-    );
-    /*return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => DodajAgentaScreen(),
-          ),
-        );
-      },
-      child: SizedBox(
-        width: 120,
-        height: 180,
-        child: Center(
-          child: Icon(
-            Icons.add,
-            size: 48.0,
-            color: Colors.blue,
-          ),
-        ),
-      ),
-    );*/
-  }
+    ),
+    child: buildAgentCard(korisnikId),
+  
+);
 
+              }
+            },
+          ),
+  );
+}
+
+ Widget buildAddAgentCard() {
+  return GestureDetector(
+    onTap: () {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return DodajAgentaScreen();
+        },
+      );
+    },
+    child: Container(
+      width: 120,
+      height: 180,
+      margin: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(2, 2),
+          )
+        ],
+      ),
+      child: const Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircleAvatar(
+            radius: 24, // manji krug
+            child: Icon(Icons.add, size: 24, color: Colors.blue),
+            backgroundColor: Color(0xFFE0E0E0),
+          ),
+          SizedBox(height: 10),
+          Text(
+            'Dodaj agenta',
+            style: TextStyle(fontSize: 14),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+
+ 
   Widget buildAgentCard(int? korisnikId) {
-    Korisnik? korisnik =
-        korisniciResult!.result.firstWhere((k) => k.korisnikId == korisnikId);
+    String bajtovii;
+  Korisnik? korisnik = korisniciResult!.result.firstWhere((k) => k.korisnikId == korisnikId);
 
-    String bajtovii = korisnik.bajtoviSlike.toString();
-    Uint8List bytes = base64.decode(bajtovii ?? '');
 
-    return AgentCard(
-      ime: korisnik.ime ?? 'Nepoznato',
-      prezime: korisnik.prezime ?? 'Nepoznato',
-      telefon: korisnik.telefon ?? 'Nepoznato',
-      email: korisnik.email ?? 'Nepoznato',
-      brojUspjesnoProdanihNekretnina:
-          korisnik.brojUspjesnoProdanihNekretnina ?? 0,
-      bytes: bytes,
-    );
-  }
+  return AgentCard(
+    ime: korisnik.ime ?? 'Nepoznato',
+    prezime: korisnik.prezime ?? 'Nepoznato',
+    telefon: korisnik.telefon ?? 'Nepoznato',
+    email: korisnik.email ?? 'Nepoznato',
+    brojUspjesnoProdanihNekretnina: korisnik.brojUspjesnoProdanihNekretnina ?? 0,
+    bajtoviSlike: korisnik!.bajtoviSlike.toString(),
+  );
+}
 }
 
 class DodajAgentaScreen extends StatefulWidget {
@@ -401,6 +443,7 @@ class DodajAgentaScreen extends StatefulWidget {
 class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
+  String? selectedImagePath;
   late KorisniciProvider _korisniciProvider;
   late TipoviNekretninaProvider _tipoviNekretninaProvider;
   late LokacijeProvider _lokacijeProvider;
@@ -487,6 +530,8 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
       print('korisnikAgencijaResult $korisnikAgencijaResult');
       agencijeResult = await _agencijaProvider.get();
       print('agencijeResult $agencijeResult');
+      korisnikId();
+      NadjiKojojAgencijiPripadaKorisnik();
       setState(() {
         isLoading = false;
       });
@@ -525,14 +570,412 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
   }
 
   String selectedAgencijaId = '';
+FormBuilder _formBuild(){
+return FormBuilder(
+      key: _formKey,
+      initialValue: _initialValue,
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Dodaj agenta",
+                style: TextStyle(
+                  fontSize: 19,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 16),
+              
+              // Ime sa ikonom
+              FormBuilderTextField(
+                name: 'ime',
+                decoration: InputDecoration(
+                  labelText: 'Ime *',
+                  prefixIcon: const Icon(Icons.person),
+                  labelStyle: const TextStyle(color: Colors.deepOrange),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.deepOrange),
+                  ),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Molimo unesite ime';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
 
-  FormBuilder _formBuild() {
+              // Prezime sa ikonom
+              FormBuilderTextField(
+                name: 'prezime',
+                decoration: InputDecoration(
+                  labelText: 'Prezime *',
+                  prefixIcon: const Icon(Icons.person_outline),
+                  labelStyle: const TextStyle(color: Colors.deepOrange),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.deepOrange),
+                  ),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Molimo unesite prezime';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+
+              // Email sa ikonom
+              FormBuilderTextField(
+                name: 'email',
+                decoration: InputDecoration(
+                  labelText: 'Email *',
+                  prefixIcon: const Icon(Icons.email),
+                  labelStyle: const TextStyle(color: Colors.deepOrange),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.deepOrange),
+                  ),
+                  
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Molimo unesite email';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+
+              // Telefon sa ikonom
+              FormBuilderTextField(
+                name: 'telefon',
+                decoration: InputDecoration(
+                  labelText: 'Telefon *',
+                  helperText: '061123456 ili 061-123-4567',
+                  helperStyle: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+                  prefixIcon: const Icon(Icons.phone),
+                  labelStyle: const TextStyle(color: Colors.deepOrange),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.deepOrange),
+                  ),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Molimo unesite telefon';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+
+              // Korisničko ime sa ikonom
+              FormBuilderTextField(
+                name: 'korisnickoIme',
+                decoration: InputDecoration(
+                  labelText: 'Korisničko ime *',
+                  prefixIcon: const Icon(Icons.account_circle),
+                  labelStyle: const TextStyle(color: Colors.deepOrange),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.deepOrange),
+                  ),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Molimo unesite korisnicko ime';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 5),
+
+              // Slikovni input
+              FormBuilderField(
+                name: 'imageId',
+                builder: (field) {
+                  return InputDecorator(
+                    decoration: InputDecoration(
+                     
+                      errorText: field.errorText,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: ListTile(
+                          leading: const Icon(Icons.photo),
+                          title: const Text(
+                            "Odaberite sliku",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          trailing: const Icon(Icons.file_upload),
+                          onTap: () async {
+                            selectedImagePath = await pickAndEncodeImage();
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 10),
+
+              // Lozinka sa ikonom
+              FormBuilderTextField(
+                name: 'password',
+                decoration: InputDecoration(
+                  labelText: 'Lozinka *',
+                  prefixIcon: const Icon(Icons.lock),
+                  labelStyle: const TextStyle(color: Colors.deepOrange),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.deepOrange),
+                  ),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Molimo unesite lozinku';
+                  }
+                  return null;
+                },
+                obscureText: true,
+              ),
+              const SizedBox(height: 10),
+
+              // Potvrda lozinke sa ikonom
+              FormBuilderTextField(
+                name: 'passwordPotvrda',
+                decoration: InputDecoration(
+                  labelText: 'Potvrdite lozinku *',
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  labelStyle: const TextStyle(color: Colors.deepOrange),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.deepOrange),
+                  ),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Molimo potvrdite lozinku';
+                  }
+                  return null;
+                },
+                obscureText: true,
+              ),
+              const SizedBox(height: 25),
+
+              // Potvrdi i Odustani dugme
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+  onPressed: () async {
+    // Validate the form before proceeding
+    if (_formKey.currentState?.saveAndValidate() ?? false) {
+      // If form is valid, create a request object with form field values
+      Map<String, dynamic> request = {
+        'ime': _formKey.currentState?.fields['ime']?.value,
+        'prezime': _formKey.currentState?.fields['prezime']?.value,
+        'email': _formKey.currentState?.fields['email']?.value,
+        'telefon': _formKey.currentState?.fields['telefon']?.value,
+        'korisnickoIme': _formKey.currentState?.fields['korisnickoIme']?.value,
+        'password': _formKey.currentState?.fields['password']?.value,
+        'passwordPotvrda': _formKey.currentState?.fields['passwordPotvrda']?.value,
+      };
+
+      // Add image data if available
+      if (selectedImagePath != null && selectedImagePath!.isNotEmpty) {
+        request['bajtoviSlike'] = selectedImagePath;
+      }
+
+      // Check if the username already exists
+      List<Korisnik> filteredKorisnici = korisniciResult
+          ?.result
+          .where((korisnik) =>
+              korisnik.korisnickoIme == _formKey.currentState?.fields['korisnickoIme']?.value)
+          .toList() ?? [];
+
+      final RegExp phoneRegex = RegExp(r'^(\+387)?[- ]?(\d{2,3})[- ]?(\d{3})[- ]?(\d{3,4})$');
+      final RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+
+      if (filteredKorisnici.isEmpty) {
+        final String? phone = _formKey.currentState?.fields['telefon']?.value;
+  final String? email = _formKey.currentState?.fields['email']?.value;
+
+  // 1. Provjera telefona
+  if (!phoneRegex.hasMatch(phone ?? '')) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Upozorenje"),
+          content: const Text("Neispravan format telefona. Dozvoljeno: 061123456 ili +387-61-123-456."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+    return;
+  }
+
+  // 2. Provjera emaila
+  if (!emailRegex.hasMatch(email ?? '')) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Upozorenje"),
+          content: const Text("Neispravan format email adrese."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+    return;
+  }
+
+  // 3. Ako je sve ispravno — nastavi unos
+  Korisnik insertedKorisnik = await _korisniciProvider.insert(request);
+  int? insertedKorisnikId = insertedKorisnik.korisnikId;
+  _formKey.currentState?.reset();
+
+  if (insertedKorisnikId != -1) {
+    Map<String, dynamic> ulogeRequest = {
+      'korisnikId': insertedKorisnikId,
+      'ulogaId': 2,
+    };
+
+    _korisniciUlogeProvider.insert(ulogeRequest);
+  }
+
+  Map<String, dynamic> korisnikAgencijaRequest = {
+    'korisnikId': insertedKorisnikId,
+    'agencijaId': pripadajucaAgencija,
+  };
+
+  _korisnikAgencijaProvider.insert(korisnikAgencijaRequest);
+
+  showDialog(
+  context: context,
+  builder: (BuildContext context) {
+    return AlertDialog(
+      title: const Text("Uspjeh"),
+      content: const Text("Korisnik je uspješno dodan."),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // Zatvori AlertDialog
+            Navigator.of(context).pop(); // Zatvori trenutni ekran
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => ListaAgenataScreen(),
+              ),
+            );
+          },
+          child: const Text("U redu"),
+        ),
+      ],
+    );
+  },
+);
+  
+        
+      } else {
+        // Show username exists error
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Upozorenje"),
+              content: const Text("Korisničko ime već postoji. Molimo odaberite drugo."),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("OK"),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } else {
+      // If form is invalid, show a validation error message
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Upozorenje"),
+            content: const Text("Molimo ispunite sva obavezna polja i provjerite da li se lozinke poklapaju"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  },
+  child: const Text('Potvrdi'),
+)
+,
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                    child: const Text(
+                      'Odustani',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );}
+  /*FormBuilder _formBuild() {
     String username = Authorization.username ?? "";
     return FormBuilder(
       key: _formKey,
       initialValue: _initialValue,
       child: Padding(
-        padding: const EdgeInsets.all(40.0),
+        padding: const EdgeInsets.all(2.0),
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
@@ -542,7 +985,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
+                  
                   fontFamily: 'Roboto',
                   color: Colors.black,
                 ),
@@ -552,7 +995,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                 decoration: const InputDecoration(labelText: 'Ime *'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
+                    return 'Molimo unesite neki tekst';
                   }
                   return null;
                 },
@@ -578,6 +1021,42 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                 name: 'korisnickoIme',
                 decoration: const InputDecoration(labelText: 'Korisničko ime *'),
               ),
+              FormBuilderField(
+                        name: 'imageId',
+                        builder: ((field) {
+                          return InputDecorator(
+                            decoration: InputDecoration(
+                              labelText: 'Odaberite sliku',
+                              errorText: field.errorText,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(
+                                      4.0), // Smanjite vrednost za manje zaobljenje
+                                ),
+                                child: ListTile(
+                                  leading: const Icon(Icons.photo),
+                                  title: const Text(
+                                    "Odaberite sliku",
+                                    style: TextStyle(
+                                        fontSize:
+                                            14), // Postavite željenu veličinu fonta
+                                  ),
+                                  trailing: const Icon(Icons.file_upload),
+                                  onTap: () async {
+                                    selectedImagePath =
+                                        await pickAndEncodeImage();
+                                    setState(() {});
+                                  },
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
               FormBuilderTextField(
                 name: 'password',
                 decoration: const InputDecoration(labelText: 'Lozinka *'),
@@ -613,6 +1092,11 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                           'passwordPotvrda': _formKey
                               .currentState?.fields['passwordPotvrda']?.value,
                         };
+                         if (selectedImagePath != null &&
+                          selectedImagePath!.isNotEmpty) {
+                        // Dodajte podatke o slici zahtevu
+                        request['bajtoviSlike'] = selectedImagePath;
+                      }
                         List<Korisnik> filteredKorisnici = korisniciResult
                                 ?.result
                                 .where((korisnik) =>
@@ -776,7 +1260,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
         ),
       ),
     );
-  }
+  }*/
 
   Lokacija? lokacija;
   void getGrad() {
@@ -787,6 +1271,28 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
       lokacija = lokacijeResult?.result.firstWhere(
         (lokacija) => lokacija.lokacijaId == lokacijaId,
       );
+    }
+  }
+File? _image;
+  String? _base64Image;
+  Future<String> pickAndEncodeImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      // Read the file as bytes
+      Uint8List imageBytes = await pickedFile.readAsBytes();
+
+      // Convert the bytes to base64
+      String base64Image = base64Encode(imageBytes);
+      setState(() {
+        _image = File(pickedFile.path);
+        _base64Image = base64Encode(_image!.readAsBytesSync());
+            });
+      return base64Image.toString();
+    } else {
+      print('No image selected.');
+      return ''; // or handle accordingly
     }
   }
 
@@ -801,9 +1307,46 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
       );
     }
   }
+  int korisnikID=0;
+  String username = Authorization.username ?? "";
+  int? korisnikId() {
+    List<dynamic> filteredData = korisniciResult!.result
+        .where((korisnik) => korisnik.korisnickoIme == username)
+        .toList();
+    if (filteredData.isNotEmpty) {
+      korisnikID = filteredData[0].korisnikId!;
+      print('korisnikIDDD: $korisnikID');
+      return filteredData[0].korisnikId;
+    } else {
+      return null;
+    }
+  }
+  int? agencijaIdd() {
+    List<dynamic> filteredData = korisnikAgencijaResult!.result
+        .where((korisnik) => korisnik.korisnikId == korisnikId())
+        .toList();
+    if (filteredData.isNotEmpty) {
+      return filteredData[0].agencijaId;
+    } else {
+      return null;
+    }
+  }
+int? pripadajucaAgencija;
 
-  File? _image;
-  String? _base64Image;
+int? NadjiKojojAgencijiPripadaKorisnik() {
+    for (var entry in korisnikAgencijaResult!.result) {
+      print(
+          'entry.agencijaId: ${entry.agencijaId}, agencijaId: ${agencijaIdd()}');
+      print('Before if condition');
+      if (entry.korisnikId == korisnikID) {
+        print('Inside if condition');
+        print('korisnik pripada agenciji: ${entry.agencijaId}');
+        pripadajucaAgencija = entry.agencijaId;
+      }
+    }
+    return pripadajucaAgencija ;
+  }
+ 
 
   Future getImage() async {
     var result = await FilePicker.platform.pickFiles(type: FileType.image);

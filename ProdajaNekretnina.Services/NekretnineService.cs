@@ -21,16 +21,30 @@ using Nekretnina = ProdajaNekretnina.Model.Nekretnina;
 using ReccomendResult = ProdajaNekretnina.Model.ReccomendResult;
 using PayPal.Api;
 using Microsoft.AspNetCore.Authorization;
+using ProdajaNekretnina.Services.RabbitMQ;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ProdajaNekretnina.Services
 {
     public class NekretnineService : BaseCRUDService<Model.Nekretnina, Database.Nekretnina, NekretnineSearchObject, NekretnineInsertRequest, NekretnineUpdateRequest>, INekretnineService
     {
         public BaseState _baseState { get; set; }
-        public NekretnineService(BaseState baseState, SeminarskiNekretnineContext context, IMapper mapper) : base(context, mapper)
+      
+
+        public NekretnineService(BaseState baseState, SeminarskiNekretnineContext context, IMapper mapper)
+            : base(context, mapper)
         {
             _baseState = baseState;
+           
         }
+        public class EmailModel
+        {
+            public string Sender { get; set; }
+            public string Recipient { get; set; }
+            public string Subject { get; set; }
+            public string Content { get; set; }
+        }
+      
 
         /*public override IQueryable<Database.Nekretnina> AddInclude(IQueryable<Database.Nekretnina> query, NekretnineSearchObject? search = null)
         {
@@ -79,17 +93,13 @@ namespace ProdajaNekretnina.Services
             {
                 filteredQuery = filteredQuery.Where(x => x.IsOdobrena == search.isOdobrena);
             }
-            if (search?.tipNekretnineId == 1)
+            if (search?.tipNekretnineId != null && search?.tipNekretnineId!=-1)
             {
-                filteredQuery = filteredQuery.Where(x => x.TipNekretnineId == 1);
+                filteredQuery = filteredQuery.Where(x => x.TipNekretnineId == search.tipNekretnineId);
             }
-            if (search?.tipNekretnineId == 7)
+            if (search?.kvadratura != null && search?.kvadratura != 0)
             {
-                filteredQuery = filteredQuery.Where(x => x.TipNekretnineId == 7);
-            }
-            if (search?.tipNekretnineId == 8)
-            {
-                filteredQuery = filteredQuery.Where(x => x.TipNekretnineId == 8);
+                filteredQuery = filteredQuery.Where(x => x.Kvadratura == search.kvadratura);
             }
 
             return filteredQuery;
@@ -114,12 +124,18 @@ namespace ProdajaNekretnina.Services
 
         public async Task<Model.Nekretnina> Activate(int id)
         {
-            var entity = await _context.Nekretninas.FindAsync(id);
+            var entity = await _context.Nekretninas
+                .Include(n => n.Korisnik)
+                .FirstOrDefaultAsync(n => n.NekretninaId == id);
 
             var state = _baseState.CreateState(entity.StateMachine);
+            var result = await state.Activate(id);
 
-            return await state.Activate(id);
+           
+
+            return result;
         }
+
 
         public async Task<Model.Nekretnina> Hide(int id)
         {
@@ -139,289 +155,119 @@ namespace ProdajaNekretnina.Services
 
 
 
-        static MLContext mlContext = null;
-        static object isLocked = new object();
-        static ITransformer model = null;
+        
 
-        public static ProductEntry ConvertNekretninaToProductEntry(ProdajaNekretnina.Services.Database.Nekretnina nekretnina)
+        public List<Model.Nekretnina> RecommendNekretnina(int userId)
         {
-            return new ProductEntry
+            var korisnickeZelje = _context.KorisnikNekretninaWishes
+                .Include(x => x.Nekretnina.Lokacija.Grad)
+                .Where(x => x.KorisnikId == userId)
+                .Select(x => x.Nekretnina)
+                .ToList();
+
+            if (korisnickeZelje.Count == 0)
+                return new List<Model.Nekretnina>();
+
+            // Uzimamo posljednju želju kao "cilj" za preporuku
+            var targetWish = korisnickeZelje.Last();
+
+            
+             /*var sveNekretnine = _context.Nekretninas
+                 .Include(x => x.Lokacija.Grad)
+                 .Where(x => !korisnickeZelje.Any(w => w.NekretninaId ==
+x.NekretninaId))
+                 .ToList();*/
+
+             var sveNekretnine = _context.Nekretninas
+     .Include(x => x.Lokacija.Grad)
+     .ToList() // ✔️ sada je u memoriji
+     .Where(x => !korisnickeZelje.Any(w => w.NekretninaId ==
+x.NekretninaId))
+     .ToList();
+
+
+            // Dodaj i target nekretninu u dataset
+            var sveZaML = sveNekretnine.Append(targetWish).ToList();
+
+            var mlContext = new MLContext();
+
+            var podaci = sveZaML.Select(x => new NekretninePodaci
             {
-                NekretninaId = (uint)nekretnina.NekretninaId,
-                /*IsOdobrena = nekretnina.IsOdobrena ? true : false,
-                KorisnikId = nekretnina.KorisnikId,
-                TipNekretnineId = nekretnina.TipNekretnineId,
-                KategorijaId = nekretnina.KategorijaId,*/
-                LokacijaId = nekretnina.LokacijaId,
-                /*DatumDodavanja = nekretnina.DatumDodavanja,
-                DatumIzmjene = nekretnina.DatumIzmjene,
-                Cijena = nekretnina.Cijena,
-                Kvadratura = nekretnina.Kvadratura,
-                BrojSoba = nekretnina.BrojSoba,
-                BrojSpavacihSoba = nekretnina.BrojSpavacihSoba,
-                Namjesten = nekretnina.Namjesten ? true : false,
-                Novogradnja = nekretnina.Novogradnja ? true : false,
-                Sprat = nekretnina.Sprat,
-                ParkingMjesto = nekretnina.ParkingMjesto ? true : false,
-                BrojUgovora = nekretnina.BrojUgovora,
-                DetaljanOpis = nekretnina.DetaljanOpis,*/
-                // Add more properties if needed...
-            };
-        }
-        [AllowAnonymous]
+                BrojSoba = x.BrojSoba,
+                Cijena = x.Cijena,
+                Lokacija = x.Lokacija.Grad.Naziv,
+                NekretninaId = x.NekretninaId
+            });
 
-        public List<Model.Nekretnina> Recommend(int userId)
-        {
-            MLContext mlContext = new MLContext();
+            var data = mlContext.Data.LoadFromEnumerable(podaci);
 
-            var tmpData = _context.Nekretninas.Include("KorisnikNekretninaWishs").ToList();
-            var data = new List<ProductEntry>();
+            var pipeline =
+mlContext.Transforms.Categorical.OneHotEncoding("LocationEncoded",
+"Lokacija")
+.Append(mlContext.Transforms.Concatenate("Features", "LocationEncoded",
+"BrojSoba", "Cijena"))
+.Append(mlContext.Transforms.NormalizeMinMax("Features"));
 
-            // Convert your data to ML.NET compatible format
-            foreach (var nekretnina in tmpData)
-            {
-                data.Add(new ProductEntry
+            var transformer = pipeline.Fit(data);
+            var transformedData = transformer.Transform(data);
+
+            var featuresWithId =
+mlContext.Data.CreateEnumerable<TransformedNekretnina>(transformedData,
+reuseRowObject: false).ToList();
+
+            // Uzmi vektor osobina za target nekretninu
+            var targetVector = featuresWithId.First(x => x.NekretninaId
+== targetWish.NekretninaId).Features;
+
+            var recommendations = featuresWithId
+                .Where(x => x.NekretninaId != targetWish.NekretninaId)
+                .Select(x => new
                 {
-                    NekretninaId = (uint)nekretnina.NekretninaId,
-                    LokacijaId = nekretnina.LokacijaId,
-                    // Add other properties...
-                });
-            }
+                    x.NekretninaId,
+                    Similarity = CosineSimilarity(targetVector, x.Features)
+                })
+                .OrderByDescending(x => x.Similarity)
+                .Take(3)
+                .Select(x => x.NekretninaId)
+                .ToList();
 
-            var trainData = mlContext.Data.LoadFromEnumerable(data);
+            var preporucene = sveNekretnine
+                .Where(x => recommendations.Contains(x.NekretninaId))
+                .ToList();
 
-            var pipeline = mlContext.Transforms.Conversion.MapValueToKey("NekretninaId", "NekretninaId")
-    .Append(mlContext.Transforms.Conversion.MapValueToKey("LokacijaId", "LokacijaId"));
-
-
-            var model = pipeline.Fit(trainData);
-
-            // Make recommendations for a specific user (replace userId with the desired user's id)
-            //var userId = 3; // Replace with the actual user id
-            var recommendations = GetRecommendations(mlContext, model, tmpData, userId);
-
-            // Add the recommendations to the RecommendResults table or use them as needed
-            foreach (var recommendation in recommendations)
-            {
-                // Assuming you have a RecommendResult model/entity
-                var recommendResult = new ProdajaNekretnina.Services.Database.ReccomendResult
-                {
-
-                    PrvaNekretninaId = recommendation.PrvaNekretninaId,
-                    DrugaNekretninaId = recommendation.DrugaNekretninaId,
-                    TrecaNekretninaId = recommendation.TrecaNekretninaId,
-                    KorisnikId = userId
-                    // Add more properties if needed...
-                };
-
-                // Assuming your context is named _context
-                _context.ReccomendResults.Add(recommendResult);
-            }
-
-            // Save changes to the database
-            _context.SaveChanges();
-
-
-            // Return the recommended Nekretnina instances
-            return recommendations.Select(r => new Model.Nekretnina
-            {
-                NekretninaId = (int)r.PrvaNekretninaId, // Use the appropriate property here
-                                                        // Map other properties as needed...
-            }).ToList();
-        }
-
-        List<ReccomendResult> GetRecommendations(MLContext context, ITransformer model, List<ProdajaNekretnina.Services.Database.Nekretnina> data, int userId)
-        {
-            //var predictionEngine = context.Model.CreatePredictionEngine<ProductEntry, ReccomendResult>(model);
-
-        //    var userWishlist = _context.KorisnikNekretninaWishes
-        //        .Where(w => w.KorisnikId == userId)
-        //        .OrderBy(n => n.NekretninaId)
-        //.Select(n => n.NekretninaId)
-        //        .ToList();
-
-            var userWishlist = _context.KorisnikNekretninaWishes
-                .Where(w => w.KorisnikId == userId).OrderByDescending(x => x.KorisnikNekretninaWishId).Select(x => x.NekretninaId).ToList();
-
-
-
-
-
-            var unseenNekretnine = data
-    .Where(nek => !userWishlist.Contains(nek.NekretninaId))
-    .ToList();
-
-            List<int> allLocationIds = new List<int>();
-            for (int i = 0; i < userWishlist.Count; i++)
-            {
-                var lokacijaIds = data.Where(n => n.NekretninaId == userWishlist[i]).Select(n => n.LokacijaId);
-                allLocationIds.AddRange(lokacijaIds);
-                Console.WriteLine($"userWishNekId: {userWishlist[i]}");
-            }
-
-            List<int> gotove = new List<int>();
-            List<Database.Nekretnina> gg;
-            foreach (var item in allLocationIds)
-            {
-                var gotoveIds = data.Where(n => n.LokacijaId == item).Select(n => n.NekretninaId);
-                gotove.AddRange(gotoveIds);
-                // gg = data.Where(n => n.LokacijaId == item).ToList();
-                Console.WriteLine($"LokacijaId: {item}, NekretninaIds: {string.Join(", ", gotoveIds)}");
-
-            }
-
-
-
-
-
-            var recommendations = new List<ReccomendResult>();
-
-            /*foreach (var nekretnina in unseenNekretnine)
-            {
-                var productEntry = ConvertNekretninaToProductEntry(nekretnina);
-                var prediction = predictionEngine.Predict(productEntry);
-
-                recommendations.Add(new ReccomendResult
-                {
-                    NekretninaId= prediction.NekretninaId,
-                    PrvaNekretninaId = prediction.PrvaNekretninaId,
-                    DrugaNekretninaId = prediction.DrugaNekretninaId,
-                    TrecaNekretninaId = prediction.TrecaNekretninaId,
-                    // Add more properties if needed...
-                });
-            }*/
-
-            for (int i = 0; i < Math.Min(gotove.Count, 4); i++)
-            {
-                recommendations.Add(new ReccomendResult
-                {
-                    NekretninaId = gotove[i],
-                    // Prilagodite ovo prema vašim potrebama
-                    PrvaNekretninaId = gotove[(i + 1) % gotove.Count], // Zaokruživanje na početak ako smo došli do kraja liste
-                    DrugaNekretninaId = gotove[(i + 2) % gotove.Count],
-                    TrecaNekretninaId = gotove[(i + 3) % gotove.Count],
-                    KorisnikId = userId
-                    // Dodajte još svojstava ako je potrebno...
-                });
-            }
-            return recommendations;
+            return _mapper.Map<List<Model.Nekretnina>>(preporucene);
         }
 
 
-
-        /*lock (isLocked)
+        float CosineSimilarity(float[] a, float[] b)
         {
-            if (mlContext == null)
+            float dot = 0, magA = 0, magB = 0;
+            for (int i = 0; i < a.Length; i++)
             {
-                mlContext = new MLContext();
-                var tmpData = _context.Nekretninas.Include("KorisnikNekretninaWishs").ToList();
-
-                //var tmpData = _context.Nekretninas.ToList();
-
-                var data = new List<ProductEntry>();
-
-
-                foreach (var x in tmpData)
-                {
-                    if (tmpData.Count > 1)
-                    {
-
-                        var distinctItemId = tmpData.Select(y => y.NekretninaId).ToList();
-                        var targetNekretnina = tmpData.FirstOrDefault(x => x.NekretninaId == id);
-                        var distinctItemLocation = targetNekretnina?.LokacijaId;
-
-
-                        distinctItemId.ForEach(y =>
-                        {
-                            var relatedItems = tmpData.Where(z =>  z.LokacijaId == distinctItemLocation);
-
-                            foreach (var z in relatedItems)
-                            {
-                                data.Add(new ProductEntry()
-                                {
-                                    ProductID = (uint)y,
-                                    CoPurchaseProductID = (uint)z.NekretninaId,
-                                });
-                            }
-                        });
-                    }
-                }
-
-
-
-
-
-
-
-
-                var traindata = mlContext.Data.LoadFromEnumerable(data);
-                Console.WriteLine($"Count traindata: {traindata.GetColumn<float>("Label").Count()}");
-
-                //STEP 3: Your data is already encoded so all you need to do is specify options for MatrxiFactorizationTrainer with a few extra hyperparameters
-                //        LossFunction, Alpa, Lambda and a few others like K and C as shown below and call the trainer.
-                MatrixFactorizationTrainer.Options options = new MatrixFactorizationTrainer.Options();
-                options.MatrixColumnIndexColumnName = nameof(ProductEntry.ProductID);
-                options.MatrixRowIndexColumnName = nameof(ProductEntry.CoPurchaseProductID);
-                options.LabelColumnName = "Label";
-                options.LossFunction = MatrixFactorizationTrainer.LossFunctionType.SquareLossOneClass;
-                options.Alpha = 0.01;
-                options.Lambda = 0.025;
-                // For better results use the following parameters
-                options.NumberOfIterations = 100;
-                options.C = 0.00001;
-
-                var est = mlContext.Recommendation().Trainers.MatrixFactorization(options);
-
-                model = est.Fit(traindata);
-
+                dot += a[i] * b[i];
+                magA += a[i] * a[i];
+                magB += b[i] * b[i];
             }
+            return dot / (MathF.Sqrt(magA) * MathF.Sqrt(magB));
         }
 
-
-
-
-        //prediction
-
-        var products = _context.Nekretninas.Where(x => x.NekretninaId != id);
-
-        var predictionResult = new List<Tuple<Database.Nekretnina, float>>();
-
-        foreach (var product in products)
+        public class NekretninePodaci
         {
+            public int NekretninaId { get; set; }
+            public string Lokacija { get; set; }
+            public float BrojSoba { get; set; }
+            public float Cijena { get; set; }
+        }
+        public class TransformedNekretnina
+        {
+            public int NekretninaId { get; set; }
 
-            var predictionengine = mlContext.Model.CreatePredictionEngine<ProductEntry, Copurchase_prediction>(model);
-            var prediction = predictionengine.Predict(
-                                     new ProductEntry()
-                                     {
-                                         ProductID = (uint)id,
-                                         CoPurchaseProductID = (uint)product.NekretninaId
-                                     });
-
-
-            predictionResult.Add(new Tuple<Database.Nekretnina, float>(product, prediction.Score));
+            [VectorType] // Ova anotacija dozvoljava mapiranje vektora
+            public float[] Features { get; set; }
         }
 
-
-        var finalResult = predictionResult.OrderByDescending(x => x.Item2).Select(x => x.Item1).Take(3).ToList();
-
-        return _mapper.Map<List<Model.Nekretnina>>(finalResult);*/
 
     }
-
-
 }
 
-public class Copurchase_prediction
-{
-    public float Score { get; set; }
-}
 
-public class ProductEntry
-{
-    [KeyType(count: 100)] // Postavite odgovarajući broj ovisno o vašim podacima
-    [LoadColumn(0)]
-    public uint NekretninaId;
-
-    [LoadColumn(5)]
-    public int LokacijaId;
-}

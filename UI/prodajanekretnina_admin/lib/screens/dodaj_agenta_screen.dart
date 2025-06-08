@@ -173,10 +173,27 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
       title: 'Dodajte agenta',
       child: Center(
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _formBuild(),
-            ],
+          child: Container(
+            margin: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
+            width: 400, // Set a specific width as needed
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10.0), // Set border radius
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                _formBuild(),
+              ],
+            ),
           ),
         ),
       ),
@@ -190,7 +207,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
     if (!phoneRegex.hasMatch(value)) {
       return 'Invalid phone number format';
     }
-    return null;
+    return null; 
   }
 
   String selectedAgencijaId = '';
@@ -202,176 +219,203 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
       initialValue: _initialValue,
       child: Padding(
         padding: const EdgeInsets.all(40.0),
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              const Text(
-                "Podaci o agentu",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                  fontFamily: 'Roboto',
-                  color: Colors.black,
+        child: Container(
+          height: 500,
+          decoration: const BoxDecoration(
+              // Add your decoration properties here
+              ),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                const Text(
+                  "Podaci o agentu",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'Roboto',
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-              FormBuilderTextField(
-                name: 'ime',
-                decoration: const InputDecoration(labelText: 'Ime *'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-              ),
-              FormBuilderTextField(
-                name: 'prezime',
-                decoration: const InputDecoration(labelText: 'Prezime *'),
-              ),
-              FormBuilderTextField(
-                name: 'email',
-                decoration: const InputDecoration(labelText: 'Email *'),
-              ),
-              FormBuilderTextField(
-                name: 'telefon',
-                decoration: const InputDecoration(
-                  labelText: 'Telefon *',
-                  helperText: 'Format: 000-000-0000',
-                  helperStyle:
-                      TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+                FormBuilderTextField(
+                  name: 'ime',
+                  decoration: const InputDecoration(labelText: 'Ime *'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              FormBuilderTextField(
-                name: 'korisnickoIme',
-                decoration: const InputDecoration(labelText: 'Korisničko ime *'),
-              ),
-              FormBuilderTextField(
-                name: 'password',
-                decoration: const InputDecoration(labelText: 'Lozinka *'),
-                obscureText: true,
-              ),
-              FormBuilderTextField(
-                name: 'passwordPotvrda',
-                decoration: const InputDecoration(labelText: 'Potvrdite lozinku *'),
-                obscureText: true,
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              Row(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        // Create a request object with form field values
-                        Map<String, dynamic> request = {
-                          'ime': _formKey.currentState?.fields['ime']?.value,
-                          'prezime':
-                              _formKey.currentState?.fields['prezime']?.value,
-                          'email':
-                              _formKey.currentState?.fields['email']?.value,
-                          'telefon':
-                              _formKey.currentState?.fields['telefon']?.value,
-                          'korisnickoIme': _formKey
-                              .currentState?.fields['korisnickoIme']?.value,
-                          'password':
-                              _formKey.currentState?.fields['password']?.value,
-                          'passwordPotvrda': _formKey
-                              .currentState?.fields['passwordPotvrda']?.value,
-                        };
-                        List<Korisnik> filteredKorisnici = korisniciResult
-                                ?.result
-                                .where((korisnik) =>
-                                    korisnik.korisnickoIme ==
-                                    _formKey.currentState
-                                        ?.fields['korisnickoIme']?.value)
-                                .toList() ??
-                            [];
-                        final RegExp phoneRegex =
-                            RegExp(r'^\d{3}-\d{3}-\d{4}$');
-                        if (filteredKorisnici.isEmpty) {
-                          if (phoneRegex.hasMatch(_formKey
-                              .currentState?.fields['telefon']?.value)) {
-                            Korisnik insertedKorisnik =
-                                await _korisniciProvider.insert(request);
-                            int? insertedKorisnikId;
-                            insertedKorisnikId = insertedKorisnik.korisnikId;
-                            _formKey.currentState?.reset();
-                          
-                            if (insertedKorisnikId != -1) {
-                              Map<String, dynamic> ulogeRequest = {
-                                'korisnikId': insertedKorisnikId,
-                                'ulogaId': 2,
-                              };
+                FormBuilderTextField(
+                  name: 'prezime',
+                  decoration: const InputDecoration(labelText: 'Prezime *'),
+                ),
+                FormBuilderTextField(
+                  name: 'email',
+                  decoration: const InputDecoration(labelText: 'Email *'),
+                ),
+                FormBuilderTextField(
+                  name: 'telefon',
+                  decoration: const InputDecoration(
+                    labelText: 'Telefon *',
+                    helperText: 'Format: 000-000-0000',
+                    helperStyle:
+                        TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+                  ),
+                ),
+                FormBuilderTextField(
+                  name: 'korisnickoIme',
+                  decoration: const InputDecoration(labelText: 'Korisničko ime *'),
+                ),
+                FormBuilderTextField(
+                  name: 'password',
+                  decoration: const InputDecoration(labelText: 'Lozinka *'),
+                  obscureText: true,
+                ),
+                FormBuilderTextField(
+                  name: 'passwordPotvrda',
+                  decoration: const InputDecoration(labelText: 'Potvrdite lozinku *'),
+                  obscureText: true,
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                Row(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          // Create a request object with form field values
+                          Map<String, dynamic> request = {
+                            'ime': _formKey.currentState?.fields['ime']?.value,
+                            'prezime':
+                                _formKey.currentState?.fields['prezime']?.value,
+                            'email':
+                                _formKey.currentState?.fields['email']?.value,
+                            'telefon':
+                                _formKey.currentState?.fields['telefon']?.value,
+                            'korisnickoIme': _formKey
+                                .currentState?.fields['korisnickoIme']?.value,
+                            'password': _formKey
+                                .currentState?.fields['password']?.value,
+                            'passwordPotvrda': _formKey
+                                .currentState?.fields['passwordPotvrda']?.value,
+                          };
+                          List<Korisnik> filteredKorisnici = korisniciResult
+                                  ?.result
+                                  .where((korisnik) =>
+                                      korisnik.korisnickoIme ==
+                                      _formKey.currentState
+                                          ?.fields['korisnickoIme']?.value)
+                                  .toList() ??
+                              [];
+                          final RegExp phoneRegex =
+                              RegExp(r'^\d{3}-\d{3}-\d{4}$');
+                          if (filteredKorisnici.isEmpty) {
+                            if (phoneRegex.hasMatch(_formKey
+                                .currentState?.fields['telefon']?.value)) {
+                              Korisnik insertedKorisnik =
+                                  await _korisniciProvider.insert(request);
+                              int? insertedKorisnikId;
+                              insertedKorisnikId =
+                                  insertedKorisnik.korisnikId;
+                              _formKey.currentState?.reset();
+                            
+                              if (insertedKorisnikId != -1) {
+                                Map<String, dynamic> ulogeRequest = {
+                                  'korisnikId': insertedKorisnikId,
+                                  'ulogaId': 2,
+                                };
 
-                              // Call the insert method from korisniciUlogeProvider
-                              _korisniciUlogeProvider.insert(ulogeRequest);
-                            }
+                                // Call the insert method from korisniciUlogeProvider
+                                _korisniciUlogeProvider.insert(ulogeRequest);
+                              }
 
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text("Potvrda"),
-                                  content: SingleChildScrollView(
-                                    child: FormBuilderDropdown<String>(
-                                      name: 'korisnikAgencijaId',
-                                      decoration: InputDecoration(
-                                        labelText: 'Agencija*',
-                                        suffix: IconButton(
-                                          icon: const Icon(Icons.close),
-                                          onPressed: () {
-                                            _formKey.currentState!
-                                                .fields['korisnikAgencijaId']
-                                                ?.reset();
-                                          },
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text("Potvrda"),
+                                    content: SingleChildScrollView(
+                                      child: FormBuilderDropdown<String>(
+                                        name: 'korisnikAgencijaId',
+                                        decoration: InputDecoration(
+                                          labelText: 'Agencija*',
+                                          suffix: IconButton(
+                                            icon: const Icon(Icons.close),
+                                            onPressed: () {
+                                              _formKey.currentState!
+                                                  .fields['korisnikAgencijaId']
+                                                  ?.reset();
+                                            },
+                                          ),
+                                          hintText: 'Odaberite agenciju',
                                         ),
-                                        hintText: 'Odaberite agenciju',
+                                        onChanged: (newValue) {
+                                          _formKey.currentState
+                                              ?.fields['korisnikAgencijaId']
+                                              ?.didChange(newValue);
+                                          selectedAgencijaId = newValue ?? '';
+                                        },
+                                        items: agencijeResult?.result
+                                                .map((Agencija k) =>
+                                                    DropdownMenuItem(
+                                                      alignment:
+                                                          AlignmentDirectional
+                                                              .center,
+                                                      value: k.agencijaId
+                                                          .toString(),
+                                                      child: Text(
+                                                          k.naziv.toString()),
+                                                    ))
+                                                .toList() ??
+                                            [],
                                       ),
-                                      onChanged: (newValue) {
-                                        _formKey.currentState
-                                            ?.fields['korisnikAgencijaId']
-                                            ?.didChange(newValue);
-                                        selectedAgencijaId = newValue ?? '';
-                                      },
-                                      items: agencijeResult?.result
-                                              .map((Agencija k) =>
-                                                  DropdownMenuItem(
-                                                    alignment:
-                                                        AlignmentDirectional
-                                                            .center,
-                                                    value:
-                                                        k.agencijaId.toString(),
-                                                    child: Text(
-                                                        k.naziv.toString()),
-                                                  ))
-                                              .toList() ??
-                                          [],
                                     ),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Map<String, dynamic>
-                                            korisnikAgencijaRequest = {
-                                          'korisnikId': insertedKorisnikId,
-                                          'agencijaId': selectedAgencijaId,
-                                        };
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Map<String, dynamic>
+                                              korisnikAgencijaRequest = {
+                                            'korisnikId': insertedKorisnikId,
+                                            'agencijaId': selectedAgencijaId,
+                                          };
 
-                                        _korisnikAgencijaProvider
-                                            .insert(korisnikAgencijaRequest);
+                                          _korisnikAgencijaProvider
+                                              .insert(korisnikAgencijaRequest);
 
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text("OK"),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text("OK"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text("Upozorenje"),
+                                    content: const Text(
+                                        "Neispravan format telefona Zahtijevani format je: 000-000-0000"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pop(); // Close the alert dialog
+                                        },
+                                        child: const Text("OK"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
                           } else {
                             showDialog(
                               context: context,
@@ -379,7 +423,7 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                                 return AlertDialog(
                                   title: const Text("Upozorenje"),
                                   content: const Text(
-                                      "Neispravan format telefona Zahtijevani format je: 000-000-0000"),
+                                      "Korisničko ime već postoji. Molimo odaberite drugo."),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
@@ -393,52 +437,32 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
                               },
                             );
                           }
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text("Upozorenje"),
-                                content: const Text(
-                                    "Korisničko ime već postoji. Molimo odaberite drugo."),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Close the alert dialog
-                                    },
-                                    child: const Text("OK"),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
 
-                        //_korisniciProvider.insert(request);
-                      },
-                      child: const Text('Potvrdi'),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      _formKey.currentState?.reset();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 166, 165,
-                          165), // Set the background color to white
-                    ),
-                    child: const Text(
-                      'Odustani',
-                      style: TextStyle(
-                        color: Colors.black, // Set the text color to black
+                          //_korisniciProvider.insert(request);
+                        },
+                        child: const Text('Potvrdi'),
                       ),
                     ),
-                  ),
-                ],
-              )
-            ],
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        _formKey.currentState?.reset();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 166, 165,
+                            165), // Set the background color to white
+                      ),
+                      child: const Text(
+                        'Odustani',
+                        style: TextStyle(
+                          color: Colors.black, // Set the text color to black
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

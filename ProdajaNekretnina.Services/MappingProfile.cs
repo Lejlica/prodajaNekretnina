@@ -58,6 +58,10 @@ namespace ProdajaNekretnina.Services
             CreateMap<Database.Drzava, Model.Drzava>();
             CreateMap<Model.Requests.DrzavaInsertRequest, Database.Drzava>();
             CreateMap<Model.Requests.DrzavaUpdateRequest, Database.Drzava>();
+            CreateMap<Database.Kupovina, Model.Kupovina>();
+            CreateMap<Model.Requests.KupovinaInsertRequest, Database.Kupovina>();
+            CreateMap<Model.Requests.KupovinaUpdateRequest, Database.Kupovina>();
+            
             CreateMap<Database.Lokacija, Model.Lokacija>();
             CreateMap<Model.Requests.LokacijaInsertRequest, Database.Lokacija>();
             CreateMap<Model.Requests.LokacijaUpdateRequest, Database.Lokacija>();

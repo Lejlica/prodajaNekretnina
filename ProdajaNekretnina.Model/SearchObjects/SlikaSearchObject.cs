@@ -8,5 +8,6 @@ namespace ProdajaNekretnina.Model.SearchObjects
 {
     public class SlikaSearchObject : BaseSearchObject
     {
+        public int? nekretninaId { get; set; }
     }
 }

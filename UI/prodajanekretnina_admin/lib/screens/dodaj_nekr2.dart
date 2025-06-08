@@ -6,6 +6,7 @@ import 'package:prodajanekretnina_admin/models/gradovi.dart';
 import 'package:prodajanekretnina_admin/models/kategorijeNekretnina.dart';
 import 'package:prodajanekretnina_admin/models/korisnici.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_admin/models/lokacije.dart';
 import 'package:prodajanekretnina_admin/models/nekretnine.dart';
@@ -41,15 +42,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 
-class DodajNekr2Screen extends StatefulWidget {
+class NekretnineDetaljiScreen extends StatefulWidget {
   Nekretnina? nekretnina;
   Grad? grad;
 
-  DodajNekr2Screen({Key? key, this.nekretnina}) : super(key: key);
+  NekretnineDetaljiScreen({Key? key, this.nekretnina}) : super(key: key);
 
   @override
-  State<DodajNekr2Screen> createState() =>
-      _DodajNekr2ScreenState();
+  State<NekretnineDetaljiScreen> createState() =>
+      _NekretnineDetaljiScreenState();
 }
 
 /*Future<Uint8List?> pickImageFromGallery() async {
@@ -65,7 +66,7 @@ class DodajNekr2Screen extends StatefulWidget {
   return null;
 }*/
 
-class _DodajNekr2ScreenState extends State<DodajNekr2Screen> {
+class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;
@@ -86,7 +87,7 @@ class _DodajNekr2ScreenState extends State<DodajNekr2Screen> {
   bool visejedinicnaChecked = false;
   bool isCkecked = false;
   bool isLoading = true;
-  bool isOdobrena = false;
+  bool isOdobrena = true;
   bool novogradnjaChecked = false;
   bool namjestenChecked = false;
   bool parkingMjestoChecked = false;
@@ -122,7 +123,7 @@ class _DodajNekr2ScreenState extends State<DodajNekr2Screen> {
         'cijena': widget.nekretnina?.cijena?.toString(),
         'datumDodavanja': widget.nekretnina?.datumDodavanja.toString(),
         'datumIzmjene': widget.nekretnina?.datumIzmjene?.toString(),
-        'isOdobrena': widget.nekretnina?.isOdobrena?.toString(),
+        'isOdobrena': true,
         'kategorijaId': widget.nekretnina?.kategorijaId?.toString(),
         'korisnikId': widget.nekretnina?.korisnikId?.toString(),
         'lokacijaId': widget.nekretnina?.lokacijaId?.toString(),
@@ -231,7 +232,7 @@ void initState() {
 
     try {
       String apiUrl =
-          'https://localhost:7125/Slike';
+          'http://localhost:7189/Slike';
       String username = Authorization.username ?? "";
       String password = Authorization.password ?? "";
 
@@ -269,7 +270,7 @@ void initState() {
       if (widget.nekretnina == null) {
         var insertedProperty = await _nekretnineProvider.insert(request);
         print('Insert Result: $insertedProperty');
-
+print("_base64Imagee: $_base64Image");
         if (_base64Image != null) {
           await uploadImageToApi(_base64Image, insertedProperty.nekretninaId);
           // Include nekretninaId and korisnikAgentId in the request
@@ -286,12 +287,25 @@ void initState() {
             await _nekretninaTipAkcijeProvider.insert(request);
           }
         }
-      } else {
-        var result = await _nekretnineProvider.update(
-            widget.nekretnina!.nekretninaId!, request);
-        await uploadImageToApi(_base64Image, widget.nekretnina!.nekretninaId!);
-        print("Update Result: $result");
-      }
+        else {
+          print("Ulazim u ELSE blok");
+          await uploadImageToApi(_base64Image, insertedProperty.nekretninaId);
+          // Include nekretninaId and korisnikAgentId in the request
+          request['nekretninaId'] = insertedProperty.nekretninaId;
+          var agentId = request['korisnikAgentId'];
+          var tipAkcijeId = request['tipAkcijeId'];
+
+          if (agentId != null) {
+            // Assuming _nekretninaAgentiProvider has an appropriate insert method
+            await _nekretninaAgentiProvider.insert(request);
+          }
+          if (tipAkcijeId != null) {
+            // Assuming _nekretninaAgentiProvider has an appropriate insert method
+            await _nekretninaTipAkcijeProvider.insert(request);
+          }
+        }
+      } 
+       
     } catch (e) {
       print('Error during insertData: $e');
     }
@@ -311,6 +325,12 @@ String formatDateForDotNet(DateTime date) {
   final TextEditingController _detaljanOpisController = TextEditingController();
   final TextEditingController _cijenaController = TextEditingController();
   final TextEditingController _kvadraturaController = TextEditingController();
+  final TextEditingController _brojSobaController = TextEditingController();
+  final TextEditingController _brojSpavacihSobaController = TextEditingController();
+  final TextEditingController _brojSpratovaController = TextEditingController();
+  final TextEditingController _brojUgovoraController = TextEditingController();
+  final TextEditingController _datumDodavanjaController = TextEditingController();
+  final TextEditingController _datumIzmjeneController = TextEditingController();
   void _provjeriPolja() {
     if (_detaljanOpisController.text.isEmpty ||
         _cijenaController.text.isEmpty ||
@@ -344,9 +364,9 @@ String formatDateForDotNet(DateTime date) {
   Widget build(BuildContext context) {
     if (isLoading) {
     return const Center(child: CircularProgressIndicator()); // Prikazivanje loading indikatora dok se podaci učitavaju
-  }
+    }
     return MasterScreenWidget(
-      title: widget.nekretnina?.naziv.toString() ?? "",
+       title: "Dodaj nekretninu",
       child: Column(
         children: [
           Flexible(
@@ -358,32 +378,51 @@ String formatDateForDotNet(DateTime date) {
                     _formBuild(),
                     Padding(
                       padding: EdgeInsets.all(10),
-                      child: ElevatedButton(
+                      child: ElevatedButton.icon(
                         onPressed: () async {
-                          /* if (_detaljanOpisController.text.isEmpty ||
-                              _cijenaController.text.isEmpty ||
-                              _kvadraturaController.text.isEmpty ||
-                              _nazivController.text.isEmpty) {
-                            // Jedno ili više polja nisu popunjena, prikažite alert.
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Upozorenje'),
-                                  content:
-                                      Text('Molimo vas da popunite sva polja.'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('OK'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          } else {*/
+                         final isValid = _formKey.currentState?.saveAndValidate() ?? false;
+
+        if (!isValid) {
+          // Ako forma nije validna, prikaži upozorenje
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Upozorenje'),
+                content: Text('Molimo vas da popunite sva polja.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+          return;
+        }
+        if (_base64Image == null) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Nedostaje slika'),
+                content: Text('Dodavanje slike je obavezno. Molimo odaberite sliku.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+          return;
+        }
+
+                          
                           _formKey.currentState?.saveAndValidate();
                           print(
                               "Form data before API call: ${_formKey.currentState?.value}");
@@ -394,13 +433,12 @@ String formatDateForDotNet(DateTime date) {
                           var requestForm =
                               new Map.from(_formKey.currentState!.value);
 
-                              
 
                                var request = {
       'cijena': _cijenaController.text,
-      'datumDodavanja': "0002-01-01T00:00:00.0000000",
-      'datumIzmjene':"0002-01-01T00:00:00.0000000" ,
-      'isOdobrena': false,
+      'datumDodavanja': DateTime.now().toIso8601String(),
+      'datumIzmjene':DateTime.now().toIso8601String() ,
+      'isOdobrena': true,
       'kategorijaId': requestForm['kategorijaId'],
       'korisnikId': requestForm['korisnikId'],
       'lokacijaId': requestForm['lokacijaId'],
@@ -410,7 +448,7 @@ String formatDateForDotNet(DateTime date) {
       'korisnikAgentId': requestForm['korisnikAgentId'],
       'tipAkcijeId': requestForm['tipAkcijeId'],
       'naziv': _nazivController.text,
-      'detaljanOpis': '',
+      'detaljanOpis': _detaljanOpisController.text,
      'kvadratura': int.tryParse(_kvadraturaController.text) ?? 0,
       'novogradnja': novogradnjaNotifier.value,
       'brojSoba': 3,
@@ -423,19 +461,45 @@ String formatDateForDotNet(DateTime date) {
 
                               
 
-                          request['slika'] = _base64Image;
+                  request['slika'] = _base64Image;
+
+
                           request['parkingMjesto'] = parkingMjestoNotifier.value;
 
-                          print(request['slika']);
+                          print("requestic: ${request['slika']}");
 
                           try {
                             print('u foru');
-                            if (widget.nekretnina == null) {
-                              var result =
-                                  //await _nekretnineProvider.insert(request);
-                                  await insertData(request);
-                              //print('Insert Result: $result');
-                            } else {
+                            print("Naziv: ${_nazivController.text}");
+                              print("Detaljan opis: ${_detaljanOpisController.text}");
+                              print("Kvadratura: ${_kvadraturaController.text}");
+
+                                                          if (widget.nekretnina == null) {
+                                var result = await insertData(request);
+
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Uspješno'),
+                                      content: const Text('Nekretnina je uspješno dodana.'),
+                                      actions: [
+                                        TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context); // zatvori dialog
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => NekretnineDetaljiScreen()),
+                                  );
+                                },
+                                child: const Text('OK'),
+                              ),
+
+                                      ],
+                                    );
+                                  },
+                                );
+                              } else {
                               var result = await _nekretnineProvider.update(
                                   widget.nekretnina!.nekretninaId!, request);
                               await uploadImageToApi(_base64Image,
@@ -488,7 +552,21 @@ String formatDateForDotNet(DateTime date) {
                             /*}*/
                           }
                         },
-                        child: Text("Sačuvaj"),
+                         icon: const Icon(Icons.check_circle_outline, size: 24),
+      label: const Text(
+        "Sačuvaj",
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+        backgroundColor:  Colors.indigo, 
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 5,
+        shadowColor: Colors.black45,
+      ),
                       ),
                     ),
                   ],
@@ -522,6 +600,8 @@ String formatDateForDotNet(DateTime date) {
   ValueNotifier<bool> parkingMjestoNotifier = ValueNotifier<bool>(false);
   ValueNotifier<bool> novogradnjaNotifier = ValueNotifier<bool>(false);
   ValueNotifier<bool> namjestenNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<File?> _imageNotifier = ValueNotifier<File?>(null);
+
   final bool _autoValidate = false;
   FormBuilder _formBuild() {
     return FormBuilder(
@@ -563,331 +643,170 @@ String formatDateForDotNet(DateTime date) {
                                           0.3,
                                       height:
                                           MediaQuery.of(context).size.height,
-                                      child: Card(
-                                        color:
-                                            const Color.fromARGB(255, 246, 244, 244),
-                                        child: SingleChildScrollView(
+                                      
+                                        
+                                        
                                           child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 1.0),
-                                                  child: Container(
-                                                    decoration: const BoxDecoration(
-                                                      color: Color.fromARGB(
-                                                          255, 151, 176, 197),
-                                                      borderRadius:
-                                                          BorderRadius.only(
-                                                        topLeft:
-                                                            Radius.circular(
-                                                                8.0),
-                                                        topRight:
-                                                            Radius.circular(
-                                                                8.0),
-                                                      ), // Adjust the radius as needed
-                                                    ),
-                                                    padding:
-                                                        const EdgeInsets.all(10.0),
+                                               
+                                               
+                                                
 
-                                                    width: 800,
-                                                    height:
-                                                        60, // Set the background color to white
-                                                    child: const Text(
-                                                      'Agent',
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                const Padding(
-                                                  padding:
-                                                      EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      VerticalDivider(
-                                                        width: 7.0,
-                                                        color: Colors.blue,
-                                                      ),
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding:
-                                                              EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal:
-                                                                      8.0),
-                                                          child: Text(
-                                                            'Trebate izabrati agenta za nekretninu kako biste dodali/uredili nekretninu.',
-                                                            style: TextStyle(
-                                                              fontSize: 14,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      20.0),
-                                                  child: SizedBox(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.4,
-                                                    height: 60,
-                                                    child:
-                                                        SingleChildScrollView(
-                                                      child:
-                                                          FormBuilderDropdown<
-                                                              String>(
-                                                        validator: (value) {
-                                                          if (value == null ||
-                                                              value.isEmpty) {
-                                                            return "Prazno polje";
-                                                          }
-                                                          return null;
-                                                        },
-                                                        name: 'korisnikAgentId',
-                                                        decoration:
-                                                            InputDecoration(
-                                                          labelText: 'Agent*',
-                                                          suffix: IconButton(
-                                                            icon: const Icon(
-                                                                Icons.close),
-                                                            onPressed: () {
-                                                              _formKey
-                                                                  .currentState!
-                                                                  .fields[
-                                                                      'korisnikAgentId']
-                                                                  ?.reset();
-                                                            },
-                                                          ),
-                                                          hintText:
-                                                              'Odaberite agenta',
-                                                        ),
-                                                        onChanged: (newValue) {
-                                                          _formKey
-                                                              .currentState
-                                                              ?.fields[
-                                                                  'korisnikAgentId']
-                                                              ?.didChange(
-                                                                  newValue);
-                                                        },
-                                                        items: korisniciResult
-                                                                ?.result
-                                                                .map((Korisnik
-                                                                        k) =>
-                                                                    DropdownMenuItem(
-                                                                      alignment:
-                                                                          AlignmentDirectional
-                                                                              .center,
-                                                                      value: k
-                                                                          .korisnikId
-                                                                          .toString(),
-                                                                      child: Text(k
-                                                                          .ime
-                                                                          .toString()),
-                                                                    ))
-                                                                .toList() ??
-                                                            [],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                const Divider(
-                                                  color: Colors.black,
-                                                  height:
-                                                      10, // Adjust the height of the line
-                                                  thickness:
-                                                      0.2, // Adjust the thickness of the line
-                                                ),
-                                                const SizedBox(height: 30),
+                                                
+                                               
                                                 Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: FutureBuilder<
-                                                          SearchResult<Slika>>(
-                                                        future: SlikeProvider()
-                                                            .get(),
-                                                        builder: (context,
-                                                            snapshot) {
-                                                          if (snapshot
-                                                                  .connectionState ==
-                                                              ConnectionState
-                                                                  .waiting) {
-                                                            return const CircularProgressIndicator();
-                                                          } else if (snapshot
-                                                              .hasData) {
-                                                            SearchResult<Slika>?
-                                                                slike =
-                                                                snapshot.data;
+  children: [
+    Expanded(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 40.0, right: 40),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.2,
+          child: FormBuilderField(
+            name: 'imageId',
+            builder: ((field) {
+              return InputDecorator(
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  errorText: field.errorText,
+                ),
+                child: ElevatedButton.icon(
+                  onPressed: getImage,
+                  icon: const Icon(Icons.image, color: Colors.white),
+                  label: const Text("Odaberi sliku"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 68, 67, 66),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 14, horizontal: 20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
+    ),
+  ],
+),
+const SizedBox(height: 16),
+if (_image != null)
+  Center(
+    child: Column(
+      children: [
+        Container(
+          width: 300,
+          decoration: BoxDecoration(
+            border: Border.all(color: Color(0xFFBFA06B), width: 2),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(8.0),
+              topRight: Radius.circular(8.0),
+            ),
+            color: Colors.white,
+          ),
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'Pregled slike',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        Container(
+          width: 300,
+          height: 300,
+          decoration: BoxDecoration(
+            border: Border.all(color: Color(0xFFBFA06B), width: 2),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(8.0),
+              bottomRight: Radius.circular(8.0),
+            ),
+            image: DecorationImage(
+              image: FileImage(_image!),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ],
+    ),
+  )
+else
+ValueListenableBuilder<File?>(
+  valueListenable: _imageNotifier,
+  builder: (context, image, _) {
+    if (image != null) {
+      return _buildImagePreview(image); // prikaz lokalno odabrane slike
+    } else {
+      return FutureBuilder<SearchResult<Slika>>(
+        future: SlikeProvider().get(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasData) {
+            SearchResult<Slika>? slike = snapshot.data;
+            if (slike != null &&
+                slike.result.isNotEmpty &&
+                widget.nekretnina != null) {
+              List<String> imageUrls = slike.result
+                  .where((slika) =>
+                      slika.nekretninaId == widget.nekretnina!.nekretninaId)
+                  .map((slika) => slika.bajtoviSlike ?? "")
+                  .toList();
 
-                                                            if (slike != null &&
-                                                                slike.result
-                                                                    .isNotEmpty &&
-                                                                widget.nekretnina !=
-                                                                    null) {
-                                                              // Create a list of image URLs from the data
-                                                              List<String> imageUrls = slike
-                                                                  .result
-                                                                  .where((slika) =>
-                                                                      slika
-                                                                          .nekretninaId ==
-                                                                      widget
-                                                                          .nekretnina!
-                                                                          .nekretninaId)
-                                                                  .map((slika) =>
-                                                                      slika
-                                                                          .bajtoviSlike ??
-                                                                      "")
-                                                                  .toList();
+              if (imageUrls.isNotEmpty) {
+                return CarouselSlider(
+                  options: CarouselOptions(
+                    height: 300.0,
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    viewportFraction: 0.8,
+                    aspectRatio: 16 / 9,
+                  ),
+                  items: imageUrls.map((imageUrl) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                  color: Color(0xFFBFA06B), width: 2),
+                            ),
+                            child: imageFromBase64String(imageUrl),
+                          ),
+                        );
+                      },
+                    );
+                  }).toList(),
+                );
+              } else {
+                return _buildEmptyImagePreview();
+              }
+            } else {
+              return _buildEmptyImagePreview();
+            }
+          } else if (snapshot.hasError) {
+            return const Text('Greška prilikom dobavljanja slika');
+          } else {
+            return _buildEmptyImagePreview();
+          }
+        },
+      );
+    }
+  },
+),
 
-                                                              // Check if there are images to display in the carousel
-                                                              if (imageUrls
-                                                                  .isNotEmpty) {
-                                                                return CarouselSlider(
-                                                                  options:
-                                                                      CarouselOptions(
-                                                                    height:
-                                                                        300.0, // Adjust the height of the slider as needed
-                                                                    autoPlay:
-                                                                        true, // Enable auto-playing of images
-                                                                    enlargeCenterPage:
-                                                                        true,
-                                                                    viewportFraction:
-                                                                        0.8, // Adjust the size of the images
-                                                                    aspectRatio:
-                                                                        16 / 9,
-                                                                  ),
-                                                                  items: imageUrls
-                                                                      .map(
-                                                                          (imageUrl) {
-                                                                    return Builder(
-                                                                      builder:
-                                                                          (BuildContext
-                                                                              context) {
-                                                                        return AspectRatio(
-                                                                          aspectRatio:
-                                                                              16 / 9, // Set the desired aspect ratio
-                                                                          child:
-                                                                              Container(
-                                                                            width:
-                                                                                MediaQuery.of(context).size.width,
-                                                                            margin:
-                                                                                const EdgeInsets.symmetric(horizontal: 5.0),
-                                                                            child:
-                                                                                imageFromBase64String(imageUrl),
-                                                                          ),
-                                                                        );
-                                                                      },
-                                                                    );
-                                                                  }).toList(),
-                                                                );
-                                                              } else {
-                                                                return const Text('');
-                                                              }
-                                                            } else {
-                                                              return const Text('');
-                                                            }
-                                                          } else if (snapshot
-                                                              .hasError) {
-                                                            return const Text(
-                                                                'Greška prilikom dobavljanja slika');
-                                                          } else {
-                                                            return const Text('');
-                                                          }
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 20),
-                                                _image != null
-                                                    ? Center(
-                                                        child: Column(
-                                                          children: [
-                                                            // White container with text
-                                                            Container(
-                                                              width: 300,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                border:
-                                                                    Border.all(
-                                                                  color: Colors
-                                                                      .white, // Choose your border color
-                                                                  width:
-                                                                      2.0, // Choose your border width
-                                                                ),
-                                                                borderRadius:
-                                                                    const BorderRadius
-                                                                        .only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          8.0),
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          8.0),
-                                                                ),
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child: const Text(
-                                                                'Slika nekretnine', // Replace with the actual property name
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            // Image container with border
-                                                            Container(
-                                                              width: 300,
-                                                              height: 300,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    const BorderRadius
-                                                                        .only(
-                                                                  bottomLeft: Radius
-                                                                      .circular(
-                                                                          8.0),
-                                                                  bottomRight: Radius
-                                                                      .circular(
-                                                                          8.0),
-                                                                ), // Optional: Add border radius
-                                                                image:
-                                                                    DecorationImage(
-                                                                  image: FileImage(
-                                                                      _image!),
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    : Container(),
+
+                                                
+                                               
                                               ]),
-                                        ),
-                                      ),
+                                        
+                                     
                                     ),
                                   ),
                                   const SizedBox(
@@ -902,649 +821,420 @@ String formatDateForDotNet(DateTime date) {
                                           0.55,
                                       height:
                                           MediaQuery.of(context).size.height,
-                                      child: Card(
-                                        color: const Color.fromARGB(
-                                            255, 246, 244, 244),
+                                     
+                                        
                                         child: SingleChildScrollView(
                                           child: Column(children: [
-                                            const Padding(
-                                              padding:
-                                                  EdgeInsets.all(20.0),
-                                              child: Text(
-                                                "OPŠTE INFORMACIJE",
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
+                                            
                                             SingleChildScrollView(
                                               child: Column(
                                                 children: [
                                                   Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 50.0),
-                                                        child: SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.2,
-                                                          child:
-                                                              FormBuilderTextField(
-                                                            validator: (value) {
-                                                              if (value ==
-                                                                      null ||
-                                                                  value
-                                                                      .isEmpty) {
-                                                                return "Prazno polje";
-                                                              }
-                                                              return null;
-                                                            },
-                                                            decoration:
-                                                                const InputDecoration(
-                                                                    labelText:
-                                                                        "Naziv"),
-                                                            name: "naziv",
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 77.0),
-                                                        child: SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.2,
-                                                          child:
-                                                              FormBuilderTextField(
-                                                            validator: (value) {
-                                                              if (value ==
-                                                                      null ||
-                                                                  value
-                                                                      .isEmpty) {
-                                                                return "Prazno polje";
-                                                              }
-                                                              return null;
-                                                            },
-                                                            decoration:
-                                                                const InputDecoration(
-                                                                    labelText:
-                                                                        "Detaljan opis"),
-                                                            name:
-                                                                "detaljanOpis",
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
+                                            children: [
+                                              Expanded(
+                                                flex: 1,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                                  child: FormBuilderTextField(
+                                                    controller: _nazivController,
+                                                    validator: (value) {
+                                                      if (value == null || value.isEmpty) {
+                                                        return "Prazno polje";
+                                                      }
+                                                      return null;
+                                                    },
+                                                    decoration: const InputDecoration(
+                                                      labelText: "Naziv",
+                                                      border: OutlineInputBorder(),
+                                                    ),
+                                                    name: "naziv",
+                                                    onChanged: (newValue) {
+                                                      _formKey.currentState?.fields['naziv']?.didChange(newValue);
+                                                    },
                                                   ),
-                                                  Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 50.0),
-                                                        child: SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.2,
-                                                          child:
-                                                              FormBuilderDropdown<
-                                                                  String>(
-                                                                    validator: (value) {
-                                                          if (value == null ||
-                                                              value.isEmpty) {
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child:Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                                  
+                                                   
+                                                    
+                                                    
+                                                      child: FormBuilderDropdown<String>(
+                                                        validator: (value) {
+                                                          if (value == null || value.isEmpty) {
                                                             return "Prazno polje";
                                                           }
                                                           return null;
                                                         },
-                                                            name: 'korisnikId',
-                                                            decoration:
-                                                                InputDecoration(
-                                                              labelText:
-                                                                  'Vlasnik',
-                                                              suffix:
-                                                                  IconButton(
-                                                                icon: const Icon(
-                                                                    Icons
-                                                                        .close),
-                                                                onPressed: () {
-                                                                  _formKey
-                                                                      .currentState!
-                                                                      .fields[
-                                                                          'korisnikId']
-                                                                      ?.reset();
-                                                                },
-                                                              ),
-                                                              hintText:
-                                                                  'Odaberite vlasnika',
-                                                            ),
-                                                            onChanged:
-                                                                (newValue) {
-                                                              _formKey
-                                                                  .currentState
-                                                                  ?.fields[
-                                                                      'korisnikId']
-                                                                  ?.didChange(
-                                                                      newValue);
-                                                            },
-                                                            // enabled: false,
-                                                            items: korisniciResult
-                                                                    ?.result
-                                                                    .map((Korisnik
-                                                                            k) =>
-                                                                        DropdownMenuItem(
-                                                                          alignment:
-                                                                              AlignmentDirectional.center,
-                                                                          value: k
-                                                                              .korisnikId
-                                                                              .toString(),
-                                                                          child: Text(k
-                                                                              .ime
-                                                                              .toString()),
-                                                                        ))
-                                                                    .toList() ??
-                                                                [],
-                                                          ),
-                                                        ),
+                                                        name: 'korisnikAgentId',
+                                                        decoration: const InputDecoration(
+                                                        labelText: "Agent",
+                                                        border: OutlineInputBorder(),
                                                       ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 70.0),
-                                                        child: SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.2,
-                                                          child:
-                                                              FormBuilderDropdown<
-                                                                  String>(
-                                                            validator: (value) {
-                                                              if (value ==
-                                                                      null ||
-                                                                  value
-                                                                      .isEmpty) {
-                                                                return "Prazno polje";
-                                                              }
-                                                              return null;
-                                                            },
-                                                            name:
-                                                                'kategorijaId',
-                                                            decoration:
-                                                                InputDecoration(
-                                                              labelText:
-                                                                  'Kategorija nekretnine',
-                                                              suffix:
-                                                                  IconButton(
-                                                                icon: const Icon(
-                                                                    Icons
-                                                                        .close),
-                                                                onPressed: () {
-                                                                  _formKey
-                                                                      .currentState!
-                                                                      .fields[
-                                                                          'kategorijaId']
-                                                                      ?.reset();
-                                                                },
-                                                              ),
-                                                              hintText:
-                                                                  'Odaberite kategoriju',
-                                                            ),
-                                                            onChanged:
-                                                                (newValue) {
-                                                              _formKey
-                                                                  .currentState
-                                                                  ?.fields[
-                                                                      'kategorijaId']
-                                                                  ?.didChange(
-                                                                      newValue);
-                                                            },
-                                                            items: kategorijeResult
-                                                                    ?.result
-                                                                    .map((KategorijaNekretnine
-                                                                            k) =>
-                                                                        DropdownMenuItem(
-                                                                          alignment:
-                                                                              AlignmentDirectional.center,
-                                                                          value: k
-                                                                              .kategorijaId
-                                                                              .toString(),
-                                                                          child: Text(k
-                                                                              .naziv
-                                                                              .toString()),
-                                                                        ))
-                                                                    .toList() ??
-                                                                [],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 50.0),
-                                                        child: SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.2,
-                                                          child:
-                                                              FormBuilderDropdown<
-                                                                  String>(
-                                                            validator: (value) {
-                                                              if (value ==
-                                                                      null ||
-                                                                  value
-                                                                      .isEmpty) {
-                                                                return "Prazno polje";
-                                                              }
-                                                              return null;
-                                                            },
-                                                            name: 'tipAkcijeId',
-                                                            decoration:
-                                                                InputDecoration(
-                                                              labelText:
-                                                                  'Tip akcije',
-                                                              suffix:
-                                                                  IconButton(
-                                                                icon: const Icon(
-                                                                    Icons
-                                                                        .close),
-                                                                onPressed: () {
-                                                                  _formKey
-                                                                      .currentState!
-                                                                      .fields[
-                                                                          'tipAkcijeId']
-                                                                      ?.reset();
-                                                                },
-                                                              ),
-                                                              hintText:
-                                                                  'Odaberite tip akcije',
-                                                            ),
-                                                            onChanged:
-                                                                (newValue) {
-                                                              _formKey
-                                                                  .currentState
-                                                                  ?.fields[
-                                                                      'tipAkcijeId']
-                                                                  ?.didChange(
-                                                                      newValue);
-                                                            },
-                                                            items: tipAkcijeResult
-                                                                    ?.result
-                                                                    .map((TipAkcije
-                                                                            k) =>
-                                                                        DropdownMenuItem(
-                                                                          alignment:
-                                                                              AlignmentDirectional.center,
-                                                                          value: k
-                                                                              .tipAkcijeId
-                                                                              .toString(),
-                                                                          child: Text(k
-                                                                              .naziv
-                                                                              .toString()),
-                                                                        ))
-                                                                    .toList() ??
-                                                                [],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 80.0),
-                                                        child: SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.2,
-                                                          child:
-                                                              FormBuilderDropdown<
-                                                                  String>(
-                                                            name:
-                                                                'korisnikAgentId',
-                                                            decoration:
-                                                                InputDecoration(
-                                                              labelText:
-                                                                  'Agent',
-                                                              suffix:
-                                                                  IconButton(
-                                                                icon: const Icon(
-                                                                    Icons
-                                                                        .close),
-                                                                onPressed: () {
-                                                                  _formKey
-                                                                      .currentState!
-                                                                      .fields[
-                                                                          'korisnikAgentId']
-                                                                      ?.reset();
-                                                                },
-                                                              ),
-                                                              hintText:
-                                                                  'Odaberite agenta',
-                                                            ),
-                                                            onChanged:
-                                                                (newValue) {
-                                                              _formKey
-                                                                  .currentState
-                                                                  ?.fields[
-                                                                      'korisnikAgentId']
-                                                                  ;
-                                                            },
-                                                            items: korisniciResult
-                                                                    ?.result
-                                                                    .map((Korisnik
-                                                                            k) =>
-                                                                        DropdownMenuItem(
-                                                                          alignment:
-                                                                              AlignmentDirectional.center,
-                                                                          value: k
-                                                                              .korisnikId
-                                                                              .toString(),
-                                                                          child: Text(k
-                                                                              .ime
-                                                                              .toString()),
-                                                                        ))
-                                                                    .toList() ??
-                                                                [],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 50.0),
-                                                        child: SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.2,
-                                                          child:
-                                                              FormBuilderDropdown<
-                                                                  String>(
-                                                                    validator: (value) {
-                                                          if (value == null ||
-                                                              value.isEmpty) {
-                                                            return "Prazno polje";
-                                                          }
-                                                          return null;
+                                                        onChanged: (newValue) {
+                                                          _formKey.currentState?.fields['korisnikAgentId']?.didChange(newValue);
                                                         },
-                                                            name:
-                                                                'tipNekretnineId',
-                                                            decoration:
-                                                                InputDecoration(
-                                                              labelText:
-                                                                  'Tip nekretnine',
-                                                              suffix:
-                                                                  IconButton(
-                                                                icon: const Icon(
-                                                                    Icons
-                                                                        .close),
-                                                                onPressed: () {
-                                                                  _formKey
-                                                                      .currentState!
-                                                                      .fields[
-                                                                          'tipNekretnineId']
-                                                                      ?.reset();
-                                                                },
-                                                              ),
-                                                              hintText:
-                                                                  'Odaberite tip nekretnine',
-                                                            ),
-                                                            onChanged:
-                                                                (newValue) {
-                                                              _formKey
-                                                                  .currentState
-                                                                  ?.fields[
-                                                                      'tipNekretnineId']
-                                                                  ?.didChange(
-                                                                      newValue);
-                                                            },
-                                                            items: tipoviResult
-                                                                    ?.result
-                                                                    .map((TipNekretnine
-                                                                            k) =>
-                                                                        DropdownMenuItem(
-                                                                          alignment:
-                                                                              AlignmentDirectional.center,
-                                                                          value: k
-                                                                              .tipNekretnineId
-                                                                              .toString(),
-                                                                          child: Text(k
-                                                                              .nazivTipa
-                                                                              .toString()),
-                                                                        ))
-                                                                    .toList() ??
-                                                                [],
-                                                          ),
-                                                        ),
+                                                        items: korisniciResult?.result
+                                                                .map((Korisnik k) => DropdownMenuItem<String>(
+                                                                      alignment: AlignmentDirectional.center,
+                                                                      value: k.korisnikId.toString(),
+                                                                      child: Text(k.ime.toString()),
+                                                                    ))
+                                                                .toList() ??
+                                                            [],
                                                       ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 70.0),
-                                                        child: SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.2,
-                                                          child:
-                                                              FormBuilderDropdown<
-                                                                  String>(
-                                                            validator: (value) {
-                                                              if (value ==
-                                                                      null ||
-                                                                  value
-                                                                      .isEmpty) {
-                                                                return "Prazno polje";
-                                                              }
-                                                              return null;
-                                                            },
-                                                            name: 'lokacijaId',
-                                                            decoration:
-                                                                InputDecoration(
-                                                              labelText:
-                                                                  'Lokacija',
-                                                              suffix:
-                                                                  IconButton(
-                                                                icon: const Icon(
-                                                                    Icons
-                                                                        .close),
-                                                                onPressed: () {
-                                                                  _formKey
-                                                                      .currentState!
-                                                                      .fields[
-                                                                          'lokacijaId']
-                                                                      ?.reset();
-                                                                },
-                                                              ),
-                                                              hintText:
-                                                                  'Odaberite lokaciju',
-                                                            ),
-                                                            onChanged:
-                                                                (newValue) {
-                                                              _formKey
-                                                                  .currentState
-                                                                  ?.fields[
-                                                                      'lokacijaId']
-                                                                  ?.didChange(
-                                                                      newValue);
-                                                            },
-                                                            items: lokacijeResult
-                                                                    ?.result
-                                                                    .map((Lokacija
-                                                                            lokacija) =>
-                                                                        DropdownMenuItem(
-                                                                          alignment:
-                                                                              AlignmentDirectional.center,
-                                                                          value: lokacija
-                                                                              .lokacijaId
-                                                                              .toString(),
-                                                                          child: Text(lokacija
-                                                                              .ulica
-                                                                              .toString()),
-                                                                        ))
-                                                                    .toList() ??
-                                                                [],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                   
+                                                  
+                                                ), 
+    ),
+    Expanded(
+      flex: 1,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: FormBuilderDropdown<String>(
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Prazno polje";
+            }
+            return null;
+          },
+          name: 'korisnikId',
+          decoration: const InputDecoration(
+            labelText: 'Vlasnik',
+            hintText: 'Odaberite vlasnika',
+            border: OutlineInputBorder(),
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+          ),
+          onChanged: (newValue) {
+            _formKey.currentState?.fields['korisnikId']?.didChange(newValue);
+          },
+          items: korisniciResult?.result
+                  .map((k) => DropdownMenuItem(
+                        alignment: AlignmentDirectional.center,
+                        value: k.korisnikId.toString(),
+                        child: Text(k.ime.toString()),
+                      ))
+                  .toList() ??
+              [],
+        ),
+      ),
+    ),
+    Expanded(
+      flex: 1,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: FormBuilderDropdown<String>(
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Prazno polje";
+            }
+            return null;
+          },
+          name: 'lokacijaId',
+          decoration: const InputDecoration(
+            labelText: 'Lokacija',
+            hintText: 'Odaberite lokaciju',
+            border: OutlineInputBorder(),
+          ),
+          onChanged: (newValue) {
+            _formKey.currentState?.fields['lokacijaId']?.didChange(newValue);
+          },
+          items: lokacijeResult?.result
+                  .map((lokacija) => DropdownMenuItem(
+                        alignment: AlignmentDirectional.center,
+                        value: lokacija.lokacijaId.toString(),
+                        child: Text(lokacija.ulica.toString()),
+                      ))
+                  .toList() ??
+              [],
+        ),
+      ),
+    ),
+  ],
+),
+SizedBox(height: 10), 
                                                   Row(
-                                                    children: [
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 40.0),
-                                                        child: SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.2,
-                                                          child:
-                                                              FormBuilderTextField(
-                                                            validator: (value) {
-                                                              if (value ==
-                                                                      null ||
-                                                                  value
-                                                                      .isEmpty) {
-                                                                return "Prazno polje";
-                                                              }
-                                                              return null;
-                                                            },
-                                                            decoration:
-                                                                const InputDecoration(
-                                                                    labelText:
-                                                                        "Cijena"),
-                                                            name: "cijena",
-                                                            controller:
-                                                                _cijenaController,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 69.0),
-                                                        child: SizedBox(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.2,
-                                                          child:
-                                                              FormBuilderTextField(
-                                                            validator: (value) {
-                                                              if (value ==
-                                                                      null ||
-                                                                  value
-                                                                      .isEmpty) {
-                                                                return "Prazno polje";
-                                                              }
-                                                              return null;
-                                                            },
-                                                            decoration:
-                                                                const InputDecoration(
-                                                                    labelText:
-                                                                        "Kvadratura"),
-                                                            name: "kvadratura",
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    left: 50.0,
-                                                                    right: 40),
-                                                            child: SizedBox(
-                                                                width: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width *
-                                                                    0.2,
-                                                                child:
-                                                                    FormBuilderField(
-                                                                  name:
-                                                                      'imageId',
-                                                                  builder:
-                                                                      ((field) {
-                                                                    return InputDecorator(
-                                                                      decoration: InputDecoration(
-                                                                          label: const Text(
-                                                                              'Odaberite sliku'),
-                                                                          errorText:
-                                                                              field.errorText),
-                                                                      child:
-                                                                          ListTile(
-                                                                        leading:
-                                                                            const Icon(Icons.photo),
-                                                                        title: const Text(
-                                                                            "Odaberite sliku"),
-                                                                        trailing:
-                                                                            const Icon(Icons.file_upload),
-                                                                        onTap:
-                                                                            getImage,
-                                                                      ),
-                                                                    );
-                                                                  }),
-                                                                ))),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  const SizedBox(height: 30),
+  children: [
+    Expanded(
+      flex: 1,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: FormBuilderDropdown<String>(
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Prazno polje";
+            }
+            return null;
+          },
+          name: 'kategorijaId',
+          decoration: const InputDecoration(
+            labelText: 'Kategorija nekretnine',
+            hintText: 'Odaberite kategoriju',
+            border: OutlineInputBorder(),
+          ),
+          onChanged: (newValue) {
+            _formKey.currentState?.fields['kategorijaId']?.didChange(newValue);
+          },
+          items: kategorijeResult?.result.map((k) => DropdownMenuItem(
+            alignment: AlignmentDirectional.center,
+            value: k.kategorijaId.toString(),
+            child: Text(k.naziv.toString()),
+          )).toList() ?? [],
+        ),
+      ),
+    ),
+    Expanded(
+      flex: 1,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: FormBuilderDropdown<String>(
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Prazno polje";
+            }
+            return null;
+          },
+          name: 'tipAkcijeId',
+          decoration: const InputDecoration(
+            labelText: 'Tip akcije',
+            hintText: 'Odaberite tip akcije',
+            border: OutlineInputBorder(),
+          ),
+          onChanged: (newValue) {
+            _formKey.currentState?.fields['tipAkcijeId']?.didChange(newValue);
+          },
+          items: tipAkcijeResult?.result.map((k) => DropdownMenuItem(
+            alignment: AlignmentDirectional.center,
+            value: k.tipAkcijeId.toString(),
+            child: Text(k.naziv.toString()),
+          )).toList() ?? [],
+        ),
+      ),
+    ),
+    Expanded(
+      flex: 1,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: FormBuilderDropdown<String>(
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Prazno polje";
+            }
+            return null;
+          },
+          name: 'tipNekretnineId',
+          decoration: const InputDecoration(
+            labelText: 'Tip nekretnine',
+            hintText: 'Odaberite tip nekretnine',
+            border: OutlineInputBorder(),
+          ),
+          onChanged: (newValue) {
+            _formKey.currentState?.fields['tipNekretnineId']?.didChange(newValue);
+          },
+          items: tipoviResult?.result.map((k) => DropdownMenuItem(
+            alignment: AlignmentDirectional.center,
+            value: k.tipNekretnineId.toString(),
+            child: Text(k.nazivTipa.toString()),
+          )).toList() ?? [],
+        ),
+      ),
+    ),
+  ],
+), SizedBox(height: 10),Row(
+  children: [
+    const SizedBox(width: 10),
+    Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: FormBuilderTextField(
+          controller: _brojSobaController,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Prazno polje";
+            }
+            if (int.tryParse(value) == null) {
+              return "Unesite validan broj";
+            }
+            return null;
+          },
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: "Broj soba",
+          ),
+          name: "brojSoba",
+          keyboardType: TextInputType.number,
+        ),
+      ),
+    ),
+    Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: FormBuilderTextField(
+          controller: _brojSpavacihSobaController,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Prazno polje";
+            }
+            if (int.tryParse(value) == null) {
+              return "Unesite validan broj";
+            }
+            return null;
+          },
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: "Broj spavaćih soba",
+          ),
+          name: "brojSpavacihSoba",
+          keyboardType: TextInputType.number,
+        ),
+      ),
+    ),
+    Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: FormBuilderTextField(
+          controller: _brojSpratovaController,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Prazno polje";
+            }
+            if (int.tryParse(value) == null) {
+              return "Unesite validan broj";
+            }
+            return null;
+          },
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: "Broj spratova",
+          ),
+          name: "brojSpratova",
+          keyboardType: TextInputType.number,
+        ),
+      ),
+    ),
+    Expanded(
+      flex: 1,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+        child: FormBuilderTextField(
+          controller: _cijenaController,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Prazno polje";
+            }
+            return null;
+          },
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: "Cijena",
+          ),
+          name: "cijena",
+        ),
+      ),
+    ),
+    Expanded(
+      flex: 1,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+        child: FormBuilderTextField(
+          controller: _kvadraturaController,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Prazno polje";
+            }
+
+            // Validacija da unos bude broj
+            if (int.tryParse(value) == null) {
+              return "Unesite validan broj";
+            }
+
+            return null;
+          },
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: "Kvadratura",
+          ),
+          name: "kvadratura",
+          keyboardType: TextInputType.number, // Tastatura za unos brojeva
+        ),
+      ),
+    ),
+    const SizedBox(width: 10),
+  ],
+),
+
+            SizedBox(height: 10),                                      
+                                                      
+                                                      /*Visibility(
+  visible: false, // <== Učini ga nevidljivim
+  maintainSize: true,
+  maintainAnimation: true,
+  maintainState: true,
+  child: Padding(
+    padding: const EdgeInsets.only(left: 80.0),
+    child: SizedBox(
+      width: MediaQuery.of(context).size.width * 0.2,
+      child: FormBuilderDropdown<String>(
+        name: 'korisnikAgentId',
+        decoration: const InputDecoration(
+          labelText: 'Agent',
+          hintText: 'Odaberite agenta',
+          border: OutlineInputBorder(),
+        ),
+        onChanged: (newValue) {
+          _formKey.currentState?.fields['korisnikAgentId'];
+        },
+        items: korisniciResult?.result
+                .map((Korisnik k) => DropdownMenuItem(
+                      alignment: AlignmentDirectional.center,
+                      value: k.korisnikId.toString(),
+                      child: Text(k.ime.toString()),
+                    ))
+                .toList() ??
+            [],
+      ),
+    ),
+  ),
+  
+),*/
+
+                              Row(
+  mainAxisAlignment: MainAxisAlignment.start,
+  children: [
+    
+    Expanded(
+      flex: 1,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+        child: FormBuilderTextField(
+          controller: _detaljanOpisController,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Prazno polje";
+            }
+            return null;
+          },
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: "Detaljan opis",
+          ),
+          name: "detaljanOpis",
+          maxLines: 2, // Omogućava unos više linija
+        ),
+      ),
+    ),
+  ],
+),
+
+                                                  
+
+
+                                              
+                                                  
+                                                  const SizedBox(height: 20),
                                                   const Divider(
                                                     color: Colors.black,
                                                     height:
@@ -1553,7 +1243,7 @@ String formatDateForDotNet(DateTime date) {
                                                         0.2, // Adjust the thickness of the line
                                                   ),
                                                   const SizedBox(height: 30),
-                                                  const Text(
+                                                  /*const Text(
                                                     "TIP NEKRETNINE",
                                                     style: TextStyle(
                                                       fontWeight:
@@ -1696,16 +1386,10 @@ String formatDateForDotNet(DateTime date) {
                                                             ]),
                                                       ),
                                                     ),
-                                                  ),
-                                                  const SizedBox(height: 30),
-                                                  const Divider(
-                                                    color: Colors.black,
-                                                    height:
-                                                        10, // Adjust the height of the line
-                                                    thickness:
-                                                        0.2, // Adjust the thickness of the line
-                                                  ),
-                                                  const SizedBox(height: 30),
+                                                  ),*/
+                                                  
+                                                 
+                                                  
                                                   const Text(
                                                     "DODATNE FUNKCIONALNOSTI",
                                                     style: TextStyle(
@@ -1837,7 +1521,7 @@ String formatDateForDotNet(DateTime date) {
                                             ),
                                           ]),
                                         ),
-                                      ),
+                                     
                                     ),
                                   ),
                                 ]),
@@ -1876,13 +1560,77 @@ String formatDateForDotNet(DateTime date) {
     final picker = ImagePicker();
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
-    setState(() {
+  
       if (pickedFile != null) {
         _image = File(pickedFile.path);
         _base64Image = base64Encode(_image!.readAsBytesSync());
+         _imageNotifier.value = _image;
       }
-    });
+  
   }
+  Widget _buildImagePreview(File imageFile) {
+  return Center(
+    child: Column(
+      children: [
+        Container(
+          width: 300,
+          decoration: BoxDecoration(
+            border: Border.all(color: Color(0xFFBFA06B), width: 2),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(8.0),
+              topRight: Radius.circular(8.0),
+            ),
+            color: Colors.white,
+          ),
+          padding: const EdgeInsets.all(8.0),
+          child: const Text(
+            'Pregled slike',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        Container(
+          width: 300,
+          height: 300,
+          decoration: BoxDecoration(
+            border: Border.all(color: Color(0xFFBFA06B), width: 2),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(8.0),
+              bottomRight: Radius.circular(8.0),
+            ),
+            image: DecorationImage(
+              image: FileImage(imageFile),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildEmptyImagePreview() {
+  return Center(
+    child: Container(
+      width: 300,
+      height: 300,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey, style: BorderStyle.solid, width: 2),
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey.shade200,
+      ),
+      child: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.image_outlined, size: 60, color: Colors.grey),
+            SizedBox(height: 10),
+            Text('Pregled slike će biti ovdje', style: TextStyle(color: Colors.grey)),
+          ],
+        ),
+      ),
+    ),
+  );
+}
 
   Widget buildImageColumn(int nekretninaId) {
     return FutureBuilder<SearchResult<Slika>>(

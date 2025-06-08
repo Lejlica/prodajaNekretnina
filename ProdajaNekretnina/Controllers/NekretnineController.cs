@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProdajaNekretnina.Model;
 using ProdajaNekretnina.Model.Requests;
 using ProdajaNekretnina.Services;
+using ProdajaNekretnina.Services.RabbitMQ;
 using System.Data;
 
 
@@ -13,9 +14,11 @@ namespace ProdajaNekretnina.Controllers
     public class NekretnineController : BaseCRUDController<Model.Nekretnina, Model.SearchObjects.NekretnineSearchObject, Model.Requests.NekretnineInsertRequest, Model.Requests.NekretnineUpdateRequest>
     {
         private readonly PayPalService _payPalService;
-        public NekretnineController(ILogger<BaseController<Nekretnina, Model.SearchObjects.NekretnineSearchObject>> logger, INekretnineService service, PayPalService payPalService) : base(logger, service)
+        private readonly IRabbitMQProducer _rabbitMQProducer;
+        public NekretnineController(ILogger<BaseController<Nekretnina, Model.SearchObjects.NekretnineSearchObject>> logger, INekretnineService service, PayPalService payPalService, IRabbitMQProducer rabitMQProducer) : base(logger, service)
         {
             this._payPalService = payPalService;
+            _rabbitMQProducer = rabitMQProducer;
         }
 
         //[Authorize(Roles = "Administrator")]
@@ -24,6 +27,28 @@ namespace ProdajaNekretnina.Controllers
             return base.Insert(insert);
         }
 
+        public class EmailModel
+        {
+            public string Sender { get; set; }
+            public string Recipient { get; set; }
+            public string Subject { get; set; }
+            public string Content { get; set; }
+        }
+
+        [HttpPost("SendConfirmationEmail")]
+        public IActionResult SendConfirmationEmail([FromBody] EmailModel emailModel)
+        {
+            try
+            {
+                _rabbitMQProducer.SendMessage(emailModel);
+                Thread.Sleep(TimeSpan.FromSeconds(15));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         [HttpPut("{id}/activate")]
         public virtual async Task<Model.Nekretnina> Activate(int id)
@@ -57,7 +82,7 @@ namespace ProdajaNekretnina.Controllers
         [HttpGet("recommend")]
         public virtual List<Model.Nekretnina> Recommend(int userId)
         {
-            return (_service as INekretnineService).Recommend(userId);
+            return (_service as INekretnineService).RecommendNekretnina(userId);
         }
     }
 

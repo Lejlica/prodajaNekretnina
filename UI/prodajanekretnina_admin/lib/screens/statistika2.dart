@@ -69,17 +69,22 @@ class _SalesStatisticssScreenState extends State<SalesStatisticssScreen> {
   String? selectedImagePath;
   List<dynamic> kupcidata = [];
 
-  @override
-  void initState() {
-    super.initState();
-    initSalesData();
-    _initialValue = {};
+@override
+void initState() {
+  super.initState();
+  _loadSalesData();
+}
 
-    _korisniciProvider = context.read<KorisniciProvider>();
-    _agencijaProvider = context.read<AgencijaProvider>();
-    _korisnikAgencijaProvider = context.read<KorisnikAgencijaProvider>();
-    initForm();
-  }
+Future<void> _loadSalesData() async {
+  _korisniciProvider = context.read<KorisniciProvider>();
+  _agencijaProvider = context.read<AgencijaProvider>();
+  _korisnikAgencijaProvider = context.read<KorisnikAgencijaProvider>();
+
+  await initForm();         // <- prvo učitaj sve potrebne podatke
+  await initSalesData();    // <- tek onda izračunaj prodaje
+  setState(() {});          // <- osvježi UI
+}
+
 
   @override
   void didChangeDependencies() {
@@ -131,17 +136,17 @@ class _SalesStatisticssScreenState extends State<SalesStatisticssScreen> {
       }
     }
 
-    print('korisnikIds: $korisnikIds');
+    
 
     print("Korisnici: $korisnikIds, $agencijaId");
     int totalSales = 0;
 
     for (int? korisnikId in korisnikIds) {
-      // Dobavite podatke o korisniku koristeći korisnikId
+      
       Korisnik? korisnik = nadjiKorisnika(korisnikId);
       print("korId $korisnikId");
       print("brnek ${korisnik!.brojUspjesnoProdanihNekretnina}");
-      // Ako korisnik postoji i ima svojstvo brojProdatihNekretnina, dodajte ga ukupnom rezultatu
+   
       totalSales += korisnik.brojUspjesnoProdanihNekretnina ?? 0;
           print("totalsales $totalSales");
     }
@@ -167,96 +172,186 @@ class _SalesStatisticssScreenState extends State<SalesStatisticssScreen> {
   }
 
   Widget getAgencyNameWidget() {
-    List<String> agencijeNazivi = [];
+  List<String> agencijeNazivi = [];
 
-    for (var entry in agencijeResult!.result) {
-      print('entry.agencijaId: ${entry.agencijaId}');
-      print('Before if condition');
+  for (var entry in agencijeResult!.result) {
+    print('entry.agencijaId: ${entry.agencijaId}');
+    print('entry.korisnikId: ${entry.korisnikId}');
+    agencijeNazivi.add(entry.naziv!);
 
-      print('Inside if condition');
-      print('entry.korisnikId: ${entry.korisnikId}');
-      agencijeNazivi.add(entry.naziv!);
-    }
-
-    int? index = 1;
-
-    for (int i = 0; i < agencijeResult!.result.length; i++) {
-      Container(
-        child: Text(
-          agencijeNazivi[i],
-          style: const TextStyle(
-              color: Color(0xff7589a2),
-              fontWeight: FontWeight.bold,
-              fontSize: 14),
-        ),
-      );
-    }
-    return Container(); // Možete ostaviti prazan Container ako nema teksta
+    print('Naziv agencije: ${entry.naziv}');
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return MasterScreenWidget(
-      title: 'Statistika prodaje nekretnina po agencijama',
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 20),
-            Container(
-              height: 500,
-              width: 500,
-              // ignore: sort_child_properties_last
-              child: BarChart(
-                BarChartData(
-                  alignment: BarChartAlignment.spaceAround,
-                  maxY: 100,
-                  borderData: FlBorderData(
-                    show: true,
-                    border:
-                        Border.all(color: const Color(0xff37434d), width: 1),
+  return ListView.builder(
+    shrinkWrap: true, // ako se koristi unutar drugog scrollable widgeta kao što je Column
+    physics: const NeverScrollableScrollPhysics(), // ako je deo većeg skrolabilnog dela
+    itemCount: agencijeNazivi.length,
+    itemBuilder: (context, index) {
+      return Container(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        child: Text(
+          agencijeNazivi[index],
+          style: const TextStyle(
+            color: Color(0xff7589a2),
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+        ),
+      );
+    },
+  );
+}
+String getAgencyNameById(int id) {
+  for (var entry in agencijeResult!.result) {
+    if (entry.agencijaId == id) {
+      return entry.naziv ?? 'Nepoznata agencija';
+    }
+  }
+  return 'Nepoznata agencija';
+}
+
+
+@override
+Widget build(BuildContext context) {
+  final int? maxValue = salesData.values.isNotEmpty
+      ? salesData.values.reduce((a, b) => a > b ? a : b)
+      : null;
+
+  return MasterScreenWidget(
+    title: 'Statistika prodaje nekretnina po agencijama',
+    child: Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            'Ukupan broj uspješno prodatih nekretnina po agencijama',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          Container(
+            height: 400,
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xff37434d), width: 1),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 6,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.spaceAround,
+                maxY: (maxValue != null) ? (maxValue + 10).toDouble() : 100,
+                barGroups: salesData.entries.map((entry) {
+                  final isTopSeller = entry.value == maxValue;
+                  return BarChartGroupData(
+                    x: entry.key!,
+                    barRods: [
+                      BarChartRodData(
+                        toY: entry.value.toDouble(),
+                        color: isTopSeller ? Colors.green : Colors.blue,
+                        width: 18,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(6),
+                          topRight: Radius.circular(6),
+                        ),
+                        rodStackItems: [],
+                        // opcionalno
+                      ),
+                    ],
+                    showingTooltipIndicators: [0],
+                  );
+                }).toList(),
+                groupsSpace: 14,
+                titlesData: FlTitlesData(
+                  show: true,
+                  topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 35,
+                      interval: 20,
+                      getTitlesWidget: (value, _) => Text(
+                        value.toInt().toString(),
+                        style: const TextStyle(fontSize: 10),
+                      ),
+                    ),
                   ),
-                  barGroups: salesData.entries
-                      .map(
-                        (entry) => BarChartGroupData(
-                          x: entry.key.hashCode,
-                          barRods: [
-                            BarChartRodData(
-                              toY: entry.value.toDouble(),
-                              color: Colors.blue,
-                              width: 16,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(6),
-                                topRight: Radius.circular(6),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 40,
+                      getTitlesWidget: (double value, TitleMeta meta) {
+                        final agencijaId = value.toInt();
+                        final agencijaNaziv = getAgencyNameById(agencijaId);
+                        return SideTitleWidget(
+                          axisSide: meta.axisSide,
+                          space: 8.0,
+                          child: Transform.rotate(
+                            angle: -0.5, // nagni tekst radi preglednosti
+                            child: Text(
+                              agencijaNaziv,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 11,
+                                color: Colors.black87,
                               ),
                             ),
-                          ],
-                        ),
-                      )
-                      .toList(),
-                  groupsSpace: 12,
-                  /*titlesData: FlTitlesData(
-                    show: true,
-                    bottomTitles: AxisTitles(
-                      drawBelowEverything: true,
-                      axisNameWidget: getAgencyNameWidget(),
+                          ),
+                        );
+                      },
                     ),
-                  ),*/
+                  ),
+                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                ),
+                borderData: FlBorderData(show: false),
+                barTouchData: BarTouchData(
+                  enabled: true,
+                  touchTooltipData: BarTouchTooltipData(
+                    tooltipBgColor: Colors.black87,
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      final naziv = getAgencyNameById(group.x.toInt());
+                      return BarTooltipItem(
+                        '$naziv\n${rod.toY.toInt()} nekretnina',
+                        const TextStyle(color: Colors.white),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                initSalesData();
-                // Ovdje možete dodati kod koji se izvršava nakon inicijalizacije podataka
-              },
-              child: Text('Inicijaliziraj podatke o prodaji'),
-            )
-          ],
-        ),
+          ),
+          const SizedBox(height: 24),
+          if (maxValue != null)
+            Text(
+              'Agencija s najviše prodatih nekretnina: '
+              '${getAgencyNameById(salesData.entries.firstWhere((e) => e.value == maxValue).key!)} '
+              '(${maxValue} ukupno)',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.green,
+              ),
+              textAlign: TextAlign.center,
+            ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 void main() {

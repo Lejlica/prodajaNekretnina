@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:http_parser/http_parser.dart';
+import 'dart:ui';  // za ImageFilter
+
 import 'package:prodajanekretnina_admin/models/drzave.dart';
 import 'package:prodajanekretnina_admin/models/gradovi.dart';
 
@@ -142,16 +144,34 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // Postavite svojstva AppBar-a prema potrebi
-        title: const Text('Registracija'),
-      ),
-      body: _formBuild(),
-      endDrawer: null, // Ovo će onemogućiti otvaranje bočnog menija
-    );
-  }
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('Registracija'),
+    ),
+    body: Stack(
+      fit: StackFit.expand,
+      children: [
+        // Pozadinska slika sa blur efektom
+        Image.asset(
+          'assets/images/background.jpg',
+          fit: BoxFit.cover,
+        ),
+        // Blur efekt preko slike
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Container(
+            color: Colors.black.withOpacity(0), // prozirni sloj da blur radi
+          ),
+        ),
+        // Glavni sadržaj forme
+        _formBuild(),
+      ],
+    ),
+    endDrawer: null,
+  );
+}
+
 
   FormBuilder _formBuild() {
     String username = Authorization.username ?? "";
@@ -216,14 +236,12 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(
                                         150), // Half of the width/height
-                                    color: Colors
-                                        .grey, // Choose your default profile picture color
+                                    color: const Color.fromARGB(255, 255, 255, 255), // Choose your default profile picture color
                                   ),
                                   child: const Icon(
                                     Icons.account_circle,
                                     size: 150,
-                                    color: Colors
-                                        .white, // Choose the color of the icon
+                                    color: Color.fromARGB(255, 169, 176, 243), // Choose the color of the icon
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -238,64 +256,183 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                       child: Row(
                         children: [
                           Expanded(
-                            child: FormBuilderTextField(
-                              name: 'ime',
-                              decoration: const InputDecoration(labelText: 'Ime'),
-                            ),
-                          ),
+  child: FormBuilderTextField(
+    name: 'ime',
+    decoration: InputDecoration(
+      labelText: 'Ime',
+      prefixIcon: const Icon(Icons.person, color: Color.fromARGB(255, 92, 83, 58)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
+      ),
+    ),
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return "Prazno polje";
+      }
+      return null;
+    },
+  ),
+),
+
                           const SizedBox(width: 100),
                           Expanded(
                             child: FormBuilderTextField(
                               name: 'prezime',
-                              decoration: const InputDecoration(labelText: 'Prezime'),
+                               decoration: InputDecoration(
+      labelText: 'Prezime',
+      prefixIcon: const Icon(Icons.person_outline, color: Color.fromARGB(255, 92, 83, 58)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
+      ),
+    ),
+                               validator: (value) {
+                                                          if (value == null || value.isEmpty) {
+                                                            return "Prazno polje";
+                                                          }
+                                                          return null;
+                                                        },
                             ),
                           ),
                         ],
                       ),
+                    ),
+                    SizedBox(
+                      height: 16,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 200, right: 200),
                       child: Row(
                         children: [
                           Expanded(
-                            child: FormBuilderTextField(
-                              name: 'email',
-                              decoration: const InputDecoration(labelText: 'Email'),
-                            ),
-                          ),
+  child: FormBuilderTextField(
+    name: 'email',
+    decoration: InputDecoration(
+      labelText: 'Email',
+      prefixIcon: const Icon(Icons.email, color: Color.fromARGB(255, 92, 83, 58)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
+      ),
+    ),
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return "Polje ne smije biti prazno";
+      }
+      // Regex za osnovnu provjeru email formata
+      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+      if (!emailRegex.hasMatch(value)) {
+        return "Unesite ispravan email u formatu: primjer@domena.com";
+      }
+      return null;
+    },
+  ),
+),
+
                           const SizedBox(width: 100),
                           Expanded(
-                            child: FormBuilderTextField(
-                              name: 'telefon',
-                              decoration: const InputDecoration(labelText: 'Telefon'),
-                            ),
-                          ),
+  child: FormBuilderTextField(
+    name: 'telefon',
+     decoration: InputDecoration(
+      labelText: 'Telefon',
+      prefixIcon: const Icon(Icons.phone, color: Color.fromARGB(255, 92, 83, 58)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
+      ),
+    ),
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return "Polje ne smije biti prazno";
+      }
+      final phoneRegex = RegExp(r'^(?:\+387|0)?[ \-]?(?:[0-9]{2})[ \-]?[0-9]{3}[ \-]?[0-9]{3,4}$');
+      if (!phoneRegex.hasMatch(value)) {
+        return "Unesite ispravan broj telefona (npr. +38761234567 ili 061234567)";
+      }
+      return null;
+    },
+  ),
+),
+
                         ],
                       ),
+                    ),
+                    SizedBox(
+                      height: 16,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 200, right: 200),
                       child: Row(
                         children: [
                           Expanded(
-                            child: FormBuilderTextField(
-                              name: 'password',
-                              obscureText:
-                                  true, // Set this to true to display dots
-                              decoration: const InputDecoration(labelText: 'Lozinka'),
-                            ),
-                          ),
+  child: FormBuilderTextField(
+    name: 'password',
+    obscureText: true, // Prikaz točkica umjesto slova
+     decoration: InputDecoration(
+      labelText: 'Lozinka',
+      prefixIcon: const Icon(Icons.password, color: Color.fromARGB(255, 92, 83, 58)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
+      ),
+    ),
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return "Polje ne smije biti prazno";
+      }
+      if (value.length < 6) {
+        return "Lozinka mora sadržavati najmanje 6 znakova";
+      }
+      return null;
+    },
+  ),
+),
+
                           const SizedBox(width: 100),
                           Expanded(
                             child: FormBuilderTextField(
                               name: 'passwordPotvrda',
                               obscureText: true,
-                              decoration: const InputDecoration(
-                                  labelText: 'Potvrdite lozinku'),
+                               decoration: InputDecoration(
+      labelText: 'Potvrda lozinke',
+      prefixIcon: const Icon(Icons.password_outlined, color: Color.fromARGB(255, 92, 83, 58)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
+      ),
+    ),
+                                  validator: (value) {
+                                                          if (value == null || value.isEmpty) {
+                                                            return "Prazno polje";
+                                                          }
+                                                          return null;
+                                                        },
                             ),
                           ),
                         ],
                       ),
+                    ),
+                    SizedBox(
+                      height: 16,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 200, right: 200),
@@ -304,8 +441,23 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                           Expanded(
                             child: FormBuilderTextField(
                               name: 'korisnickoIme',
-                              decoration:
-                                  const InputDecoration(labelText: 'Korisničko ime'),
+                               decoration: InputDecoration(
+      labelText: 'Korisničko ime',
+      prefixIcon: const Icon(Icons.account_circle_outlined, color: Color.fromARGB(255, 92, 83, 58)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
+      ),
+    ),
+                                   validator: (value) {
+                                                          if (value == null || value.isEmpty) {
+                                                            return "Prazno polje";
+                                                          }
+                                                          return null;
+                                                        },
                             ),
                           ),
                           const SizedBox(width: 100),
@@ -323,10 +475,13 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                                     ),
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: Colors.grey[200],
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
+    // ili bilo koja boja pozadine
+    border: Border.all(
+      color: Colors.grey, // boja ivice
+      width: 1.0, // debljina ivice
+    ),
+    borderRadius: BorderRadius.circular(8.0), // zaobljenje ivica
+  ),
                                       child: ListTile(
                                         leading: const Icon(Icons.photo),
                                         title: const Text("Odaberite sliku"),
@@ -348,10 +503,33 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                     ),
 
                     const SizedBox(
-                      height: 16,
+                      height: 10,
                     ),
-                    ElevatedButton(
+                    ElevatedButton.icon(
                         onPressed: () async {
+                          final isValid = _formKey.currentState?.saveAndValidate() ?? false;
+
+        if (!isValid) {
+          // Ako forma nije validna, prikaži upozorenje
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Upozorenje'),
+                content: Text('Molimo vas da popunite sva polja.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+          return;
+        }
                           if (_formKey
                                   .currentState?.fields['password']?.value !=
                               _formKey.currentState?.fields['passwordPotvrda']
@@ -471,7 +649,27 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
                             );
                           }
                         },
-                        child: const Text('Registruj se')),
+                         icon: const Icon(
+    Icons.person_add,
+    color: Colors.white,
+  ),
+  label: const Text(
+    'Registruj se',
+    style: TextStyle(
+      color: Colors.white,
+      fontSize: 18,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 1.1,
+    ),
+  ),
+  style: ElevatedButton.styleFrom(
+    backgroundColor: const Color(0xFF5A67D8),
+    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+    elevation: 4,
+  ),)
                   ])))),
     );
   }

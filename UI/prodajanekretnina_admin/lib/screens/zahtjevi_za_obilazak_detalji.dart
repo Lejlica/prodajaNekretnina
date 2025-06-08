@@ -4,6 +4,8 @@ import 'package:prodajanekretnina_admin/models/nekretnine.dart';
 import 'package:prodajanekretnina_admin/models/obilazak.dart';
 import 'package:prodajanekretnina_admin/models/korisnici.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
+import 'package:prodajanekretnina_admin/models/korisnikAgencija.dart';
+import 'package:prodajanekretnina_admin/providers/korisnikAgencija_provider.dart';
 import 'package:prodajanekretnina_admin/providers/obilazak_provider.dart';
 import 'package:prodajanekretnina_admin/providers/korisnici_provider.dart';
 import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart';
@@ -11,6 +13,7 @@ import 'package:prodajanekretnina_admin/screens/zahtjevi_za_obilazak.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
+import '../utils/util.dart';
 import 'dart:async';
 
 class ZahtjeviZaObilazakDetaljiScreen extends StatefulWidget {
@@ -26,6 +29,8 @@ class ZahtjeviZaObilazakDetaljiScreen extends StatefulWidget {
 class _ZahtjeviZaObilazakDetaljiScreenState
     extends State<ZahtjeviZaObilazakDetaljiScreen> {
   late ObilazakProvider _obilazakProvider;
+  late KorisnikAgencijaProvider _korisnikAgencijaProvider;
+  
   SearchResult<Obilazak>? result;
   
  
@@ -33,7 +38,8 @@ class _ZahtjeviZaObilazakDetaljiScreenState
   late KorisniciProvider _korisniciProvider;
   late NekretninaAgentiProvider _nekretninaAgentiProvider;
   bool isLoading = true;
-
+List<int> nekretninaIdAgencije = [];
+  SearchResult<KorisnikAgencija>? korisnikAgencijaResult;
   SearchResult<Korisnik>? korisniciResult;
   SearchResult<NekretninaAgenti>? nekretninaAgentiResult;
  /* @override
@@ -51,9 +57,20 @@ class _ZahtjeviZaObilazakDetaljiScreenState
       print(korisniciResult);
       nekretninaAgentiResult = await _nekretninaAgentiProvider.get();
       print(korisniciResult);
+      korisnikAgencijaResult = await _korisnikAgencijaProvider.get();
+      print(korisnikAgencijaResult);
+       final noviResult = await _obilazakProvider.get();
+    for (var obilazak in noviResult.result) {
+  print('ID: ${obilazak.obilazakId}');
 
+  print('Odobren: ${obilazak.isOdobren}');
+ 
+}
+NadjiKojojAgencijiPripadaKorisnik();
+nekretninaIdAgencije = NadjiNekretnineZaAgenciju();
       setState(() {
         isLoading = false;
+         result = noviResult;
       });
     } catch (e) {
       print('Error in initForm: $e');
@@ -65,6 +82,7 @@ void initState() {
   _nekretninaAgentiProvider = context.read<NekretninaAgentiProvider>();
   _korisniciProvider = context.read<KorisniciProvider>();
   _obilazakProvider = ObilazakProvider();
+  _korisnikAgencijaProvider = context.read<KorisnikAgencijaProvider>();
   _onRefresh();
   initForm(); // pozivaš API ili postavljaš početne vrijednosti
 }
@@ -86,7 +104,71 @@ void initState() {
       body: _buildBody(),
     );
   }
+  int korisnikID=0;
+  String username = Authorization.username ?? "";
+  int? korisnikId() {
+    List<dynamic> filteredData = korisniciResult!.result
+        .where((korisnik) => korisnik.korisnickoIme == username)
+        .toList();
+    if (filteredData.isNotEmpty) {
+      korisnikID = filteredData[0].korisnikId!;
+      print('korisnikIDDD: $korisnikID');
+      return filteredData[0].korisnikId;
+    } else {
+      return null;
+    }
+  }
 
+int? agencijaIdd() {
+    List<dynamic> filteredData = korisnikAgencijaResult!.result
+        .where((korisnik) => korisnik.korisnikId == korisnikId())
+        .toList();
+    if (filteredData.isNotEmpty) {
+      return filteredData[0].agencijaId;
+    } else {
+      return null;
+    }
+  }
+List<int> NadjiNekretnineZaAgenciju() {
+  // 1. Nađi sve korisnike koji pripadaju agenciji
+  List<int> agentiAgencije = korisnikAgencijaResult!.result
+      .where((entry) => entry.agencijaId == pripadajucaAgencija)
+      .map((entry) => entry.korisnikId!)
+      .toList();
+      print('agentiAgencije: ${agentiAgencije}');
+
+  
+ List<int> nekretnineAgencije = [];
+
+for (var entry in agentiAgencije) {
+  nekretnineAgencije.addAll(
+    nekretninaAgentiResult!.result
+        .where((na) => na.korisnikId == entry)
+        .map((na) => na.nekretninaId!)
+        .toList(),
+  );
+}
+
+
+      
+print('nekretnineAgencije: ${nekretnineAgencije}');
+  return nekretnineAgencije;
+}
+
+  int? pripadajucaAgencija;
+int? NadjiKojojAgencijiPripadaKorisnik() {
+    for (var entry in korisnikAgencijaResult!.result) {
+      print(
+          'entry.agencijaId: ${entry.agencijaId}, agencijaId: ${agencijaIdd()}');
+      print('Before if condition');
+      if (entry.korisnikId == korisnikID) {
+        print('Inside if condition');
+        print('korisnik pripada agenciji: ${entry.agencijaId}');
+        pripadajucaAgencija = entry.agencijaId;
+      }
+    }
+    return pripadajucaAgencija ;
+  }
   Widget _buildBody() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -94,111 +176,103 @@ void initState() {
         children: [
           _buildSearch(),
           const SizedBox(height: 16),
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                 showCheckboxColumn: false,
-                columns: const [
-                  DataColumn(
-                    label: Text(
-                      'Redni broj',
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'Vrijeme obilaska',
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'Nekretnina ID',
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      'Korisnik',
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                    ),
-                  ),
-                  /*DataColumn(
-                  label: Text(
-                    'Agent',
-                    style: TextStyle(fontStyle: FontStyle.italic),
-                  ),
-                ),*/
-                  DataColumn(
-                    label: Text(
-                      'Odobren',
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                    ),
-                  ),
-                ],
-                rows: result?.result
-                        .asMap()
-                        .entries
-                        .map(
-                          (entry) => DataRow.byIndex(
-                            index: entry.key,
-                            selected: false,
-                            onSelectChanged: (selected) {
-                              Navigator.of(context)
-                                  .push(
-                                MaterialPageRoute(
-                                  builder: (context) => ObilazakDetailScreen(
-                                    obilazak: entry.value,
-                                    korisniciResult: korisniciResult,
-                                    obilazakProvider: _obilazakProvider,
-                                  ),
-                                ),
-                              )
-                                  .then((value) async {
-                                var obilazakTemp =
-                                    await _obilazakProvider.get();
-                                _buildSearch();
-
-                                setState(() {
-                                  result = obilazakTemp;
-                                });
-                              });
-                            },
-                            cells: [
-                              DataCell(Text(
-                                  entry.value.obilazakId?.toString() ?? "")),
-                              DataCell(Text(
-                        // Formatiranje datuma na "dd.MM.yyyy HH:mm" + "h"
-                        DateFormat('dd.MM.yyyy HH:mm')
-                            .format(DateTime.parse(entry.value.vrijemeObilaska?.toString() ?? "")) +
-                            "h",
-                      ),),
-                              DataCell(Text(
-                                  entry.value.nekretninaId?.toString() ?? "")),
-                              DataCell(_buildKorisnikNameCell(
-                                  entry.value.korisnikId)),
-                              // DataCell(_buildAgentNameCell(entry.value.nekretninaId)),
-                              
-                                  DataCell(
-                              Icon(
-                                entry.value.isOdobren == true
-                                    ? Icons.check
-                                    : Icons.access_time,
-                                color: entry.value.isOdobren == true
-                                    ? Colors.green
-                                    : Colors.orange,
-                                size: 24,
-                              ),
-                            ),
-                            ],
-                          ),
-                        )
-                        .toList() ??
-                    [],
-              ),
+          Center(
+  child: ConstrainedBox(
+    constraints: const BoxConstraints(maxWidth: 1000), // Prilagodi širinu po potrebi
+    child: SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: DataTable(
+        showCheckboxColumn: false,
+        columns: const [
+          DataColumn(
+            label: Text(
+              'Redni broj',
+              style: TextStyle(fontStyle: FontStyle.italic),
             ),
           ),
+          DataColumn(
+            label: Text(
+              'Vrijeme obilaska',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          ),
+          DataColumn(
+            label: Text(
+              'Rb. nekretnine',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          ),
+          DataColumn(
+            label: Text(
+              'Korisnik',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          ),
+          DataColumn(
+            label: Text(
+              'Odobren',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          ),
+        ],
+        rows: result?.result.where((obilazak) => nekretninaIdAgencije.contains(obilazak.nekretninaId))
+    .toList()
+                .asMap()
+                .entries
+                .map(
+                  (entry) => DataRow.byIndex(
+                    index: entry.key,
+                    selected: false,
+                    onSelectChanged: (selected) async {
+  if (selected == true) {
+    var result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ObilazakDetailScreen(
+          obilazak: entry.value,
+          korisniciResult: korisniciResult,
+          obilazakProvider: _obilazakProvider,
+        ),
+      ),
+    );
+
+    print("Rezultat iz detail screena: $result");
+
+    if (result == true) {
+      await initForm(); 
+      setState(() {});
+    }
+  }
+}
+,
+
+                    cells: [
+                      DataCell(Text(entry.value.obilazakId?.toString() ?? "")),
+                      DataCell(
+                        Text(
+                          DateFormat('dd.MM.yyyy HH:mm')
+                                  .format(DateTime.parse(entry.value.vrijemeObilaska?.toString() ?? "")) +
+                              "h",
+                        ),
+                      ),
+                      DataCell(Text(entry.value.nekretninaId?.toString() ?? "")),
+                      DataCell(_buildKorisnikNameCell(entry.value.korisnikId)),
+                      DataCell(
+                        Icon(
+                          entry.value.isOdobren == true ? Icons.check : Icons.access_time,
+                          color: entry.value.isOdobren == true ? Colors.green : Colors.orange,
+                          size: 24,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+                .toList() ??
+            [],
+      ),
+    ),
+  ),
+),
+
         ],
       ),
     );
@@ -206,56 +280,56 @@ void initState() {
 
   bool isOdobrenaChecked = false;
 Widget _buildSearch() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+  return Center(
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 600), // Možeš povećati ako želiš
       child: Container(
-        width: 1000,
-        height: 80,
         padding: const EdgeInsets.all(16.0),
+        
+          
         child: Row(
-  mainAxisAlignment: MainAxisAlignment.center, // ili spaceEvenly ako želiš ravnomerno
-  children: [
-    SizedBox(
-      width: 200,
-      
-     
-    ),
-    Checkbox(
-      value: isOdobrenaChecked,
-      onChanged: (value) {
-        setState(() {
-          isOdobrenaChecked = value!;
-        });
-      },
-    ),
-    const Text("Odobrena"),
-    SizedBox(width: 20),
-    ElevatedButton.icon(
-      onPressed: () async {
-        var data = await _obilazakProvider.get(
-          filter: {
-            'isOdobren': isOdobrenaChecked,
-          },
-        );
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Checkbox(
+              value: isOdobrenaChecked,
+              onChanged: (value) {
+                setState(() {
+                  isOdobrenaChecked = value!;
+                });
+              },
+            ),
+            const Text("Odobrena"),
+            const SizedBox(width: 20),
+            ElevatedButton.icon(
+              onPressed: () async {
+                var data = await _obilazakProvider.get(
+                  filter: {
+                    'isOdobren': isOdobrenaChecked,
+                  },
+                );
 
-        setState(() {
-          result = data;
-        });
-      },
-      icon: const Icon(Icons.search),
-                label: const Text("Pretraga"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 87, 88, 171),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
+                setState(() {
+                  result = data;
+                });
+              },
+              icon: const Icon(Icons.search),
+              label: const Text("Pretraži"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 87, 88, 171),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
+              ),
+            ),
+          ],
+        ),
+      ),
     ),
-  ],
-),   ),
-    );
-  }
+  );
+}
+
 
   Widget _buildKorisnikNameCell(int? korisnikId) {
     Korisnik? korisnik = korisniciResult?.result.firstWhere(
@@ -484,13 +558,7 @@ class ObilazakDetailScreen extends StatelessWidget {
                                               onPressed: () async {
                                                 Navigator.of(context)
                                                     .pop(); // Zatvaranje dijaloga
-                                                Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ZahtjeviZaObilazakDetaljiScreen(),
-                                                  ),
-                                                );
+                                                Navigator.pop(context, true); 
                                                 // Brisanje samo ako korisnik odabere "Da"
                                                 var result =
                                                     await obilazakProvider
@@ -573,13 +641,14 @@ class ObilazakDetailScreen extends StatelessWidget {
                                     actions: [
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.of(context).pop();
-                                          Navigator.pushReplacement(
+                                           Navigator.pop(context);
+                                          Navigator.pop(context, true); 
+                                         /* Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     ZahtjeviZaObilazakDetaljiScreen()),
-                                          ); // Close the dialog
+                                          );*/ // Close the dialog
                                         },
                                         child: const Text('OK'),
                                       ),

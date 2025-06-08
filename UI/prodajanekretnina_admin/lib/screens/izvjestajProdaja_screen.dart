@@ -136,153 +136,330 @@ class MyHomePage extends StatelessWidget {
       print("Greška prilikom čuvanja PDF-a: $e");
     }
   }
+void clearForm() {
+  ownerController.clear();
+  cityController.clear();
+  priceController.clear();
+  dateController.clear();
+  sudacController.clear();
+  kantonController.clear();
+  brojController.clear();
+  bankaController.clear();
+  adresaVlasnikaController.clear();
+  adresaNekrentineController.clear();
+  kvadraturaController.clear();
+  satiController.clear();
+}
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Izvještaj o prodaji nekretnine'),
-      ),
-      body: SingleChildScrollView(
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('Izvještaj o prodaji nekretnine'),
+    ),
+    body: SingleChildScrollView(
+  child: Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildOwnerCard(),
+        const SizedBox(height: 12),
+        _buildRealEstateContainer(),
+        const SizedBox(height: 12),
+        _buildCourtContainer(),
+        const SizedBox(height: 20),
+        Align(
+          alignment: Alignment.center,
+          child: ElevatedButton.icon(
+  onPressed: () async {
+  await generatePDF(); // prvo generiši PDF
+  clearForm();         // zatim očisti formu
+},
+
+  icon: const Icon(Icons.picture_as_pdf, size: 20),
+  label: const Text(
+    'Generiši izvještaj',
+    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+  ),
+  style: ElevatedButton.styleFrom(
+    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+    backgroundColor: Colors.indigo, // elegantnija nijansa plave
+    foregroundColor: Colors.white,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+    elevation: 6,
+    shadowColor: Colors.black45,
+  ),
+),
+
+        ),
+      ],
+    ),
+  ),
+),
+
+  );
+}
+
+ Widget _buildOwnerCard() {
+  return Center(
+    child: Container(
+      width: 600,
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 20),
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildOwnerCard(),
-              const SizedBox(height: 20),
-              _buildRealEstateContainer(),
-              const SizedBox(height: 20),
-              _buildCourtContainer(),
-              const SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  onPressed: generatePDF,
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Colors.blue, // Postavi bijelu boju slova
+              Row(
+  children: const [
+    Icon(Icons.person, color: Color(0xFFBFA06B)),
+    SizedBox(width: 8),
+    Text(
+      'Informacije o vlasniku',
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.black87,
+      ),
+    ),
+  ],
+),
+
+              const SizedBox(height: 10),
+
+              // Prvi red: Ime i prezime vlasnika + Adresa vlasnika
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: ownerController,
+                      decoration: const InputDecoration(
+                        labelText: 'Ime i prezime vlasnika nekretnine',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
                   ),
-                  child: const Text('Generiši Izvještaj'),
-                ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: adresaVlasnikaController,
+                      decoration: const InputDecoration(
+                        labelText: 'Adresa vlasnika',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildOwnerCard() {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 20),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Informacije o Vlasniku',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: ownerController,
-              decoration: const InputDecoration(labelText: 'Vlasnik'),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: adresaVlasnikaController,
-              decoration: const InputDecoration(labelText: 'Adresa vlasnika'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildRealEstateContainer() {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 20),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Informacije o Nekretnini',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: adresaNekrentineController,
-              decoration: const InputDecoration(labelText: 'Adresa nekretnine'),
-            ),
-            const SizedBox(height: 5),
-            TextField(
-              controller: kvadraturaController,
-              decoration: const InputDecoration(labelText: 'Kvadratura nekretnine'),
-            ),
-            const SizedBox(height: 5),
-            TextField(
-              controller: cityController,
-              decoration: const InputDecoration(labelText: 'Grad'),
-            ),
-            const SizedBox(height: 5),
-            TextField(
-              controller: priceController,
-              decoration: const InputDecoration(labelText: 'Cijena'),
-            ),
-          ],
+  return Center(
+    child: Container(
+      width: 600,
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 20),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+  children: const [
+    Icon(Icons.home_work, color: Color(0xFFBFA06B)),
+    SizedBox(width: 8),
+    Text(
+      'Informacije o nekretnini',
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.black87,
+      ),
+    ),
+  ],
+),
+
+              const SizedBox(height: 10),
+
+              // Prvi red: Adresa i Kvadratura
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: adresaNekrentineController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Adresa nekretnine',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: kvadraturaController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Kvadratura nekretnine',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+
+              // Drugi red: Grad i Cijena
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: cityController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Grad',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: priceController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Cijena',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildCourtContainer() {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 20),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Informacije o Sudu, Kantonu i Gradu',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: dateController,
-              decoration: const InputDecoration(labelText: 'Datum'),
-            ),
-            const SizedBox(height: 5),
-            TextField(
-              controller: sudacController,
-              decoration: const InputDecoration(labelText: 'Sudac'),
-            ),
-            const SizedBox(height: 5),
-            TextField(
-              controller: satiController,
-              decoration: const InputDecoration(labelText: 'Sati'),
-            ),
-            const SizedBox(height: 5),
-            TextField(
-              controller: kantonController,
-              decoration: const InputDecoration(labelText: 'Kanton'),
-            ),
-            const SizedBox(height: 5),
-            TextField(
-              controller: brojController,
-              decoration: const InputDecoration(labelText: 'Broj ugovora'),
-            ),
-            const SizedBox(height: 5),
-            TextField(
-              controller: bankaController,
-              decoration: const InputDecoration(labelText: 'Banka'),
-            ),
-          ],
+  return Center(
+    child: Container(
+      width: 600,
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 20),
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+             Row(
+  children: const [
+    Icon(Icons.location_city, color: Color(0xFFBFA06B)),
+    SizedBox(width: 8),
+    Text(
+      'Informacije o sudu, kantonu i gradu',
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.black87,
+      ),
+    ),
+  ],
+),
+
+              const SizedBox(height: 10),
+
+              // Prvi red: Datum, Sudac i Sati
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: dateController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Datum',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: sudacController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Sudac',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: satiController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Sati',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+
+              // Drugi red: Kanton, Broj ugovora i Banka
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: kantonController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Kanton',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: brojController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Broj ugovora',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: bankaController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Banka',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
+
 }

@@ -121,7 +121,7 @@ Widget _buildSearch() {
           result = data;
         });
       },
-      child: const Text("Pretraga"),
+      child: const Text("Pretraži"),
     ),
   ],
 ),
@@ -131,6 +131,7 @@ Widget _buildSearch() {
   }
   Widget _buildDataListView() {
     return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
       child: DataTable(
         showCheckboxColumn: false,
           columns: const [

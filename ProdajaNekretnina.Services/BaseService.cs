@@ -36,7 +36,7 @@ namespace ProdajaNekretnina.Services
 
             if (search?.Page.HasValue == true && search?.PageSize.HasValue == true)
             {
-                query = query.Take(search.PageSize.Value).Skip(search.Page.Value * search.PageSize.Value);
+                query = query.Skip(search.PageSize.Value).Take(search.Page.Value * search.PageSize.Value);
             }
 
             var list = await query.ToListAsync();
@@ -45,7 +45,7 @@ namespace ProdajaNekretnina.Services
             result.Result = tmp;
             return result;
         }
-
+        
         /*public virtual async Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             var entity = await _context.Set<TDb>().FindAsync(id, cancellationToken);
