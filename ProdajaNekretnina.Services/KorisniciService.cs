@@ -65,6 +65,17 @@ namespace ProdajaNekretnina.Services
             return Convert.ToBase64String(inArray);
         }
 
+        public override IQueryable<Database.Korisnici> AddFilter(IQueryable<Database.Korisnici> query, KorisniciSearchObject? search = null)
+        {
+            var filteredQuery = base.AddFilter(query, search);
+
+            if (search?.Ime != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Ime == search.Ime);
+            }
+
+            return filteredQuery;
+        }
 
         public override IQueryable<Korisnici> AddInclude(IQueryable<Korisnici> query, KorisniciSearchObject? search = null)
         {
@@ -72,30 +83,11 @@ namespace ProdajaNekretnina.Services
             {
                 query = query.Include("KorisniciUloges.Uloga");
             }
+           
             return base.AddInclude(query, search);
         }
 
-        /*public static bool IsDesktopApp()
-        {
-            // Provjerite operativni sustav
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT ||
-                Environment.OSVersion.Platform == PlatformID.Win32Windows)
-            {
-                return true; // Windows računalo
-            }
-            else if (Environment.OSVersion.Platform == PlatformID.MacOSX)
-            {
-                return false; // macOS
-            }
-            else if (Environment.OSVersion.Platform == PlatformID.Unix)
-            {
-                return false; // Unix-based sustavi (Linux)
-            }
-
-
-            return false;
-        }*/
-
+       
         public async Task<Model.Korisnici> Login(string username, string password)
         {
             var entity = await _context.Korisnicis.Include("KorisniciUloges.Uloga").FirstOrDefaultAsync(x => x.KorisnickoIme == username);
@@ -145,29 +137,7 @@ namespace ProdajaNekretnina.Services
             return true; // Uspješno ažurirano
         }
 
-        /*public async Task PayMembershipAsync(int userId, CancellationToken cancellationToken = default)
-        {
-            var user = await base.GetByIdAsync(userId, cancellationToken);
-
-           // if (user == null)
-           //     throw new NotFoundResult();
-            if (user.KorisniciUloges.FirstOrDefault().UlogaId != 3)
-            {
-                throw new Exception("Only customers can pay mebership");
-            }
-            //if (user.IsActiveMembership)
-            //    throw new Exception("Membership is already activated");
-
-            DateTime date = DateTime.Now;
-
-            user.PurchaseDate = date;
-
-            var exp = date.AddYears(1);
-            user.ExpirationDate = exp;
-
-            base.Update(user);
-            await UnitOfWork.SaveChangesAsync(cancellationToken);
-        }*/
+       
     }
 
 

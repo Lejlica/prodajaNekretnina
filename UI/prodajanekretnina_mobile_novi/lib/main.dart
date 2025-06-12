@@ -28,7 +28,7 @@ import 'package:prodajanekretnina_mobile_novi/providers/status_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'l10n/l10n.dart';
-import 'package:prodajanekretnina_mobile_novi/l10n/flutter_gen/gen_l10n/app_localizations.dart';
+//import 'package:prodajanekretnina_mobile_novi/l10n/flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:io';
 import 'package:prodajanekretnina_mobile_novi/screens/RegistracijaScreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -84,7 +84,7 @@ void main() {
       supportedLocales: L10n.all,
       //locale: Locale(appState.lang),
       localizationsDelegates: const [
-        AppLocalizations.delegate,
+        //AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

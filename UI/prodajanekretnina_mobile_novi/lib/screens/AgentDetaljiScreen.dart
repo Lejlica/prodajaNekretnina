@@ -66,8 +66,16 @@ class _AgentDetaljiScreenState extends State<AgentDetaljiScreen> {
       var tmpKorisniciData = await _korisniciProvider?.get(null);
       var tmpKupciData = await _kupciProvider?.get(null);
       var tmpRecenzijeData = await _recenzijaProvider?.get(null);
+
+      final seenKeys = <String>{};
+List<dynamic> filtriraniKomentari = tmpData!.where((komentar) {
+  final key = '${komentar.sadrzaj}-${komentar.datum}';
+  return seenKeys.add(key);
+}).toList();
+
+
       setState(() {
-        data = tmpData!;
+        data = filtriraniKomentari;
         korisniciData = tmpKorisniciData!;
         kupciData = tmpKupciData!;
         recenzijeData = tmpRecenzijeData!;
@@ -367,7 +375,7 @@ class _AgentDetaljiScreenState extends State<AgentDetaljiScreen> {
                             children: [
                               ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: data.length,
+                                itemCount: data.length.ceil(),
                                 itemBuilder: (context, index) {
                                   final comment = data[index];
                                   final isUserComment = index % 2 == 0;

@@ -60,7 +60,25 @@ Odaberite obilazak iz `DataListView-a`, bit ćete preusmjereni na ekran za odobr
 
 # 🤖 Recommender sistem
 Prikaz preporučenih nekretnina (na osnovu želja korisnika) implementiran je u mobilnoj aplikaciji u screen-u: prodajanekretnina_mobile_novi/lib/screens/WishListaScreen.dart
-Detaljan opis sistema nalazi se u dokumentu **"Opis sistema preporuke"** na Git repozitoriju seminarskog rada.
+Detaljan opis sistema nalazi se u dokumentu **"recommender-dokumentacija"** na Git repozitoriju seminarskog rada.
+
+---
+
+## 💳 Kupovina nekretnina putem PayPal-a
+
+U sekciji **"Nekretnine"** iz *sideDrawera* mobilne aplikacije nalazi se lista svih dostupnih nekretnina.  
+Na **dnu svakog card-a** nekretnine nalazi se dugme **"Kupi koristeći PayPal"**.
+
+Klikom na dugme otvara se ekran za unos PayPal podataka.
+
+Koristite sljedeće test kredencijale:
+
+- **Email:** `sb-oj97a27865823@business.example.com`  
+- **Password:** `+F<05Os.`  
+
+> 🧪 *Ovo su testni PayPal sandbox podaci za potrebe demonstracije.*
+
+Nakon uspjesne kupovine korisnik ce biti redirektovan ponovo na aplikaciju gdje moze nastaviti koristiti usluge aplikacije.
 
 ---
 
@@ -77,7 +95,7 @@ Potrebno je unijeti email adresu u za to predviđeno polje.
 ---
 
 > ⚠️ **VAŽNO**  
-> Potrebno je prvo dodati nekretninu (**"Dodaj nekretninu"** iz *SideDrawer-a*), zatim prijaviti problem za istu (🔹 Idite na **"Moje objavljene nekretnine"** iz *sideDrawera*  
+> Ukoliko nemate nijednu dodanu nekretninu potrebno je prvo dodati nekretninu (**"Dodaj nekretninu"** iz *SideDrawer-a*), zatim prijaviti problem za istu (🔹 Idite na **"Moje objavljene nekretnine"** iz *sideDrawera*  
 🔹 Odaberite željenu nekretninu i kliknite **"Prijavi problem"**  
 🔹 Ispunite formu i kliknite na **"Prijavi problem"**) kako biste bili redirektovani na ekran za slanje maila preko **RabbitMQ**.
 

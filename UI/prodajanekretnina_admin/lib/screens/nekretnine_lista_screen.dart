@@ -20,7 +20,7 @@ import 'package:prodajanekretnina_admin/screens/glavni_ekran.dart';
 import '../utils/util.dart';
 import 'package:prodajanekretnina_admin/models/nekretninaTipAkcije.dart';
 import 'package:prodajanekretnina_admin/providers/nekretninaTipAkcije_provider.dart';
-import 'package:prodajanekretnina_admin/screens/nekretnine_detalji.dart';
+import 'package:prodajanekretnina_admin/screens/dodaj_nekr2.dart';
 import 'package:prodajanekretnina_admin/screens/vise_o_nekretnini.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
@@ -120,6 +120,7 @@ await _performSearch();
     super.dispose();
   }
 int korisnikID=0;
+String ime='';
   String username = Authorization.username ?? "";
   int? korisnikId() {
     List<dynamic> filteredData = korisniciResult!.result
@@ -127,6 +128,7 @@ int korisnikID=0;
         .toList();
     if (filteredData.isNotEmpty) {
       korisnikID = filteredData[0].korisnikId!;
+      ime = filteredData[0].ime ?? '';
       print('korisnikIDDD: $korisnikID');
       return filteredData[0].korisnikId;
     } else {
@@ -181,6 +183,34 @@ int? NadjiKojojAgencijiPripadaKorisnik() {
       }
     }
     return pripadajucaAgencija ;
+  }
+
+  Korisnik? korisnik;
+  int? getKorId() {
+    var korisnikId = widget.nekretnina?.korisnikId;
+    if (korisnikId != null &&
+        korisniciResult != null
+        ) {
+      korisnik = korisniciResult?.result.firstWhere(
+        (korisnik) => korisnik.korisnikId == korisnikId,
+      );
+    }
+    print("NoviKorId: ${widget.nekretnina?.korisnikId}");
+    print("Nadjeni: ${korisnik?.korisnikId}");
+    return korisnik?.korisnikId;
+  }
+Korisnik? korisnic;
+   String? getImeVlasnika() {
+   int? kor;
+    kor = getKorId();
+    if (korisniciResult != null ) {
+      korisnic = korisniciResult?.result.firstWhere(
+        (korisnic) => korisnic.korisnikId == kor,
+      );
+
+      return korisnik?.ime;
+    }
+    return null;
   }
   Grad? grad;
 
@@ -332,6 +362,15 @@ int? NadjiKojojAgencijiPripadaKorisnik() {
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                     fontSize: 17),
+              ),
+            ),Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                   'Vlasnik: ${getImeVlasnika()} ',
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 68, 104, 106),
+                    fontSize: 13),
               ),
             ),
             Row(
@@ -590,6 +629,7 @@ void didChangeDependencies() {
   }
 }
 int korisnikID=0;
+String ime='';
   String username = Authorization.username ?? "";
   int? korisnikId() {
     List<dynamic> filteredData = korisniciResult!.result
@@ -597,6 +637,7 @@ int korisnikID=0;
         .toList();
     if (filteredData.isNotEmpty) {
       korisnikID = filteredData[0].korisnikId!;
+      ime = filteredData[0].ime ?? '';
       print('korisnikIDDD: $korisnikID');
       return filteredData[0].korisnikId;
     } else {

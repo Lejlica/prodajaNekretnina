@@ -14,6 +14,8 @@ class _PrijaviSmetnjuState extends State<PrijaviSmetnju> {
   final _opisController = TextEditingController();
   final _emailFormKey = GlobalKey<FormState>();
   final _opisFormKey = GlobalKey<FormState>();
+  bool get _jeSpremnoZaSlanje => _emailAdrese.isNotEmpty;
+
   final List<String> _emailAdrese = [];
 
   final emailRegex = RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
@@ -136,16 +138,17 @@ class _PrijaviSmetnjuState extends State<PrijaviSmetnju> {
              
               Center(
                 child: ElevatedButton.icon(
-                  onPressed: _posalji,
-                  icon: Icon(Icons.send, color: Colors.white),
-                  label: Text("Pošalji", style: TextStyle(color: Colors.white, fontSize: 14)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFB8860B),
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    elevation: 4,
-                  ),
-                ),
+  onPressed: _jeSpremnoZaSlanje ? _posalji : _prikaziUpozorenjeZaEmail,
+  icon: Icon(Icons.send, color: Colors.white),
+  label: Text("Pošalji", style: TextStyle(color: Colors.white, fontSize: 14)),
+  style: ElevatedButton.styleFrom(
+    backgroundColor: _jeSpremnoZaSlanje ? Color(0xFFB8860B) : Colors.grey,
+    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    elevation: 4,
+  ),
+),
+
               ),
             ],
           ),
@@ -195,6 +198,14 @@ class _PrijaviSmetnjuState extends State<PrijaviSmetnju> {
       return "";
     }
   }
+void _prikaziUpozorenjeZaEmail() {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text("Dodajte barem jednu email adresu (obavezno unijeti adresu i kliknuti na button '+')"),
+      backgroundColor: Colors.red,
+    ),
+  );
+}
 
   bool _isValidResponse(http.Response response) {
     print('STATUS KOD: ${response.statusCode}');

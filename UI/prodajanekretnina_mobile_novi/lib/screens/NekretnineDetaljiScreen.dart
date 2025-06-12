@@ -385,23 +385,14 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
       child: Padding(
         padding: EdgeInsets.all(10.0),
         child: Container(
-          height: 600,
+          height: 800,
           decoration: BoxDecoration(),
           child: ListView(
             physics: AlwaysScrollableScrollPhysics(),
             children: [
               Column(
                 children: [
-                  Text(
-                    "Podaci o nekretnini",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'Roboto',
-                      color: Colors.black,
-                    ),
-                  ),
+                  
                   Row(
                     children: [
                       Expanded(
@@ -832,51 +823,73 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                     ],
                   ),
                   SizedBox(height: 20),
-                  Row(
-                    children: [
-                      SizedBox(width: 10),
-                      Text(
-                        "Detaljan opis", 
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(width: 10),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    children: [
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          padding: EdgeInsets.all(10),
-                          child: Text(
-                            "${_initialValue['detaljanOpis']} ", 
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                    ],
-                  ),
+                  Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+  child: Row(
+    children: [
+      Icon(Icons.description, color: Color(0xFFB8860B), size: 24), // Zlatna ikona
+      SizedBox(width: 8),
+      Text(
+        "Detaljan opis",
+        style: TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+      ),
+    ],
+  ),
+),
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+  child: Container(
+    width: double.infinity,
+    decoration: BoxDecoration(
+      color: Color(0xFFF9F9F9),
+      border: Border.all(color: Colors.grey.shade300),
+      borderRadius: BorderRadius.circular(10),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 4,
+          offset: Offset(0, 2),
+        ),
+      ],
+    ),
+    padding: EdgeInsets.all(12),
+    child: Text(
+      "${_initialValue['detaljanOpis']}",
+      style: TextStyle(fontSize: 15.5, color: Colors.black87),
+    ),
+  ),
+),
+
                   SizedBox(height: 20),
                   Padding(
                     padding: EdgeInsets.all(
-                        10.0), 
+                        0.0), 
                     child: Row(
                       children: [
-                        Text(
-                          'Informacije o agentu/ima',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
+                        Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Icon(Icons.person_search, color: Color(0xFFB8860B), size: 24), // Zlatna nijansa
+      SizedBox(width: 8),
+      Text(
+        'Informacije o agentu/ima',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    ],
+  ),
+),
+
                       ],
                     ),
                   ),
@@ -937,111 +950,121 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                                           );
 
                                           if (matchingKorisnik != null) {
-                                            return GestureDetector(
-                                              onTap: () {
-                                                Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        AgentDetaljiScreen(
-                                                      korisnik:
-                                                          matchingKorisnik,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              child: Container(
-  padding: EdgeInsets.all(10),
-  decoration: BoxDecoration(
-    border: Border.all(width: 1, color: Colors.grey),
-    borderRadius: BorderRadius.circular(5),
-  ),
-  child: LayoutBuilder( 
-    builder: (context, constraints) {
-      return Row(
-        children: [
-
-          Flexible(
-            flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.person, size: 24, color: Colors.black),
-                    SizedBox(width: 7),
-                    Expanded( 
-                      child: Text(
-                        'Ime i prezime: ${matchingKorisnik.ime} ${matchingKorisnik.prezime}',
-                        style: TextStyle(fontSize: 15),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 6),
-                Row(
-                  children: [
-                    Icon(Icons.email, size: 24, color: Colors.blue),
-                    SizedBox(width: 7),
-                    Expanded(
-                      child: Text(
-                        'Email: ${matchingKorisnik.email}',
-                        style: TextStyle(fontSize: 15),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 7),
-                Row(
-                  children: [
-                    Icon(Icons.phone, size: 24, color: Colors.green),
-                    SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        'Telefon: ${matchingKorisnik.telefon}',
-                        style: TextStyle(fontSize: 15),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+  return GestureDetector(
+    onTap: () {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => AgentDetaljiScreen(
+            korisnik: matchingKorisnik,
           ),
-          SizedBox(width: 10),
-
-         
-          Container(
-  width: 100, 
-  height: 100,
-  child: ClipRRect(
-    borderRadius: BorderRadius.circular(4),
-    child: matchingKorisnik.bajtoviSlike != null && matchingKorisnik.bajtoviSlike!.isNotEmpty
-        ? Image.memory(
-            base64.decode(matchingKorisnik.bajtoviSlike!),
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Image.asset(
-                'assets/images/usericon.webp',
-                fit: BoxFit.cover,
-              );
-            },
-          )
-        : Image.asset(
-            'assets/images/usericon.webp',
-            fit: BoxFit.cover,
-          ),
-  ),
-)
-
-        ],
+        ),
       );
     },
-  ),
-),
+    child: Container(
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: Offset(0, 3),
+          ),
+        ],
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.person, size: 22, color: Color(0xFFB8860B)), // Zlatna
+                        SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            '${matchingKorisnik.ime} ${matchingKorisnik.prezime}',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.email, size: 22, color: Colors.blueAccent),
+                        SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            '${matchingKorisnik.email}',
+                            style: TextStyle(fontSize: 15, color: Colors.black87),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.phone, size: 22, color: Colors.green),
+                        SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            '${matchingKorisnik.telefon}',
+                            style: TextStyle(fontSize: 15, color: Colors.black87),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 12),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  width: 90,
+                  height: 90,
+                  color: Colors.grey[200],
+                  child: matchingKorisnik.bajtoviSlike != null &&
+                          matchingKorisnik.bajtoviSlike!.isNotEmpty
+                      ? Image.memory(
+                          base64.decode(matchingKorisnik.bajtoviSlike!),
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              'assets/images/usericon.webp',
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        )
+                      : Image.asset(
+                          'assets/images/usericon.webp',
+                          fit: BoxFit.cover,
+                        ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    ),
+  );
 
-                                            );
                                           } else {
                                             return Text(
                                                 'Za ovu nekretninu nije pronađen agent.');
@@ -1060,131 +1083,154 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
                     ],
                   ),
                   Padding(
-                    padding: EdgeInsets.all(
-                        10.0), 
-                    child: Row(
-                      children: [
-                        Text(
-                          "Zakaži obilazak",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
+  child: Row(
+    children: [
+      Icon(Icons.schedule, color: Color(0xFFB8860B)), // Zlatna ikonica
+      SizedBox(width: 8),
+      Text(
+        "Zakaži obilazak",
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+      ),
+    ],
+  ),
+),
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+  child: TextFormField(
+    readOnly: true,
+    onTap: () => _selectDate(context),
+    controller: datumPopravkeController,
+    decoration: InputDecoration(
+      labelText: 'Odaberite datum obilaska',
+      labelStyle: TextStyle(color: Colors.grey[700]),
+      filled: true,
+      fillColor: Colors.grey[100],
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: Colors.grey.shade400),
+      ),
+      suffixIcon: Icon(Icons.calendar_today, color: Colors.grey[700]),
+    ),
+  ),
+),
+SizedBox(height: 20),
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+  child: Builder(
+    builder: (context) {
+      return SizedBox(
+        width: double.infinity,
+        height: 50,
+        child: ElevatedButton(
+          onPressed: () async {
+            if (datumPopravkeController.text.isEmpty) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('Morate odabrati datum.'),
+      backgroundColor: Colors.red,
+    ),
+  );
+  return;
+}
+
+            var tmpObilazakData = await _obilazakProvider?.get(null);
+            setState(() {
+              obilasciData = tmpObilazakData!;
+            });
+            DateFormat inputFormat =
+                DateFormat('yyyy-MM-dd HH:mm:ss.SSSSSSS');
+            DateTime parsedDate =
+                inputFormat.parse(datumPopravkeController.text);
+            DateTime? date = selectedDate.value;
+            await _selectTime(context);
+
+            final DateTime dateTime = DateTime(
+              date!.year,
+              date.month,
+              date.day,
+              selectedTime!.hour,
+              selectedTime!.minute,
+            );
+            DateTime dateTime2 = dateTime.add(Duration(hours: 1));
+            bool isAvailable = await _checkDateAvailability(
+              dateTime,
+              widget.nekretnina?.nekretninaId,
+            );
+
+            if (isAvailable == true) {
+              Map<String, dynamic> request = {
+                'korisnikId': korisnikId(),
+                'nekretninaId': widget.nekretnina?.nekretninaId,
+                'isOdobren': false,
+                'vrijemeObilaska': dateTime.toIso8601String() ?? '',
+                'datumObilaska': selectedDate.value?.toIso8601String() ?? '',
+              };
+
+              var result = await _obilazakProvider.insert(request);
+
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(
+                      'Uspješno ste zakazali obilazak!',
+                      style: TextStyle(fontSize: 18),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(
-                        10.0), 
-                    child: TextFormField(
-                      readOnly: true,
-                      onTap: () => _selectDate(context),
-                      decoration: InputDecoration(
-                        labelText: 'Odaberite datum obilaska',
-                        suffixIcon: Icon(Icons.calendar_today),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Uredu'),
                       ),
-                      controller: datumPopravkeController,
+                    ],
+                  );
+                },
+              );
+            } else {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(
+                      'Odabrani datum je već rezervisan. Molimo odaberite neki drugi.',
+                      style: TextStyle(fontSize: 18),
                     ),
-                  ),
-                  SizedBox(height: 16),
-                  Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Builder(
-                      builder: (context) {
-                        return ElevatedButton(
-                          onPressed: () async {
-                            var tmpObilazakData =
-                                await _obilazakProvider?.get(null);
-                            setState(() {
-                              obilasciData = tmpObilazakData!;
-                            });
-                            DateFormat inputFormat =
-                                DateFormat('yyyy-MM-dd HH:mm:ss.SSSSSSS');
-                            DateTime parsedDate =
-                                inputFormat.parse(datumPopravkeController.text);
-                            DateTime? date = selectedDate.value;
-                            await _selectTime(context);
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Uredu'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFFB8860B), // Zlatna
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            elevation: 4,
+          ),
+          child: Text(
+            'Zakaži',
+            style: TextStyle(fontSize: 16, color: Colors.white),
+          ),
+        ),
+      );
+    },
+  ),
+),
 
-                            final DateTime dateTime = DateTime(
-                              date!.year,
-                              date.month,
-                              date.day,
-                              selectedTime!.hour,
-                              selectedTime!.minute,
-                            );
-                            DateTime dateTime2 =
-                                dateTime.add(Duration(hours: 1));
-                            bool isAvailable = await _checkDateAvailability(
-                              dateTime,
-                              widget.nekretnina?.nekretninaId,
-                            );
-                            print(
-                              "datumic ${dateTime}, nekretninaidic ${widget.nekretnina?.nekretninaId}, isavailable ${isAvailable}",
-                            );
-
-                            if (isAvailable == true) {
-                           
-                              Map<String, dynamic> request = {
-                                'korisnikId': korisnikId(),
-                                'nekretninaId': widget.nekretnina?.nekretninaId,
-                                'isOdobren': false,
-                                'vrijemeObilaska':
-                                    dateTime.toIso8601String() ?? '',
-                                'datumObilaska':
-                                    selectedDate.value?.toIso8601String() ?? '',
-                              };
-
-                              var result =
-                                  await _obilazakProvider.insert(request);
-
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text(
-                                      'Uspješno ste zakazali obilazak!',
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('Uredu'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            } else {
-                           
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text(
-                                      'Odabrani datum je već rezervisan. Molimo odaberite neki drugi.',
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('Uredu'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            }
-                          },
-                          child: Text('Zakaži'),
-                        );
-                      },
-                    ),
-                  ),
                 ],
               ),
             ],

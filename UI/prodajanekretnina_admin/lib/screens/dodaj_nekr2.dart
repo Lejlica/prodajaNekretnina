@@ -233,6 +233,18 @@ void initState() {
     print('BASE64: $base64Image');
 
     try {
+      if (base64Image != null) {
+      // Pretvori Base64 string nazad u bajtove
+      List<int> imageBytes = base64Decode(base64Image);
+
+      // Ispis svih bajtova u HEX formatu
+      print('Bytes of image:');
+      for (var byte in imageBytes) {
+        stdout.write('0x${byte.toRadixString(16).padLeft(2, '0').toUpperCase()}, ');
+      }
+      print('\nTotal bytes: ${imageBytes.length}');
+    }
+
       String apiUrl =
           'http://localhost:7189/Slike';
       String username = Authorization.username ?? "";
@@ -1128,6 +1140,9 @@ SizedBox(height: 10),
             if (value == null || value.isEmpty) {
               return "Prazno polje";
             }
+            if (int.tryParse(value) == null) {
+              return "Unesite validan broj";
+            }
             return null;
           },
           decoration: const InputDecoration(
@@ -1631,7 +1646,7 @@ Future<int?> NadjiKojojAgencijiPripadaKorisnik() async {
 
   Future<void> getImage() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
   
       if (pickedFile != null) {

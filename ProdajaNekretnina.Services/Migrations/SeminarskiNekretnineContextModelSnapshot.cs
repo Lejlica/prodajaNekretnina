@@ -72,6 +72,36 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasIndex(new[] { "KorisnikId" }, "IX_Agencija_KorisnikId");
 
                     b.ToTable("Agencija", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            AgencijaId = 1,
+                            Adresa = "Zlatna Ulica 12, Sarajevo",
+                            DatumAzuriranja = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumDodavanja = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "kontakt@goldenrealestate.ba",
+                            KontaktOsoba = "Nedzma Tabak",
+                            KorisnikId = 1,
+                            Logo = "logo",
+                            Naziv = "Golden Real Estate",
+                            Opis = "Agencija specijalizovana za luksuzne nekretnine.",
+                            Telefon = "+387 33 123 456"
+                        },
+                        new
+                        {
+                            AgencijaId = 2,
+                            Adresa = "Marsala Tita, Mostar",
+                            DatumAzuriranja = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumDodavanja = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "kontakt@agencija.ba",
+                            KontaktOsoba = "Ensar Lizde",
+                            KorisnikId = 7,
+                            Logo = "logo",
+                            Naziv = "Agencija za prodaju nekretnina",
+                            Opis = "Agencija specijalizovana za luksuzne nekretnine.",
+                            Telefon = "+387 33 123 456"
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.Agent", b =>
@@ -107,6 +137,18 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasKey("DrzavaId");
 
                     b.ToTable("Drzava", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            DrzavaId = 1,
+                            Naziv = "BiH"
+                        },
+                        new
+                        {
+                            DrzavaId = 2,
+                            Naziv = "Saudijska Arabija"
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.Grad", b =>
@@ -129,6 +171,32 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasIndex(new[] { "DrzavaId" }, "IX_Grad_DrzavaId");
 
                     b.ToTable("Grad", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            GradId = 1,
+                            DrzavaId = 1,
+                            Naziv = "Mostar"
+                        },
+                        new
+                        {
+                            GradId = 2,
+                            DrzavaId = 1,
+                            Naziv = "Sarajevo"
+                        },
+                        new
+                        {
+                            GradId = 3,
+                            DrzavaId = 1,
+                            Naziv = "Tuzla"
+                        },
+                        new
+                        {
+                            GradId = 4,
+                            DrzavaId = 2,
+                            Naziv = "Rijad"
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.Kategorije", b =>
@@ -149,6 +217,26 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasKey("KategorijaId");
 
                     b.ToTable("Kategorije", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            KategorijaId = 1,
+                            Naziv = "Samostalna jednica",
+                            Opis = "samostalna"
+                        },
+                        new
+                        {
+                            KategorijaId = 2,
+                            Naziv = "Visejedinicna",
+                            Opis = "visejedinicna"
+                        },
+                        new
+                        {
+                            KategorijaId = 3,
+                            Naziv = "Etazirana",
+                            Opis = "etazirana"
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.KomentariAgentima", b =>
@@ -179,6 +267,200 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasIndex(new[] { "KupacId" }, "IX_KomentariAgentima_KupacId");
 
                     b.ToTable("KomentariAgentima", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            KomentariAgentimaId = 1,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 2,
+                            KupacId = 3,
+                            Sadrzaj = "Vrlo profesionalan i usluzan agent. Preporucujem!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 2,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 2,
+                            KupacId = 6,
+                            Sadrzaj = "Preporučujem suradnju!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 3,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 2,
+                            KupacId = 5,
+                            Sadrzaj = "Usluga na vrhunskom nivou. Svaka cast!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 4,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 4,
+                            KupacId = 3,
+                            Sadrzaj = "Vrlo profesionalan i usluzan agent. Preporucujem!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 5,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 4,
+                            KupacId = 6,
+                            Sadrzaj = "Preporučujem suradnju!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 6,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 4,
+                            KupacId = 5,
+                            Sadrzaj = "Usluga na vrhunskom nivou. Svaka cast!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 7,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 8,
+                            KupacId = 3,
+                            Sadrzaj = "Vrlo profesionalan i usluzan agent. Preporucujem!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 8,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 8,
+                            KupacId = 6,
+                            Sadrzaj = "Preporučujem suradnju!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 9,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 8,
+                            KupacId = 5,
+                            Sadrzaj = "Usluga na vrhunskom nivou. Svaka cast!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 10,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 9,
+                            KupacId = 3,
+                            Sadrzaj = "Vrlo profesionalan i usluzan agent. Preporucujem!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 11,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 9,
+                            KupacId = 6,
+                            Sadrzaj = "Preporučujem suradnju!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 12,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 9,
+                            KupacId = 5,
+                            Sadrzaj = "Usluga na vrhunskom nivou. Svaka cast!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 13,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 10,
+                            KupacId = 3,
+                            Sadrzaj = "Vrlo profesionalan i usluzan agent. Preporucujem!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 14,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 10,
+                            KupacId = 6,
+                            Sadrzaj = "Preporučujem suradnju!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 15,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 10,
+                            KupacId = 5,
+                            Sadrzaj = "Usluga na vrhunskom nivou. Svaka cast!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 16,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 11,
+                            KupacId = 3,
+                            Sadrzaj = "Vrlo profesionalan i usluzan agent. Preporucujem!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 17,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 11,
+                            KupacId = 6,
+                            Sadrzaj = "Preporučujem suradnju!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 18,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 11,
+                            KupacId = 5,
+                            Sadrzaj = "Usluga na vrhunskom nivou. Svaka cast!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 19,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 12,
+                            KupacId = 3,
+                            Sadrzaj = "Vrlo profesionalan i usluzan agent. Preporucujem!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 20,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 12,
+                            KupacId = 6,
+                            Sadrzaj = "Preporučujem suradnju!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 21,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 12,
+                            KupacId = 5,
+                            Sadrzaj = "Usluga na vrhunskom nivou. Svaka cast!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 22,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 13,
+                            KupacId = 3,
+                            Sadrzaj = "Vrlo profesionalan i usluzan agent. Preporucujem!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 23,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 13,
+                            KupacId = 6,
+                            Sadrzaj = "Preporučujem suradnju!"
+                        },
+                        new
+                        {
+                            KomentariAgentimaId = 24,
+                            Datum = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 13,
+                            KupacId = 5,
+                            Sadrzaj = "Usluga na vrhunskom nivou. Svaka cast!"
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.Korisnici", b =>
@@ -230,6 +512,192 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasKey("KorisnikId");
 
                     b.ToTable("Korisnici", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            KorisnikId = 1,
+                            BrojUspjesnoProdanihNekretnina = 3,
+                            Email = "nedzma@gmail.com",
+                            Ime = "Nedzma",
+                            KorisnickoIme = "admin",
+                            LozinkaHash = "sev5R8XFlYf19eoHmVQ6F42LbFU=",
+                            LozinkaSalt = "JCb9vvndMHMdyGx//v/JAg==",
+                            Prezime = "Tabak",
+                            RejtingKupaca = 5f,
+                            Status = true,
+                            Telefon = "123123123"
+                        },
+                        new
+                        {
+                            KorisnikId = 2,
+                            BajtoviSlike = new byte[] { 255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 255, 219, 0, 67, 0, 14, 10, 11, 13, 11, 9, 14, 13, 12, 13, 16, 15, 14, 17, 22, 36, 23, 22, 20, 20, 22, 44, 32, 33, 26, 36, 52, 46, 55, 54, 51, 46, 50, 50, 58, 65, 83, 70, 58, 61, 78, 62, 50, 50, 72, 98, 73, 78, 86, 88, 93, 94, 93, 56, 69, 102, 109, 101, 90, 108, 83, 91, 93, 89, 255, 219, 0, 67, 1, 15, 16, 16, 22, 19, 22, 42, 23, 23, 42, 89, 59, 50, 59, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 255, 192, 0, 17, 8, 0, 6, 0, 10, 3, 1, 17, 0, 2, 17, 1, 3, 17, 1, 255, 196, 0, 20, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 255, 196, 0, 30, 16, 0, 2, 1, 5, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 17, 0, 3, 4, 5, 33, 19, 97, 161, 255, 196, 0, 21, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 255, 196, 0, 26, 17, 0, 2, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 17, 49, 81, 18, 255, 218, 0, 12, 3, 1, 0, 2, 17, 3, 17, 0, 63, 0, 57, 247, 81, 174, 242, 161, 186, 26, 38, 76, 116, 243, 221, 36, 230, 229, 165, 168, 86, 7, 62, 218, 226, 220, 96, 185, 121, 65, 65, 32, 2, 20, 253, 164, 189, 244, 53, 14, 31, 255, 217 },
+                            BrojUspjesnoProdanihNekretnina = 7,
+                            Email = "sadzid@gmail.com",
+                            Ime = "Sadzid",
+                            KorisnickoIme = "agent",
+                            LozinkaHash = "pBAyxd0eFkTx1cCDulcJ0BtG3xA=",
+                            LozinkaSalt = "VeRqUN240e4wbKSR29j16Q==",
+                            Prezime = "Maric",
+                            RejtingKupaca = 4.5f,
+                            Status = true,
+                            Telefon = "123123123"
+                        },
+                        new
+                        {
+                            KorisnikId = 3,
+                            BajtoviSlike = new byte[] { 255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 255, 219, 0, 67, 0, 14, 10, 11, 13, 11, 9, 14, 13, 12, 13, 16, 15, 14, 17, 22, 36, 23, 22, 20, 20, 22, 44, 32, 33, 26, 36, 52, 46, 55, 54, 51, 46, 50, 50, 58, 65, 83, 70, 58, 61, 78, 62, 50, 50, 72, 98, 73, 78, 86, 88, 93, 94, 93, 56, 69, 102, 109, 101, 90, 108, 83, 91, 93, 89, 255, 219, 0, 67, 1, 15, 16, 16, 22, 19, 22, 42, 23, 23, 42, 89, 59, 50, 59, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 255, 192, 0, 17, 8, 0, 6, 0, 10, 3, 1, 17, 0, 2, 17, 1, 3, 17, 1, 255, 196, 0, 20, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 255, 196, 0, 30, 16, 0, 2, 1, 5, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 17, 0, 3, 4, 5, 33, 19, 97, 161, 255, 196, 0, 21, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 255, 196, 0, 26, 17, 0, 2, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 17, 49, 81, 18, 255, 218, 0, 12, 3, 1, 0, 2, 17, 3, 17, 0, 63, 0, 57, 247, 81, 174, 242, 161, 186, 26, 38, 76, 116, 243, 221, 36, 230, 229, 165, 168, 86, 7, 62, 218, 226, 220, 96, 185, 121, 65, 65, 32, 2, 20, 253, 164, 189, 244, 53, 14, 31, 255, 217 },
+                            BrojUspjesnoProdanihNekretnina = 0,
+                            Email = "asad@gmail.com",
+                            Ime = "Asad",
+                            KorisnickoIme = "stranka",
+                            LozinkaHash = "wg2XVVhmnLgojEPxH16OGOS0JPA=",
+                            LozinkaSalt = "ej0ozWpZnNpfVicem0Yykg==",
+                            Prezime = "Tabak",
+                            RejtingKupaca = 0f,
+                            Status = true,
+                            Telefon = "123123123"
+                        },
+                        new
+                        {
+                            KorisnikId = 4,
+                            BrojUspjesnoProdanihNekretnina = 23,
+                            Email = "zejd@gmail.com",
+                            Ime = "Zejd",
+                            KorisnickoIme = "zejd",
+                            LozinkaHash = "ZFyhh2GWQZ1+ExBnGO7ZVH8LXkY=",
+                            LozinkaSalt = "jU9tXRky/91o5rqeMqJLiw==",
+                            Prezime = "Maric",
+                            RejtingKupaca = 0f,
+                            Status = true,
+                            Telefon = "123123123"
+                        },
+                        new
+                        {
+                            KorisnikId = 5,
+                            BrojUspjesnoProdanihNekretnina = 0,
+                            Email = "selma@gmail.com",
+                            Ime = "Selma",
+                            KorisnickoIme = "selma",
+                            LozinkaHash = "0xjQ8VCH/vuQIeBWZ4gc6GXR9nA=",
+                            LozinkaSalt = "jxmFfP2rCcNiJu/kB0gTdUw==",
+                            Prezime = "Baralija",
+                            RejtingKupaca = 0f,
+                            Status = true,
+                            Telefon = "123123123"
+                        },
+                        new
+                        {
+                            KorisnikId = 6,
+                            BrojUspjesnoProdanihNekretnina = 0,
+                            Email = "amna@gmail.com",
+                            Ime = "Amna",
+                            KorisnickoIme = "amna",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Baralija",
+                            RejtingKupaca = 0f,
+                            Status = true,
+                            Telefon = "123123123"
+                        },
+                        new
+                        {
+                            KorisnikId = 7,
+                            BrojUspjesnoProdanihNekretnina = 15,
+                            Email = "ensar@gmail.com",
+                            Ime = "Ensar",
+                            KorisnickoIme = "ensar",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Lizde",
+                            RejtingKupaca = 0f,
+                            Status = true,
+                            Telefon = "123123123"
+                        },
+                        new
+                        {
+                            KorisnikId = 8,
+                            BrojUspjesnoProdanihNekretnina = 12,
+                            Email = "azra@gmail.com",
+                            Ime = "Azra",
+                            KorisnickoIme = "azra",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Lizde",
+                            RejtingKupaca = 0f,
+                            Status = true,
+                            Telefon = "123123123"
+                        },
+                        new
+                        {
+                            KorisnikId = 9,
+                            BrojUspjesnoProdanihNekretnina = 21,
+                            Email = "adisa@gmail.com",
+                            Ime = "Adisa",
+                            KorisnickoIme = "adisa",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Lizde",
+                            RejtingKupaca = 0f,
+                            Status = true,
+                            Telefon = "123123123"
+                        },
+                        new
+                        {
+                            KorisnikId = 10,
+                            BrojUspjesnoProdanihNekretnina = 29,
+                            Email = "semsudin@gmail.com",
+                            Ime = "Semsudin",
+                            KorisnickoIme = "semsudin",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Lizde",
+                            RejtingKupaca = 0f,
+                            Status = true,
+                            Telefon = "123123123"
+                        },
+                        new
+                        {
+                            KorisnikId = 11,
+                            BrojUspjesnoProdanihNekretnina = 30,
+                            Email = "zijad@gmail.com",
+                            Ime = "Zijad",
+                            KorisnickoIme = "zijad",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Maric",
+                            RejtingKupaca = 0f,
+                            Status = true,
+                            Telefon = "123123123"
+                        },
+                        new
+                        {
+                            KorisnikId = 12,
+                            BrojUspjesnoProdanihNekretnina = 25,
+                            Email = "mersija@gmail.com",
+                            Ime = "Mersija",
+                            KorisnickoIme = "mersija",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Maric",
+                            RejtingKupaca = 0f,
+                            Status = true,
+                            Telefon = "123123123"
+                        },
+                        new
+                        {
+                            KorisnikId = 13,
+                            BrojUspjesnoProdanihNekretnina = 7,
+                            Email = "hazim@gmail.com",
+                            Ime = "Hazim",
+                            KorisnickoIme = "hazim",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Lizde",
+                            RejtingKupaca = 0f,
+                            Status = true,
+                            Telefon = "123123123"
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.KorisniciUloge", b =>
@@ -256,6 +724,99 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasIndex(new[] { "UlogaId" }, "IX_KorisniciUloge_UlogaId");
 
                     b.ToTable("KorisniciUloge", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            KorisnikUlogaId = 1,
+                            DatumIzmjene = new DateTime(2025, 6, 12, 19, 24, 23, 459, DateTimeKind.Local).AddTicks(8419),
+                            KorisnikId = 1,
+                            UlogaId = 1
+                        },
+                        new
+                        {
+                            KorisnikUlogaId = 2,
+                            DatumIzmjene = new DateTime(2025, 6, 12, 19, 24, 23, 459, DateTimeKind.Local).AddTicks(8488),
+                            KorisnikId = 2,
+                            UlogaId = 2
+                        },
+                        new
+                        {
+                            KorisnikUlogaId = 3,
+                            DatumIzmjene = new DateTime(2025, 6, 12, 19, 24, 23, 459, DateTimeKind.Local).AddTicks(8495),
+                            KorisnikId = 3,
+                            UlogaId = 3
+                        },
+                        new
+                        {
+                            KorisnikUlogaId = 4,
+                            DatumIzmjene = new DateTime(2025, 6, 12, 19, 24, 23, 459, DateTimeKind.Local).AddTicks(8500),
+                            KorisnikId = 4,
+                            UlogaId = 2
+                        },
+                        new
+                        {
+                            KorisnikUlogaId = 5,
+                            DatumIzmjene = new DateTime(2025, 6, 12, 19, 24, 23, 459, DateTimeKind.Local).AddTicks(8505),
+                            KorisnikId = 5,
+                            UlogaId = 3
+                        },
+                        new
+                        {
+                            KorisnikUlogaId = 6,
+                            DatumIzmjene = new DateTime(2025, 6, 12, 19, 24, 23, 459, DateTimeKind.Local).AddTicks(8509),
+                            KorisnikId = 6,
+                            UlogaId = 3
+                        },
+                        new
+                        {
+                            KorisnikUlogaId = 7,
+                            DatumIzmjene = new DateTime(2025, 6, 12, 19, 24, 23, 459, DateTimeKind.Local).AddTicks(8513),
+                            KorisnikId = 7,
+                            UlogaId = 1
+                        },
+                        new
+                        {
+                            KorisnikUlogaId = 8,
+                            DatumIzmjene = new DateTime(2025, 6, 12, 19, 24, 23, 459, DateTimeKind.Local).AddTicks(8518),
+                            KorisnikId = 8,
+                            UlogaId = 2
+                        },
+                        new
+                        {
+                            KorisnikUlogaId = 9,
+                            DatumIzmjene = new DateTime(2025, 6, 12, 19, 24, 23, 459, DateTimeKind.Local).AddTicks(8522),
+                            KorisnikId = 9,
+                            UlogaId = 2
+                        },
+                        new
+                        {
+                            KorisnikUlogaId = 10,
+                            DatumIzmjene = new DateTime(2025, 6, 12, 19, 24, 23, 459, DateTimeKind.Local).AddTicks(8527),
+                            KorisnikId = 10,
+                            UlogaId = 2
+                        },
+                        new
+                        {
+                            KorisnikUlogaId = 11,
+                            DatumIzmjene = new DateTime(2025, 6, 12, 19, 24, 23, 459, DateTimeKind.Local).AddTicks(8531),
+                            KorisnikId = 11,
+                            UlogaId = 2
+                        },
+                        new
+                        {
+                            KorisnikUlogaId = 12,
+                            DatumIzmjene = new DateTime(2025, 6, 12, 19, 24, 23, 459, DateTimeKind.Local).AddTicks(8535),
+                            KorisnikId = 12,
+                            UlogaId = 2
+                        },
+                        new
+                        {
+                            KorisnikUlogaId = 13,
+                            DatumIzmjene = new DateTime(2025, 6, 12, 19, 24, 23, 459, DateTimeKind.Local).AddTicks(8540),
+                            KorisnikId = 13,
+                            UlogaId = 2
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.KorisnikAgencija", b =>
@@ -279,6 +840,68 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasIndex(new[] { "KorisnikId" }, "IX_KorisnikAgencija_KorisnikId");
 
                     b.ToTable("KorisnikAgencija", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            KorisnikAgencijaId = 1,
+                            AgencijaId = 1,
+                            KorisnikId = 1
+                        },
+                        new
+                        {
+                            KorisnikAgencijaId = 2,
+                            AgencijaId = 1,
+                            KorisnikId = 2
+                        },
+                        new
+                        {
+                            KorisnikAgencijaId = 3,
+                            AgencijaId = 1,
+                            KorisnikId = 4
+                        },
+                        new
+                        {
+                            KorisnikAgencijaId = 4,
+                            AgencijaId = 2,
+                            KorisnikId = 7
+                        },
+                        new
+                        {
+                            KorisnikAgencijaId = 5,
+                            AgencijaId = 2,
+                            KorisnikId = 8
+                        },
+                        new
+                        {
+                            KorisnikAgencijaId = 6,
+                            AgencijaId = 2,
+                            KorisnikId = 9
+                        },
+                        new
+                        {
+                            KorisnikAgencijaId = 7,
+                            AgencijaId = 2,
+                            KorisnikId = 10
+                        },
+                        new
+                        {
+                            KorisnikAgencijaId = 8,
+                            AgencijaId = 1,
+                            KorisnikId = 11
+                        },
+                        new
+                        {
+                            KorisnikAgencijaId = 9,
+                            AgencijaId = 1,
+                            KorisnikId = 12
+                        },
+                        new
+                        {
+                            KorisnikAgencijaId = 10,
+                            AgencijaId = 2,
+                            KorisnikId = 13
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.KorisnikNekretninaWish", b =>
@@ -302,6 +925,38 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasIndex(new[] { "NekretninaId" }, "IX_KorisnikNekretninaWish_NekretninaId");
 
                     b.ToTable("KorisnikNekretninaWish", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            KorisnikNekretninaWishId = 1,
+                            KorisnikId = 3,
+                            NekretninaId = 1
+                        },
+                        new
+                        {
+                            KorisnikNekretninaWishId = 2,
+                            KorisnikId = 3,
+                            NekretninaId = 2
+                        },
+                        new
+                        {
+                            KorisnikNekretninaWishId = 3,
+                            KorisnikId = 3,
+                            NekretninaId = 3
+                        },
+                        new
+                        {
+                            KorisnikNekretninaWishId = 4,
+                            KorisnikId = 3,
+                            NekretninaId = 7
+                        },
+                        new
+                        {
+                            KorisnikNekretninaWishId = 5,
+                            KorisnikId = 5,
+                            NekretninaId = 3
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.Kupci", b =>
@@ -353,6 +1008,190 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasKey("KupacId");
 
                     b.ToTable("Kupci", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            KupacId = 1,
+                            ClientId = "nijePostavljen",
+                            ClientSecret = "nijePostavljen",
+                            DatumRegistracije = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nedzma@gmail.com",
+                            Ime = "Nedzma",
+                            KorisnickoIme = "admin",
+                            LozinkaHash = "sev5R8XFlYf19eoHmVQ6F42LbFU=",
+                            LozinkaSalt = "JCb9vvndMHMdyGx//v/JAg==",
+                            Prezime = "Tabak",
+                            Status = true
+                        },
+                        new
+                        {
+                            KupacId = 2,
+                            ClientId = "nijePostavljen",
+                            ClientSecret = "nijePostavljen",
+                            DatumRegistracije = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "sadzid@gmail.com",
+                            Ime = "Sadzid",
+                            KorisnickoIme = "agent",
+                            LozinkaHash = "pBAyxd0eFkTx1cCDulcJ0BtG3xA=",
+                            LozinkaSalt = "VeRqUN240e4wbKSR29j16Q==",
+                            Prezime = "Maric",
+                            Status = true
+                        },
+                        new
+                        {
+                            KupacId = 3,
+                            ClientId = "nijePostavljen",
+                            ClientSecret = "nijePostavljen",
+                            DatumRegistracije = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "asad@gmail.com",
+                            Ime = "Asad",
+                            KorisnickoIme = "stranka",
+                            LozinkaHash = "wg2XVVhmnLgojEPxH16OGOS0JPA=",
+                            LozinkaSalt = "ej0ozWpZnNpfVicem0Yykg==",
+                            Prezime = "Tabak",
+                            Status = true
+                        },
+                        new
+                        {
+                            KupacId = 4,
+                            ClientId = "nijePostavljen",
+                            ClientSecret = "nijePostavljen",
+                            DatumRegistracije = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "zejd@gmail.com",
+                            Ime = "Zejd",
+                            KorisnickoIme = "zejd",
+                            LozinkaHash = "ZFyhh2GWQZ1+ExBnGO7ZVH8LXkY=",
+                            LozinkaSalt = "jU9tXRky/91o5rqeMqJLiw==",
+                            Prezime = "Maric",
+                            Status = true
+                        },
+                        new
+                        {
+                            KupacId = 5,
+                            ClientId = "nijePostavljen",
+                            ClientSecret = "nijePostavljen",
+                            DatumRegistracije = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "selma@gmail.com",
+                            Ime = "Selma",
+                            KorisnickoIme = "selma",
+                            LozinkaHash = "0xjQ8VCH/vuQIeBWZ4gc6GXR9nA=",
+                            LozinkaSalt = "jxmFfP2rCcNiJu/kB0gTdUw==",
+                            Prezime = "Baralija",
+                            Status = true
+                        },
+                        new
+                        {
+                            KupacId = 6,
+                            ClientId = "nijePostavljen",
+                            ClientSecret = "nijePostavljen",
+                            DatumRegistracije = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "amna@gmail.com",
+                            Ime = "Amna",
+                            KorisnickoIme = "amna",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Baralija",
+                            Status = true
+                        },
+                        new
+                        {
+                            KupacId = 7,
+                            ClientId = "nijePostavljen",
+                            ClientSecret = "nijePostavljen",
+                            DatumRegistracije = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "ensar@gmail.com",
+                            Ime = "Ensar",
+                            KorisnickoIme = "ensar",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Lizde",
+                            Status = true
+                        },
+                        new
+                        {
+                            KupacId = 8,
+                            ClientId = "nijePostavljen",
+                            ClientSecret = "nijePostavljen",
+                            DatumRegistracije = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "azra@gmail.com",
+                            Ime = "Azra",
+                            KorisnickoIme = "azra",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Lizde",
+                            Status = true
+                        },
+                        new
+                        {
+                            KupacId = 9,
+                            ClientId = "nijePostavljen",
+                            ClientSecret = "nijePostavljen",
+                            DatumRegistracije = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "adisa@gmail.com",
+                            Ime = "Adisa",
+                            KorisnickoIme = "adisa",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Lizde",
+                            Status = true
+                        },
+                        new
+                        {
+                            KupacId = 10,
+                            ClientId = "nijePostavljen",
+                            ClientSecret = "nijePostavljen",
+                            DatumRegistracije = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "semsudin@gmail.com",
+                            Ime = "Semsudin",
+                            KorisnickoIme = "semsudin",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Lizde",
+                            Status = true
+                        },
+                        new
+                        {
+                            KupacId = 11,
+                            ClientId = "nijePostavljen",
+                            ClientSecret = "nijePostavljen",
+                            DatumRegistracije = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "zijad@gmail.com",
+                            Ime = "Zijad",
+                            KorisnickoIme = "zijad",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Maric",
+                            Status = true
+                        },
+                        new
+                        {
+                            KupacId = 12,
+                            ClientId = "nijePostavljen",
+                            ClientSecret = "nijePostavljen",
+                            DatumRegistracije = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "mersija@gmail.com",
+                            Ime = "Mersija",
+                            KorisnickoIme = "mersija",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Maric",
+                            Status = true
+                        },
+                        new
+                        {
+                            KupacId = 13,
+                            ClientId = "nijePostavljen",
+                            ClientSecret = "nijePostavljen",
+                            DatumRegistracije = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "hazim@gmail.com",
+                            Ime = "Hazim",
+                            KorisnickoIme = "hazim",
+                            LozinkaHash = "qjDD3Nty/Q0tZkDwqr7mZqBWTmE=",
+                            LozinkaSalt = "5/PBVv9eWBSApe7SVx+BUA==",
+                            Prezime = "Lizde",
+                            Status = true
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.Kupovina", b =>
@@ -419,6 +1258,40 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasIndex(new[] { "GradId" }, "IX_Lokacija_GradId");
 
                     b.ToTable("Lokacija", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            LokacijaId = 1,
+                            DrzavaId = 1,
+                            GradId = 2,
+                            PostanskiBroj = "71000",
+                            Ulica = "Zmaja od Bosne 12"
+                        },
+                        new
+                        {
+                            LokacijaId = 2,
+                            DrzavaId = 1,
+                            GradId = 1,
+                            PostanskiBroj = "88000",
+                            Ulica = "Kralja Tomislava 5"
+                        },
+                        new
+                        {
+                            LokacijaId = 3,
+                            DrzavaId = 1,
+                            GradId = 3,
+                            PostanskiBroj = "78000",
+                            Ulica = "Tuzlanska"
+                        },
+                        new
+                        {
+                            LokacijaId = 4,
+                            DrzavaId = 1,
+                            GradId = 3,
+                            PostanskiBroj = "78000",
+                            Ulica = "Brcanska Malta"
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.Nekretnina", b =>
@@ -499,6 +1372,261 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasIndex(new[] { "TipNekretnineId" }, "IX_Nekretnina_TipNekretnineId");
 
                     b.ToTable("Nekretnina", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            NekretninaId = 1,
+                            BrojSoba = 5,
+                            BrojSpavacihSoba = 3,
+                            BrojUgovora = 12345,
+                            Cijena = 250000f,
+                            DatumDodavanja = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumIzmjene = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DetaljanOpis = "Prostrana kuca sa velikim dvoristem u mirnom dijelu grada.",
+                            IsOdobrena = true,
+                            KategorijaId = 1,
+                            KorisnikId = 3,
+                            Kvadratura = 180,
+                            LokacijaId = 1,
+                            Namjesten = true,
+                            Naziv = "Moderna Porodicna Kuca",
+                            Novogradnja = false,
+                            ParkingMjesto = true,
+                            Sprat = 2,
+                            StateMachine = "draft",
+                            TipNekretnineId = 1
+                        },
+                        new
+                        {
+                            NekretninaId = 2,
+                            BrojSoba = 4,
+                            BrojSpavacihSoba = 1,
+                            BrojUgovora = 12345,
+                            Cijena = 350000f,
+                            DatumDodavanja = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumIzmjene = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DetaljanOpis = "Prostrani stan sa velikom okucnicom u centru grada.",
+                            IsOdobrena = true,
+                            KategorijaId = 2,
+                            KorisnikId = 3,
+                            Kvadratura = 280,
+                            LokacijaId = 1,
+                            Namjesten = true,
+                            Naziv = "Stan na dan",
+                            Novogradnja = false,
+                            ParkingMjesto = true,
+                            Sprat = 2,
+                            StateMachine = "draft",
+                            TipNekretnineId = 2
+                        },
+                        new
+                        {
+                            NekretninaId = 3,
+                            BrojSoba = 7,
+                            BrojSpavacihSoba = 4,
+                            BrojUgovora = 10000,
+                            Cijena = 500000f,
+                            DatumDodavanja = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumIzmjene = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DetaljanOpis = "Moderna villa u centru sarajeva. Za dodatne informacije javiti se na mail.",
+                            IsOdobrena = true,
+                            KategorijaId = 2,
+                            KorisnikId = 3,
+                            Kvadratura = 180,
+                            LokacijaId = 2,
+                            Namjesten = true,
+                            Naziv = "Villa u centru Sarajeva",
+                            Novogradnja = true,
+                            ParkingMjesto = true,
+                            Sprat = 2,
+                            StateMachine = "draft",
+                            TipNekretnineId = 2
+                        },
+                        new
+                        {
+                            NekretninaId = 4,
+                            BrojSoba = 0,
+                            BrojSpavacihSoba = 0,
+                            BrojUgovora = 12300,
+                            Cijena = 20000f,
+                            DatumDodavanja = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumIzmjene = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DetaljanOpis = "Iznajmljuje se poslovni prostor. Za dodatne informacije javiti se na mail.",
+                            IsOdobrena = false,
+                            KategorijaId = 1,
+                            KorisnikId = 3,
+                            Kvadratura = 200,
+                            LokacijaId = 3,
+                            Namjesten = false,
+                            Naziv = "Poslovni prostor",
+                            Novogradnja = true,
+                            ParkingMjesto = true,
+                            Sprat = 1,
+                            StateMachine = "draft",
+                            TipNekretnineId = 2
+                        },
+                        new
+                        {
+                            NekretninaId = 5,
+                            BrojSoba = 0,
+                            BrojSpavacihSoba = 0,
+                            BrojUgovora = 12300,
+                            Cijena = 4000f,
+                            DatumDodavanja = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumIzmjene = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DetaljanOpis = "Iznajmljuje se garaza. Za dodatne informacije javiti se na mail.",
+                            IsOdobrena = false,
+                            KategorijaId = 3,
+                            KorisnikId = 3,
+                            Kvadratura = 200,
+                            LokacijaId = 3,
+                            Namjesten = false,
+                            Naziv = "Garaza",
+                            Novogradnja = true,
+                            ParkingMjesto = true,
+                            Sprat = 1,
+                            StateMachine = "draft",
+                            TipNekretnineId = 2
+                        },
+                        new
+                        {
+                            NekretninaId = 6,
+                            BrojSoba = 0,
+                            BrojSpavacihSoba = 0,
+                            BrojUgovora = 12300,
+                            Cijena = 600000f,
+                            DatumDodavanja = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumIzmjene = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DetaljanOpis = "Prodaje se moderno uredjena kuca. Za dodatne informacije javiti se na mail.",
+                            IsOdobrena = false,
+                            KategorijaId = 2,
+                            KorisnikId = 3,
+                            Kvadratura = 200,
+                            LokacijaId = 4,
+                            Namjesten = false,
+                            Naziv = "Kuca sa okucnicom",
+                            Novogradnja = true,
+                            ParkingMjesto = true,
+                            Sprat = 1,
+                            StateMachine = "draft",
+                            TipNekretnineId = 2
+                        },
+                        new
+                        {
+                            NekretninaId = 7,
+                            BrojSoba = 0,
+                            BrojSpavacihSoba = 0,
+                            BrojUgovora = 12300,
+                            Cijena = 600000f,
+                            DatumDodavanja = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumIzmjene = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DetaljanOpis = "Prodaje se moderno uredjen stan. Za dodatne informacije javiti se na mail.",
+                            IsOdobrena = true,
+                            KategorijaId = 2,
+                            KorisnikId = 3,
+                            Kvadratura = 200,
+                            LokacijaId = 2,
+                            Namjesten = false,
+                            Naziv = "Stan sa bazenom",
+                            Novogradnja = true,
+                            ParkingMjesto = true,
+                            Sprat = 1,
+                            StateMachine = "draft",
+                            TipNekretnineId = 2
+                        },
+                        new
+                        {
+                            NekretninaId = 8,
+                            BrojSoba = 3,
+                            BrojSpavacihSoba = 1,
+                            BrojUgovora = 12300,
+                            Cijena = 600000f,
+                            DatumDodavanja = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumIzmjene = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DetaljanOpis = "Prodaje se moderno uredjena vikendica. Za dodatne informacije javiti se na mail.",
+                            IsOdobrena = false,
+                            KategorijaId = 2,
+                            KorisnikId = 5,
+                            Kvadratura = 100,
+                            LokacijaId = 2,
+                            Namjesten = true,
+                            Naziv = "Vikendica prostrana",
+                            Novogradnja = true,
+                            ParkingMjesto = true,
+                            Sprat = 1,
+                            StateMachine = "draft",
+                            TipNekretnineId = 2
+                        },
+                        new
+                        {
+                            NekretninaId = 9,
+                            BrojSoba = 3,
+                            BrojSpavacihSoba = 1,
+                            BrojUgovora = 12300,
+                            Cijena = 502000f,
+                            DatumDodavanja = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumIzmjene = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DetaljanOpis = "Prodaje se moderno uredjen stan. Za dodatne informacije javiti se na mail.",
+                            IsOdobrena = false,
+                            KategorijaId = 2,
+                            KorisnikId = 6,
+                            Kvadratura = 100,
+                            LokacijaId = 4,
+                            Namjesten = true,
+                            Naziv = "Stan Ilidza",
+                            Novogradnja = true,
+                            ParkingMjesto = true,
+                            Sprat = 1,
+                            StateMachine = "draft",
+                            TipNekretnineId = 2
+                        },
+                        new
+                        {
+                            NekretninaId = 10,
+                            BrojSoba = 3,
+                            BrojSpavacihSoba = 1,
+                            BrojUgovora = 12300,
+                            Cijena = 700000f,
+                            DatumDodavanja = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumIzmjene = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DetaljanOpis = " Za dodatne informacije javiti se na mail.",
+                            IsOdobrena = false,
+                            KategorijaId = 2,
+                            KorisnikId = 6,
+                            Kvadratura = 100,
+                            LokacijaId = 3,
+                            Namjesten = true,
+                            Naziv = "Moderna kuca sa dva sprata",
+                            Novogradnja = true,
+                            ParkingMjesto = true,
+                            Sprat = 1,
+                            StateMachine = "draft",
+                            TipNekretnineId = 2
+                        },
+                        new
+                        {
+                            NekretninaId = 11,
+                            BrojSoba = 3,
+                            BrojSpavacihSoba = 1,
+                            BrojUgovora = 12300,
+                            Cijena = 705000f,
+                            DatumDodavanja = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumIzmjene = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DetaljanOpis = " Za dodatne informacije javiti se na mail.",
+                            IsOdobrena = false,
+                            KategorijaId = 2,
+                            KorisnikId = 3,
+                            Kvadratura = 100,
+                            LokacijaId = 1,
+                            Namjesten = true,
+                            Naziv = "Trospratna kuca prodaja",
+                            Novogradnja = true,
+                            ParkingMjesto = true,
+                            Sprat = 1,
+                            StateMachine = "draft",
+                            TipNekretnineId = 2
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.NekretninaAgenti", b =>
@@ -522,6 +1650,56 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasIndex(new[] { "NekretninaId" }, "IX_NekretninaAgenti_NekretninaId");
 
                     b.ToTable("NekretninaAgenti", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            NekretninaAgentiID = 1,
+                            KorisnikId = 2,
+                            NekretninaId = 1
+                        },
+                        new
+                        {
+                            NekretninaAgentiID = 2,
+                            KorisnikId = 2,
+                            NekretninaId = 2
+                        },
+                        new
+                        {
+                            NekretninaAgentiID = 3,
+                            KorisnikId = 2,
+                            NekretninaId = 3
+                        },
+                        new
+                        {
+                            NekretninaAgentiID = 4,
+                            KorisnikId = 3,
+                            NekretninaId = 7
+                        },
+                        new
+                        {
+                            NekretninaAgentiID = 5,
+                            KorisnikId = 3,
+                            NekretninaId = 8
+                        },
+                        new
+                        {
+                            NekretninaAgentiID = 6,
+                            KorisnikId = 11,
+                            NekretninaId = 9
+                        },
+                        new
+                        {
+                            NekretninaAgentiID = 7,
+                            KorisnikId = 12,
+                            NekretninaId = 10
+                        },
+                        new
+                        {
+                            NekretninaAgentiID = 8,
+                            KorisnikId = 12,
+                            NekretninaId = 11
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.NekretninaTipAkcije", b =>
@@ -545,6 +1723,74 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasIndex(new[] { "TipAkcijeId" }, "IX_NekretninaTipAkcije_TipAkcijeId");
 
                     b.ToTable("NekretninaTipAkcije", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            NekretninaTipAkcijeId = 1,
+                            NekretninaId = 1,
+                            TipAkcijeId = 2
+                        },
+                        new
+                        {
+                            NekretninaTipAkcijeId = 2,
+                            NekretninaId = 2,
+                            TipAkcijeId = 1
+                        },
+                        new
+                        {
+                            NekretninaTipAkcijeId = 3,
+                            NekretninaId = 3,
+                            TipAkcijeId = 2
+                        },
+                        new
+                        {
+                            NekretninaTipAkcijeId = 4,
+                            NekretninaId = 4,
+                            TipAkcijeId = 2
+                        },
+                        new
+                        {
+                            NekretninaTipAkcijeId = 5,
+                            NekretninaId = 5,
+                            TipAkcijeId = 1
+                        },
+                        new
+                        {
+                            NekretninaTipAkcijeId = 6,
+                            NekretninaId = 6,
+                            TipAkcijeId = 1
+                        },
+                        new
+                        {
+                            NekretninaTipAkcijeId = 7,
+                            NekretninaId = 7,
+                            TipAkcijeId = 2
+                        },
+                        new
+                        {
+                            NekretninaTipAkcijeId = 8,
+                            NekretninaId = 8,
+                            TipAkcijeId = 2
+                        },
+                        new
+                        {
+                            NekretninaTipAkcijeId = 9,
+                            NekretninaId = 9,
+                            TipAkcijeId = 1
+                        },
+                        new
+                        {
+                            NekretninaTipAkcijeId = 10,
+                            NekretninaId = 10,
+                            TipAkcijeId = 2
+                        },
+                        new
+                        {
+                            NekretninaTipAkcijeId = 11,
+                            NekretninaId = 11,
+                            TipAkcijeId = 1
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.Obilazak", b =>
@@ -577,6 +1823,98 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasIndex(new[] { "NekretninaId" }, "IX_Obilazak_NekretninaId");
 
                     b.ToTable("Obilazak", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ObilazakId = 1,
+                            DatumObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 3,
+                            NekretninaId = 1,
+                            VrijemeObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            isOdobren = true
+                        },
+                        new
+                        {
+                            ObilazakId = 2,
+                            DatumObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 3,
+                            NekretninaId = 2,
+                            VrijemeObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            isOdobren = true
+                        },
+                        new
+                        {
+                            ObilazakId = 3,
+                            DatumObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 3,
+                            NekretninaId = 3,
+                            VrijemeObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            isOdobren = false
+                        },
+                        new
+                        {
+                            ObilazakId = 4,
+                            DatumObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 3,
+                            NekretninaId = 7,
+                            VrijemeObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            isOdobren = false
+                        },
+                        new
+                        {
+                            ObilazakId = 5,
+                            DatumObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 6,
+                            NekretninaId = 7,
+                            VrijemeObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            isOdobren = false
+                        },
+                        new
+                        {
+                            ObilazakId = 6,
+                            DatumObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 6,
+                            NekretninaId = 1,
+                            VrijemeObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            isOdobren = false
+                        },
+                        new
+                        {
+                            ObilazakId = 7,
+                            DatumObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 5,
+                            NekretninaId = 7,
+                            VrijemeObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            isOdobren = false
+                        },
+                        new
+                        {
+                            ObilazakId = 8,
+                            DatumObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 5,
+                            NekretninaId = 2,
+                            VrijemeObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            isOdobren = false
+                        },
+                        new
+                        {
+                            ObilazakId = 9,
+                            DatumObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 5,
+                            NekretninaId = 3,
+                            VrijemeObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            isOdobren = false
+                        },
+                        new
+                        {
+                            ObilazakId = 10,
+                            DatumObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            KorisnikId = 6,
+                            NekretninaId = 2,
+                            VrijemeObilaska = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            isOdobren = false
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.Problem", b =>
@@ -624,6 +1962,60 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasIndex(new[] { "StatusId" }, "IX_Problem_StatusId");
 
                     b.ToTable("Problem", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ProblemId = 1,
+                            DatumNastankaProblema = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumPrijave = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumRjesenja = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsVecPrijavljen = false,
+                            KorisnikId = 3,
+                            NekretninaId = 1,
+                            Opis = "Prokišnjava krov na spratu.",
+                            OpisRjesenja = "",
+                            StatusId = 1
+                        },
+                        new
+                        {
+                            ProblemId = 2,
+                            DatumNastankaProblema = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumPrijave = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumRjesenja = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsVecPrijavljen = false,
+                            KorisnikId = 3,
+                            NekretninaId = 2,
+                            Opis = "Vrata se ne mogu otvoriti.",
+                            OpisRjesenja = "",
+                            StatusId = 1
+                        },
+                        new
+                        {
+                            ProblemId = 3,
+                            DatumNastankaProblema = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumPrijave = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumRjesenja = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsVecPrijavljen = false,
+                            KorisnikId = 3,
+                            NekretninaId = 3,
+                            Opis = "Ne radi grijanje.",
+                            OpisRjesenja = "",
+                            StatusId = 4
+                        },
+                        new
+                        {
+                            ProblemId = 4,
+                            DatumNastankaProblema = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumPrijave = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumRjesenja = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsVecPrijavljen = false,
+                            KorisnikId = 5,
+                            NekretninaId = 7,
+                            Opis = "Potrebno obaviti sanitarizaciju.",
+                            OpisRjesenja = "",
+                            StatusId = 4
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.ReccomendResult", b =>
@@ -675,6 +2067,22 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasIndex(new[] { "KupacId" }, "IX_Recenzija_KupacId");
 
                     b.ToTable("Recenzija", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            RecenzijaId = 1,
+                            KorisnikId = 2,
+                            KupacId = 5,
+                            VrijednostZvjezdica = 4.5f
+                        },
+                        new
+                        {
+                            RecenzijaId = 2,
+                            KorisnikId = 2,
+                            KupacId = 6,
+                            VrijednostZvjezdica = 2.5f
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.Slika", b =>
@@ -697,6 +2105,74 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasIndex(new[] { "NekretninaId" }, "IX_Slika_NekretninaId");
 
                     b.ToTable("Slika", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            SlikaId = 1,
+                            BajtoviSlike = new byte[] { 255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 255, 219, 0, 67, 0, 3, 2, 2, 2, 2, 2, 3, 2, 2, 2, 3, 3, 3, 3, 4, 6, 4, 4, 4, 4, 4, 8, 6, 6, 5, 6, 9, 8, 10, 10, 9, 8, 9, 9, 10, 12, 15, 12, 10, 11, 14, 11, 9, 9, 13, 17, 13, 14, 15, 16, 16, 17, 16, 10, 12, 18, 19, 18, 16, 19, 15, 16, 16, 16, 255, 219, 0, 67, 1, 3, 3, 3, 4, 3, 4, 8, 4, 4, 8, 16, 11, 9, 11, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 255, 192, 0, 17, 8, 0, 21, 0, 31, 3, 1, 34, 0, 2, 17, 1, 3, 17, 1, 255, 196, 0, 25, 0, 0, 2, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 5, 6, 8, 4, 255, 196, 0, 44, 16, 0, 1, 4, 2, 1, 3, 1, 6, 7, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 17, 18, 0, 7, 33, 19, 8, 20, 34, 49, 81, 97, 21, 35, 65, 66, 145, 161, 193, 255, 196, 0, 24, 1, 0, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 5, 1, 3, 6, 255, 196, 0, 39, 17, 0, 1, 2, 5, 3, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 17, 0, 3, 4, 18, 33, 5, 6, 49, 81, 113, 35, 65, 129, 193, 225, 240, 241, 255, 218, 0, 12, 3, 1, 0, 2, 17, 3, 17, 0, 63, 0, 173, 251, 59, 224, 86, 249, 54, 49, 97, 99, 6, 178, 226, 108, 104, 243, 12, 98, 135, 211, 233, 150, 29, 244, 212, 225, 248, 84, 225, 252, 178, 2, 136, 90, 70, 137, 74, 190, 221, 57, 160, 118, 158, 61, 201, 160, 126, 145, 98, 198, 170, 225, 196, 198, 122, 205, 134, 220, 244, 34, 62, 66, 182, 22, 21, 197, 65, 176, 83, 229, 194, 0, 255, 0, 121, 251, 49, 147, 87, 57, 135, 66, 94, 77, 221, 90, 88, 213, 210, 229, 34, 52, 100, 91, 74, 49, 215, 103, 52, 199, 10, 80, 5, 40, 9, 81, 9, 37, 39, 145, 240, 145, 244, 234, 15, 47, 127, 58, 178, 176, 106, 239, 183, 115, 168, 170, 113, 102, 36, 199, 69, 179, 51, 44, 162, 56, 168, 168, 18, 20, 212, 160, 151, 82, 148, 165, 64, 0, 158, 63, 184, 114, 0, 130, 119, 209, 135, 112, 87, 210, 129, 37, 5, 155, 163, 113, 234, 255, 0, 144, 172, 232, 84, 19, 201, 155, 49, 55, 63, 87, 246, 35, 238, 98, 115, 48, 236, 46, 73, 6, 192, 215, 194, 163, 132, 227, 49, 227, 32, 174, 95, 226, 113, 152, 75, 139, 41, 10, 36, 165, 231, 194, 182, 57, 241, 240, 157, 124, 31, 126, 150, 185, 111, 105, 102, 98, 207, 241, 190, 187, 166, 142, 183, 208, 210, 162, 69, 106, 106, 158, 121, 208, 65, 42, 80, 41, 79, 13, 1, 196, 248, 81, 254, 199, 79, 108, 223, 20, 205, 46, 243, 155, 41, 212, 108, 77, 149, 92, 26, 175, 100, 1, 13, 217, 9, 228, 152, 108, 252, 189, 37, 130, 148, 158, 107, 43, 248, 124, 157, 0, 124, 242, 78, 95, 246, 139, 200, 178, 254, 214, 95, 99, 153, 101, 189, 114, 162, 204, 158, 80, 185, 53, 193, 183, 33, 48, 219, 190, 234, 182, 214, 150, 139, 170, 218, 181, 164, 242, 88, 223, 47, 227, 83, 75, 185, 107, 165, 212, 164, 205, 42, 181, 203, 185, 195, 118, 227, 183, 196, 60, 212, 54, 38, 154, 52, 149, 84, 201, 90, 47, 181, 36, 36, 12, 185, 183, 14, 239, 128, 73, 39, 140, 55, 156, 85, 25, 191, 154, 168, 6, 182, 107, 113, 167, 70, 67, 137, 80, 102, 92, 118, 222, 71, 47, 144, 58, 88, 58, 241, 244, 250, 244, 206, 195, 112, 39, 114, 142, 223, 189, 149, 184, 253, 27, 112, 26, 46, 199, 114, 161, 116, 137, 83, 47, 4, 130, 71, 37, 33, 196, 40, 104, 141, 142, 58, 59, 243, 189, 244, 116, 117, 133, 211, 84, 103, 84, 120, 133, 224, 57, 100, 220, 207, 136, 95, 123, 88, 230, 121, 193, 238, 179, 85, 120, 254, 70, 186, 38, 69, 13, 115, 200, 48, 125, 84, 45, 43, 49, 219, 73, 37, 65, 205, 171, 194, 124, 108, 157, 120, 249, 157, 147, 152, 123, 145, 221, 78, 225, 100, 222, 231, 77, 145, 229, 18, 109, 99, 69, 81, 113, 148, 206, 1, 242, 218, 181, 175, 5, 123, 63, 169, 241, 190, 142, 142, 159, 176, 43, 47, 22, 41, 107, 180, 37, 203, 119, 143, 255, 217 },
+                            NekretninaId = 1
+                        },
+                        new
+                        {
+                            SlikaId = 2,
+                            BajtoviSlike = new byte[] { 255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 255, 219, 0, 67, 0, 14, 10, 11, 13, 11, 9, 14, 13, 12, 13, 16, 15, 14, 17, 22, 36, 23, 22, 20, 20, 22, 44, 32, 33, 26, 36, 52, 46, 55, 54, 51, 46, 50, 50, 58, 65, 83, 70, 58, 61, 78, 62, 50, 50, 72, 98, 73, 78, 86, 88, 93, 94, 93, 56, 69, 102, 109, 101, 90, 108, 83, 91, 93, 89, 255, 219, 0, 67, 1, 15, 16, 16, 22, 19, 22, 42, 23, 23, 42, 89, 59, 50, 59, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 255, 192, 0, 17, 8, 0, 11, 0, 20, 3, 1, 17, 0, 2, 17, 1, 3, 17, 1, 255, 196, 0, 22, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1, 4, 255, 196, 0, 34, 16, 0, 2, 2, 1, 3, 4, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 17, 49, 0, 18, 33, 4, 5, 20, 81, 35, 65, 209, 255, 196, 0, 23, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 2, 5, 255, 196, 0, 28, 17, 1, 0, 2, 2, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 17, 18, 3, 33, 65, 49, 255, 218, 0, 12, 3, 1, 0, 2, 17, 3, 17, 0, 63, 0, 22, 235, 36, 151, 182, 164, 19, 31, 140, 73, 184, 80, 167, 31, 126, 199, 28, 94, 128, 184, 230, 190, 69, 215, 216, 19, 162, 117, 19, 151, 105, 6, 248, 88, 42, 51, 181, 238, 25, 227, 159, 220, 235, 74, 63, 101, 174, 37, 242, 0, 0, 73, 36, 204, 104, 85, 38, 5, 99, 26, 54, 216, 113, 32, 151, 113, 228, 89, 23, 154, 57, 215, 62, 150, 71, 166, 24, 179, 95, 114, 134, 54, 153, 97, 40, 12, 106, 138, 66, 250, 211, 114, 222, 213, 122, 102, 175, 100, 96, 34, 44, 99, 108, 118, 163, 208, 58, 13, 151, 182, 30, 89, 255, 217 },
+                            NekretninaId = 2
+                        },
+                        new
+                        {
+                            SlikaId = 3,
+                            BajtoviSlike = new byte[] { 255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 255, 219, 0, 67, 0, 14, 10, 11, 13, 11, 9, 14, 13, 12, 13, 16, 15, 14, 17, 22, 36, 23, 22, 20, 20, 22, 44, 32, 33, 26, 36, 52, 46, 55, 54, 51, 46, 50, 50, 58, 65, 83, 70, 58, 61, 78, 62, 50, 50, 72, 98, 73, 78, 86, 88, 93, 94, 93, 56, 69, 102, 109, 101, 90, 108, 83, 91, 93, 89, 255, 219, 0, 67, 1, 15, 16, 16, 22, 19, 22, 42, 23, 23, 42, 89, 59, 50, 59, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 255, 192, 0, 17, 8, 0, 11, 0, 20, 3, 1, 17, 0, 2, 17, 1, 3, 17, 1, 255, 196, 0, 22, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1, 4, 255, 196, 0, 34, 16, 0, 2, 2, 1, 3, 4, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 17, 49, 0, 18, 33, 4, 5, 20, 81, 35, 65, 209, 255, 196, 0, 23, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 2, 5, 255, 196, 0, 28, 17, 1, 0, 2, 2, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 17, 18, 3, 33, 65, 49, 255, 218, 0, 12, 3, 1, 0, 2, 17, 3, 17, 0, 63, 0, 22, 235, 36, 151, 182, 164, 19, 31, 140, 73, 184, 80, 167, 31, 126, 199, 28, 94, 128, 184, 230, 190, 69, 215, 216, 19, 162, 117, 19, 151, 105, 6, 248, 88, 42, 51, 181, 238, 25, 227, 159, 220, 235, 74, 63, 101, 174, 37, 242, 0, 0, 73, 36, 204, 104, 85, 38, 5, 99, 26, 54, 216, 113, 32, 151, 113, 228, 89, 23, 154, 57, 215, 62, 150, 71, 166, 24, 179, 95, 114, 134, 54, 153, 97, 40, 12, 106, 138, 66, 250, 211, 114, 222, 213, 122, 102, 175, 100, 96, 34, 44, 99, 108, 118, 163, 208, 58, 13, 151, 182, 30, 89, 255, 217 },
+                            NekretninaId = 3
+                        },
+                        new
+                        {
+                            SlikaId = 4,
+                            BajtoviSlike = new byte[] { 255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 255, 219, 0, 67, 0, 14, 10, 11, 13, 11, 9, 14, 13, 12, 13, 16, 15, 14, 17, 22, 36, 23, 22, 20, 20, 22, 44, 32, 33, 26, 36, 52, 46, 55, 54, 51, 46, 50, 50, 58, 65, 83, 70, 58, 61, 78, 62, 50, 50, 72, 98, 73, 78, 86, 88, 93, 94, 93, 56, 69, 102, 109, 101, 90, 108, 83, 91, 93, 89, 255, 219, 0, 67, 1, 15, 16, 16, 22, 19, 22, 42, 23, 23, 42, 89, 59, 50, 59, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 255, 192, 0, 17, 8, 0, 11, 0, 19, 3, 1, 17, 0, 2, 17, 1, 3, 17, 1, 255, 196, 0, 23, 0, 0, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 5, 4, 255, 196, 0, 38, 16, 0, 2, 0, 5, 3, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 3, 4, 18, 33, 17, 19, 49, 5, 6, 34, 50, 67, 81, 113, 147, 209, 255, 196, 0, 24, 1, 1, 1, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 0, 1, 5, 255, 196, 0, 29, 17, 0, 2, 2, 2, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 17, 3, 19, 4, 33, 65, 81, 255, 218, 0, 12, 3, 1, 0, 2, 17, 3, 17, 0, 63, 0, 29, 173, 87, 53, 105, 102, 168, 119, 84, 14, 162, 228, 228, 147, 142, 61, 177, 16, 87, 225, 168, 82, 187, 43, 208, 117, 89, 204, 93, 203, 53, 64, 150, 46, 219, 26, 146, 195, 131, 136, 74, 114, 76, 84, 154, 26, 221, 77, 203, 19, 179, 74, 153, 242, 179, 18, 71, 206, 145, 55, 203, 154, 232, 58, 145, 22, 150, 150, 76, 129, 100, 164, 177, 91, 44, 3, 28, 199, 61, 231, 201, 244, 154, 13, 219, 90, 153, 97, 80, 241, 225, 0, 98, 51, 100, 223, 163, 76, 208, 42, 230, 233, 233, 253, 75, 249, 5, 73, 177, 219, 63, 255, 217 },
+                            NekretninaId = 4
+                        },
+                        new
+                        {
+                            SlikaId = 5,
+                            BajtoviSlike = new byte[] { 255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 255, 219, 0, 67, 0, 3, 2, 2, 2, 2, 2, 3, 2, 2, 2, 3, 3, 3, 3, 4, 6, 4, 4, 4, 4, 4, 8, 6, 6, 5, 6, 9, 8, 10, 10, 9, 8, 9, 9, 10, 12, 15, 12, 10, 11, 14, 11, 9, 9, 13, 17, 13, 14, 15, 16, 16, 17, 16, 10, 12, 18, 19, 18, 16, 19, 15, 16, 16, 16, 255, 219, 0, 67, 1, 3, 3, 3, 4, 3, 4, 8, 4, 4, 8, 16, 11, 9, 11, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 255, 192, 0, 17, 8, 0, 17, 0, 25, 3, 1, 34, 0, 2, 17, 1, 3, 17, 1, 255, 196, 0, 27, 0, 0, 2, 2, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 5, 9, 2, 3, 6, 8, 255, 196, 0, 52, 16, 0, 1, 3, 3, 1, 4, 6, 8, 7, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 0, 5, 6, 17, 7, 18, 33, 49, 8, 19, 20, 34, 53, 65, 23, 24, 35, 55, 85, 87, 115, 148, 116, 117, 145, 178, 179, 209, 210, 255, 196, 0, 25, 1, 0, 2, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 5, 0, 1, 4, 6, 255, 196, 0, 40, 17, 0, 1, 3, 3, 2, 3, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 4, 3, 5, 17, 18, 33, 97, 129, 177, 49, 50, 51, 52, 81, 82, 98, 145, 240, 255, 218, 0, 12, 3, 1, 0, 2, 17, 3, 17, 0, 63, 0, 110, 91, 58, 79, 226, 91, 70, 186, 59, 138, 226, 81, 39, 174, 234, 227, 239, 182, 203, 175, 144, 168, 189, 74, 10, 64, 112, 172, 3, 169, 86, 247, 117, 62, 122, 18, 116, 229, 81, 187, 106, 190, 95, 241, 108, 89, 55, 124, 125, 86, 149, 93, 100, 78, 76, 22, 24, 236, 234, 144, 234, 30, 222, 32, 164, 160, 36, 106, 116, 74, 143, 233, 207, 149, 37, 112, 12, 23, 35, 194, 176, 87, 140, 102, 49, 169, 179, 156, 90, 146, 171, 243, 114, 148, 219, 177, 52, 111, 146, 66, 25, 42, 238, 148, 133, 106, 79, 16, 52, 231, 165, 62, 49, 172, 114, 222, 97, 91, 230, 223, 238, 115, 37, 56, 153, 232, 113, 215, 218, 158, 243, 157, 98, 59, 46, 241, 72, 223, 0, 146, 87, 237, 8, 60, 8, 243, 215, 133, 44, 125, 210, 246, 227, 165, 161, 193, 187, 131, 128, 1, 229, 146, 58, 45, 16, 224, 91, 92, 205, 117, 112, 231, 113, 206, 62, 177, 186, 136, 232, 239, 152, 109, 19, 42, 137, 145, 220, 182, 137, 123, 154, 45, 240, 158, 109, 72, 76, 232, 129, 12, 166, 59, 104, 89, 117, 198, 2, 16, 56, 36, 161, 90, 240, 58, 232, 71, 2, 1, 172, 61, 21, 236, 119, 231, 181, 175, 239, 209, 253, 214, 203, 21, 186, 93, 182, 97, 153, 139, 55, 34, 241, 58, 227, 26, 91, 6, 36, 185, 59, 177, 97, 41, 111, 157, 197, 151, 116, 113, 194, 148, 163, 154, 18, 130, 60, 181, 28, 171, 204, 94, 164, 121, 143, 199, 236, 159, 116, 207, 248, 162, 209, 149, 42, 59, 116, 200, 97, 36, 251, 183, 61, 80, 110, 20, 169, 84, 120, 49, 176, 7, 196, 109, 193, 88, 78, 208, 60, 2, 119, 210, 164, 161, 240, 214, 191, 51, 31, 193, 69, 20, 226, 217, 224, 126, 244, 10, 166, 247, 154, 187, 12, 143, 220, 142, 75, 248, 71, 63, 113, 170, 247, 162, 138, 226, 239, 62, 103, 146, 146, 123, 66, 255, 217 },
+                            NekretninaId = 5
+                        },
+                        new
+                        {
+                            SlikaId = 6,
+                            BajtoviSlike = new byte[] { 255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 255, 219, 0, 67, 0, 14, 10, 11, 13, 11, 9, 14, 13, 12, 13, 16, 15, 14, 17, 22, 36, 23, 22, 20, 20, 22, 44, 32, 33, 26, 36, 52, 46, 55, 54, 51, 46, 50, 50, 58, 65, 83, 70, 58, 61, 78, 62, 50, 50, 72, 98, 73, 78, 86, 88, 93, 94, 93, 56, 69, 102, 109, 101, 90, 108, 83, 91, 93, 89, 255, 219, 0, 67, 1, 15, 16, 16, 22, 19, 22, 42, 23, 23, 42, 89, 59, 50, 59, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 255, 192, 0, 17, 8, 0, 6, 0, 10, 3, 1, 17, 0, 2, 17, 1, 3, 17, 1, 255, 196, 0, 20, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 255, 196, 0, 30, 16, 0, 2, 1, 5, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 17, 0, 3, 4, 5, 33, 19, 97, 161, 255, 196, 0, 21, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 255, 196, 0, 26, 17, 0, 2, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 17, 49, 81, 18, 255, 218, 0, 12, 3, 1, 0, 2, 17, 3, 17, 0, 63, 0, 57, 247, 81, 174, 242, 161, 186, 26, 38, 76, 116, 243, 221, 36, 230, 229, 165, 168, 86, 7, 62, 218, 226, 220, 96, 185, 121, 65, 65, 32, 2, 20, 253, 164, 189, 244, 53, 14, 31, 255, 217 },
+                            NekretninaId = 6
+                        },
+                        new
+                        {
+                            SlikaId = 7,
+                            BajtoviSlike = new byte[] { 255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 255, 219, 0, 67, 0, 14, 10, 11, 13, 11, 9, 14, 13, 12, 13, 16, 15, 14, 17, 22, 36, 23, 22, 20, 20, 22, 44, 32, 33, 26, 36, 52, 46, 55, 54, 51, 46, 50, 50, 58, 65, 83, 70, 58, 61, 78, 62, 50, 50, 72, 98, 73, 78, 86, 88, 93, 94, 93, 56, 69, 102, 109, 101, 90, 108, 83, 91, 93, 89, 255, 219, 0, 67, 1, 15, 16, 16, 22, 19, 22, 42, 23, 23, 42, 89, 59, 50, 59, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 255, 192, 0, 17, 8, 0, 8, 0, 11, 3, 1, 17, 0, 2, 17, 1, 3, 17, 1, 255, 196, 0, 20, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 255, 196, 0, 32, 16, 0, 1, 2, 6, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 4, 0, 2, 5, 17, 18, 65, 33, 34, 49, 193, 255, 196, 0, 21, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 255, 196, 0, 26, 17, 1, 0, 3, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 65, 3, 4, 19, 255, 218, 0, 12, 3, 1, 0, 2, 17, 3, 17, 0, 63, 0, 58, 156, 229, 202, 74, 204, 91, 164, 177, 152, 27, 155, 92, 251, 174, 96, 60, 214, 118, 40, 21, 145, 244, 234, 175, 202, 99, 42, 124, 249, 111, 168, 31, 98, 189, 222, 73, 174, 184, 159, 255, 217 },
+                            NekretninaId = 7
+                        },
+                        new
+                        {
+                            SlikaId = 8,
+                            BajtoviSlike = new byte[] { 255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 255, 219, 0, 67, 0, 14, 10, 11, 13, 11, 9, 14, 13, 12, 13, 16, 15, 14, 17, 22, 36, 23, 22, 20, 20, 22, 44, 32, 33, 26, 36, 52, 46, 55, 54, 51, 46, 50, 50, 58, 65, 83, 70, 58, 61, 78, 62, 50, 50, 72, 98, 73, 78, 86, 88, 93, 94, 93, 56, 69, 102, 109, 101, 90, 108, 83, 91, 93, 89, 255, 219, 0, 67, 1, 15, 16, 16, 22, 19, 22, 42, 23, 23, 42, 89, 59, 50, 59, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 255, 192, 0, 17, 8, 0, 6, 0, 10, 3, 1, 17, 0, 2, 17, 1, 3, 17, 1, 255, 196, 0, 20, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 255, 196, 0, 30, 16, 0, 2, 1, 5, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 17, 0, 3, 4, 5, 33, 19, 97, 161, 255, 196, 0, 21, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 255, 196, 0, 26, 17, 0, 2, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 17, 49, 81, 18, 255, 218, 0, 12, 3, 1, 0, 2, 17, 3, 17, 0, 63, 0, 57, 247, 81, 174, 242, 161, 186, 26, 38, 76, 116, 243, 221, 36, 230, 229, 165, 168, 86, 7, 62, 218, 226, 220, 96, 185, 121, 65, 65, 32, 2, 20, 253, 164, 189, 244, 53, 14, 31, 255, 217 },
+                            NekretninaId = 8
+                        },
+                        new
+                        {
+                            SlikaId = 9,
+                            BajtoviSlike = new byte[] { 255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 255, 219, 0, 67, 0, 14, 10, 11, 13, 11, 9, 14, 13, 12, 13, 16, 15, 14, 17, 22, 36, 23, 22, 20, 20, 22, 44, 32, 33, 26, 36, 52, 46, 55, 54, 51, 46, 50, 50, 58, 65, 83, 70, 58, 61, 78, 62, 50, 50, 72, 98, 73, 78, 86, 88, 93, 94, 93, 56, 69, 102, 109, 101, 90, 108, 83, 91, 93, 89, 255, 219, 0, 67, 1, 15, 16, 16, 22, 19, 22, 42, 23, 23, 42, 89, 59, 50, 59, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 255, 192, 0, 17, 8, 0, 8, 0, 11, 3, 1, 17, 0, 2, 17, 1, 3, 17, 1, 255, 196, 0, 20, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 255, 196, 0, 32, 16, 0, 1, 2, 6, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 4, 0, 2, 5, 17, 18, 65, 33, 34, 49, 193, 255, 196, 0, 21, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 255, 196, 0, 26, 17, 1, 0, 3, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 65, 3, 4, 19, 255, 218, 0, 12, 3, 1, 0, 2, 17, 3, 17, 0, 63, 0, 58, 156, 229, 202, 74, 204, 91, 164, 177, 152, 27, 155, 92, 251, 174, 96, 60, 214, 118, 40, 21, 145, 244, 234, 175, 202, 99, 42, 124, 249, 111, 168, 31, 98, 189, 222, 73, 174, 184, 159, 255, 217 },
+                            NekretninaId = 9
+                        },
+                        new
+                        {
+                            SlikaId = 10,
+                            BajtoviSlike = new byte[] { 255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 255, 219, 0, 67, 0, 3, 2, 2, 2, 2, 2, 3, 2, 2, 2, 3, 3, 3, 3, 4, 6, 4, 4, 4, 4, 4, 8, 6, 6, 5, 6, 9, 8, 10, 10, 9, 8, 9, 9, 10, 12, 15, 12, 10, 11, 14, 11, 9, 9, 13, 17, 13, 14, 15, 16, 16, 17, 16, 10, 12, 18, 19, 18, 16, 19, 15, 16, 16, 16, 255, 219, 0, 67, 1, 3, 3, 3, 4, 3, 4, 8, 4, 4, 8, 16, 11, 9, 11, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 255, 192, 0, 17, 8, 0, 21, 0, 31, 3, 1, 34, 0, 2, 17, 1, 3, 17, 1, 255, 196, 0, 25, 0, 0, 2, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 5, 6, 8, 4, 255, 196, 0, 44, 16, 0, 1, 4, 2, 1, 3, 1, 6, 7, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 17, 18, 0, 7, 33, 19, 8, 20, 34, 49, 81, 97, 21, 35, 65, 66, 145, 161, 193, 255, 196, 0, 24, 1, 0, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 5, 1, 3, 6, 255, 196, 0, 39, 17, 0, 1, 2, 5, 3, 2, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 17, 0, 3, 4, 18, 33, 5, 6, 49, 81, 113, 35, 65, 129, 193, 225, 240, 241, 255, 218, 0, 12, 3, 1, 0, 2, 17, 3, 17, 0, 63, 0, 173, 251, 59, 224, 86, 249, 54, 49, 97, 99, 6, 178, 226, 108, 104, 243, 12, 98, 135, 211, 233, 150, 29, 244, 212, 225, 248, 84, 225, 252, 178, 2, 136, 90, 70, 137, 74, 190, 221, 57, 160, 118, 158, 61, 201, 160, 126, 145, 98, 198, 170, 225, 196, 198, 122, 205, 134, 220, 244, 34, 62, 66, 182, 22, 21, 197, 65, 176, 83, 229, 194, 0, 255, 0, 121, 251, 49, 147, 87, 57, 135, 66, 94, 77, 221, 90, 88, 213, 210, 229, 34, 52, 100, 91, 74, 49, 215, 103, 52, 199, 10, 80, 5, 40, 9, 81, 9, 37, 39, 145, 240, 145, 244, 234, 15, 47, 127, 58, 178, 176, 106, 239, 183, 115, 168, 170, 113, 102, 36, 199, 69, 179, 51, 44, 162, 56, 168, 168, 18, 20, 212, 160, 151, 82, 148, 165, 64, 0, 158, 63, 184, 114, 0, 130, 119, 209, 135, 112, 87, 210, 129, 37, 5, 155, 163, 113, 234, 255, 0, 144, 172, 232, 84, 19, 201, 155, 49, 55, 63, 87, 246, 35, 238, 98, 115, 48, 236, 46, 73, 6, 192, 215, 194, 163, 132, 227, 49, 227, 32, 174, 95, 226, 113, 152, 75, 139, 41, 10, 36, 165, 231, 194, 182, 57, 241, 240, 157, 124, 31, 126, 150, 185, 111, 105, 102, 98, 207, 241, 190, 187, 166, 142, 183, 208, 210, 162, 69, 106, 106, 158, 121, 208, 65, 42, 80, 41, 79, 13, 1, 196, 248, 81, 254, 199, 79, 108, 223, 20, 205, 46, 243, 155, 41, 212, 108, 77, 149, 92, 26, 175, 100, 1, 13, 217, 9, 228, 152, 108, 252, 189, 37, 130, 148, 158, 107, 43, 248, 124, 157, 0, 124, 242, 78, 95, 246, 139, 200, 178, 254, 214, 95, 99, 153, 101, 189, 114, 162, 204, 158, 80, 185, 53, 193, 183, 33, 48, 219, 190, 234, 182, 214, 150, 139, 170, 218, 181, 164, 242, 88, 223, 47, 227, 83, 75, 185, 107, 165, 212, 164, 205, 42, 181, 203, 185, 195, 118, 227, 183, 196, 60, 212, 54, 38, 154, 52, 149, 84, 201, 90, 47, 181, 36, 36, 12, 185, 183, 14, 239, 128, 73, 39, 140, 55, 156, 85, 25, 191, 154, 168, 6, 182, 107, 113, 167, 70, 67, 137, 80, 102, 92, 118, 222, 71, 47, 144, 58, 88, 58, 241, 244, 250, 244, 206, 195, 112, 39, 114, 142, 223, 189, 149, 184, 253, 27, 112, 26, 46, 199, 114, 161, 116, 137, 83, 47, 4, 130, 71, 37, 33, 196, 40, 104, 141, 142, 58, 59, 243, 189, 244, 116, 117, 133, 211, 84, 103, 84, 120, 133, 224, 57, 100, 220, 207, 136, 95, 123, 88, 230, 121, 193, 238, 179, 85, 120, 254, 70, 186, 38, 69, 13, 115, 200, 48, 125, 84, 45, 43, 49, 219, 73, 37, 65, 205, 171, 194, 124, 108, 157, 120, 249, 157, 147, 152, 123, 145, 221, 78, 225, 100, 222, 231, 77, 145, 229, 18, 109, 99, 69, 81, 113, 148, 206, 1, 242, 218, 181, 175, 5, 123, 63, 169, 241, 190, 142, 142, 159, 176, 43, 47, 22, 41, 107, 180, 37, 203, 119, 143, 255, 217 },
+                            NekretninaId = 10
+                        },
+                        new
+                        {
+                            SlikaId = 11,
+                            BajtoviSlike = new byte[] { 255, 216, 255, 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 255, 219, 0, 67, 0, 14, 10, 11, 13, 11, 9, 14, 13, 12, 13, 16, 15, 14, 17, 22, 36, 23, 22, 20, 20, 22, 44, 32, 33, 26, 36, 52, 46, 55, 54, 51, 46, 50, 50, 58, 65, 83, 70, 58, 61, 78, 62, 50, 50, 72, 98, 73, 78, 86, 88, 93, 94, 93, 56, 69, 102, 109, 101, 90, 108, 83, 91, 93, 89, 255, 219, 0, 67, 1, 15, 16, 16, 22, 19, 22, 42, 23, 23, 42, 89, 59, 50, 59, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 255, 192, 0, 17, 8, 0, 6, 0, 10, 3, 1, 17, 0, 2, 17, 1, 3, 17, 1, 255, 196, 0, 20, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 255, 196, 0, 30, 16, 0, 2, 1, 5, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 17, 0, 3, 4, 5, 33, 19, 97, 161, 255, 196, 0, 21, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 255, 196, 0, 26, 17, 0, 2, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 17, 49, 81, 18, 255, 218, 0, 12, 3, 1, 0, 2, 17, 3, 17, 0, 63, 0, 57, 247, 81, 174, 242, 161, 186, 26, 38, 76, 116, 243, 221, 36, 230, 229, 165, 168, 86, 7, 62, 218, 226, 220, 96, 185, 121, 65, 65, 32, 2, 20, 253, 164, 189, 244, 53, 14, 31, 255, 217 },
+                            NekretninaId = 11
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.Status", b =>
@@ -714,6 +2190,28 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasKey("StatusId");
 
                     b.ToTable("Status", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            StatusId = 1,
+                            Opis = "U toku"
+                        },
+                        new
+                        {
+                            StatusId = 2,
+                            Opis = "Procesiran"
+                        },
+                        new
+                        {
+                            StatusId = 3,
+                            Opis = "Zavrsen"
+                        },
+                        new
+                        {
+                            StatusId = 4,
+                            Opis = "Na cekanju"
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.TipAkcije", b =>
@@ -731,6 +2229,18 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasKey("TipAkcijeId");
 
                     b.ToTable("TipAkcije");
+
+                    b.HasData(
+                        new
+                        {
+                            TipAkcijeId = 1,
+                            Naziv = "Prodaja"
+                        },
+                        new
+                        {
+                            TipAkcijeId = 2,
+                            Naziv = "Iznajmljivanje"
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.TipNekretnine", b =>
@@ -751,6 +2261,38 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasKey("TipNekretnineId");
 
                     b.ToTable("TipNekretnine", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            TipNekretnineId = 1,
+                            NazivTipa = "Stan",
+                            OpisTipa = "Za stanovanje"
+                        },
+                        new
+                        {
+                            TipNekretnineId = 2,
+                            NazivTipa = "Kuca",
+                            OpisTipa = "Za stanovanje"
+                        },
+                        new
+                        {
+                            TipNekretnineId = 3,
+                            NazivTipa = "Poslovni prostor",
+                            OpisTipa = "Za poslovanje"
+                        },
+                        new
+                        {
+                            TipNekretnineId = 4,
+                            NazivTipa = "Zemljiste",
+                            OpisTipa = "Za gradnju"
+                        },
+                        new
+                        {
+                            TipNekretnineId = 5,
+                            NazivTipa = "Apartman",
+                            OpisTipa = "Za iznajmljivanje"
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.Uloge", b =>
@@ -771,6 +2313,26 @@ namespace ProdajaNekretnina.Services.Migrations
                     b.HasKey("UlogaId");
 
                     b.ToTable("Uloge", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UlogaId = 1,
+                            Naziv = "Admin",
+                            Opis = "admin"
+                        },
+                        new
+                        {
+                            UlogaId = 2,
+                            Naziv = "Agent",
+                            Opis = "agent"
+                        },
+                        new
+                        {
+                            UlogaId = 3,
+                            Naziv = "Stranka",
+                            Opis = "stranka"
+                        });
                 });
 
             modelBuilder.Entity("ProdajaNekretnina.Services.Database.Agencija", b =>

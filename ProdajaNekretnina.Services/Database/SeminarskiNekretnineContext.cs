@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 using ProdajaNekretnina.Services.Database;
+using ProdajaNekretnina.Services.Seed;
 
 namespace ProdajaNekretnina.Services.Database;
 
@@ -38,7 +39,7 @@ public partial class SeminarskiNekretnineContext : DbContext
     public virtual DbSet<Nekretnina> Nekretninas { get; set; }
 
     public virtual DbSet<Obilazak> Obilazaks { get; set; }
- 
+
 
     public virtual DbSet<Problem> Problems { get; set; }
 
@@ -59,10 +60,7 @@ public partial class SeminarskiNekretnineContext : DbContext
     public virtual DbSet<KorisnikNekretninaWish> KorisnikNekretninaWishes { get; set; }
     public virtual DbSet<Kupovina> Kupovine { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=db;Database=200120;User=sa;Password=YourStrong@Passw0rd;MultipleActiveResultSets=True;Encrypt=False;TrustServerCertificate=True");
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Agencija>(entity =>
@@ -74,15 +72,21 @@ public partial class SeminarskiNekretnineContext : DbContext
             entity.HasOne(d => d.Korisnik).WithMany(p => p.Agencijas).HasForeignKey(d => d.KorisnikId);
         });
 
+        modelBuilder.Entity<Agencija>().SeedData();
+
         modelBuilder.Entity<Drzava>(entity =>
         {
             entity.ToTable("Drzava");
         });
 
+        modelBuilder.Entity<Drzava>().SeedData();
+
         modelBuilder.Entity<ReccomendResult>(entity =>
         {
             entity.ToTable("ReccomendResult");
         });
+
+
 
         modelBuilder.Entity<Grad>(entity =>
         {
@@ -93,12 +97,16 @@ public partial class SeminarskiNekretnineContext : DbContext
             entity.HasOne(d => d.Drzava).WithMany(p => p.Grads).HasForeignKey(d => d.DrzavaId);
         });
 
+        modelBuilder.Entity<Grad>().SeedData();
+
         modelBuilder.Entity<Kategorije>(entity =>
         {
             entity.HasKey(e => e.KategorijaId);
 
             entity.ToTable("Kategorije");
         });
+
+        modelBuilder.Entity<Kategorije>().SeedData();
 
         modelBuilder.Entity<KomentariAgentima>(entity =>
         {
@@ -113,12 +121,16 @@ public partial class SeminarskiNekretnineContext : DbContext
             entity.HasOne(d => d.Kupac).WithMany(p => p.KomentariAgentimas).HasForeignKey(d => d.KupacId);
         });
 
+        modelBuilder.Entity<KomentariAgentima>().SeedData();
+
         modelBuilder.Entity<Korisnici>(entity =>
         {
             entity.HasKey(e => e.KorisnikId);
 
             entity.ToTable("Korisnici");
         });
+
+        modelBuilder.Entity<Korisnici>().SeedData();
 
         modelBuilder.Entity<KorisniciUloge>(entity =>
         {
@@ -135,12 +147,16 @@ public partial class SeminarskiNekretnineContext : DbContext
             entity.HasOne(d => d.Uloga).WithMany(p => p.KorisniciUloges).HasForeignKey(d => d.UlogaId);
         });
 
+        modelBuilder.Entity<KorisniciUloge>().SeedData();
+
         modelBuilder.Entity<Kupci>(entity =>
         {
             entity.HasKey(e => e.KupacId);
 
             entity.ToTable("Kupci");
         });
+
+        modelBuilder.Entity<Kupci>().SeedData();
 
         modelBuilder.Entity<Lokacija>(entity =>
         {
@@ -157,6 +173,8 @@ public partial class SeminarskiNekretnineContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
+        modelBuilder.Entity<Lokacija>().SeedData();
+
         modelBuilder.Entity<Nekretnina>(entity =>
         {
             entity.ToTable("Nekretnina");
@@ -171,12 +189,14 @@ public partial class SeminarskiNekretnineContext : DbContext
 
             //entity.HasOne(d => d.Kategorija).WithMany(p => p.Nekretninas).HasForeignKey(d => d.KategorijaId);
 
-           // entity.HasOne(d => d.Korisnik).WithMany(p => p.Nekretninas).HasForeignKey(d => d.KorisnikId);
+            // entity.HasOne(d => d.Korisnik).WithMany(p => p.Nekretninas).HasForeignKey(d => d.KorisnikId);
 
             entity.HasOne(d => d.Lokacija).WithMany(p => p.Nekretninas).HasForeignKey(d => d.LokacijaId);
 
-           // entity.HasOne(d => d.TipNekretnine).WithMany(p => p.Nekretninas).HasForeignKey(d => d.TipNekretnineId);
+            // entity.HasOne(d => d.TipNekretnine).WithMany(p => p.Nekretninas).HasForeignKey(d => d.TipNekretnineId);
         });
+
+        modelBuilder.Entity<Nekretnina>().SeedData();
 
         modelBuilder.Entity<Obilazak>(entity =>
         {
@@ -192,6 +212,8 @@ public partial class SeminarskiNekretnineContext : DbContext
                 .HasForeignKey(d => d.NekretninaId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
+
+        modelBuilder.Entity<Obilazak>().SeedData();
 
         modelBuilder.Entity<Problem>(entity =>
         {
@@ -212,6 +234,8 @@ public partial class SeminarskiNekretnineContext : DbContext
             entity.HasOne(d => d.Status).WithMany(p => p.Problems).HasForeignKey(d => d.StatusId);
         });
 
+        modelBuilder.Entity<Problem>().SeedData();
+
         modelBuilder.Entity<Recenzija>(entity =>
         {
             entity.ToTable("Recenzija");
@@ -225,6 +249,8 @@ public partial class SeminarskiNekretnineContext : DbContext
             entity.HasOne(d => d.Kupac).WithMany(p => p.Recenzijas).HasForeignKey(d => d.KupacId);
         });
 
+        modelBuilder.Entity<Recenzija>().SeedData();
+
         modelBuilder.Entity<Slika>(entity =>
         {
             entity.ToTable("Slika");
@@ -234,15 +260,21 @@ public partial class SeminarskiNekretnineContext : DbContext
             entity.HasOne(d => d.Nekretnina).WithMany(p => p.Slikas).HasForeignKey(d => d.NekretninaId);
         });
 
+        modelBuilder.Entity<Slika>().SeedData();
+
         modelBuilder.Entity<Status>(entity =>
         {
             entity.ToTable("Status");
         });
 
+        modelBuilder.Entity<Status>().SeedData();
+
         modelBuilder.Entity<TipNekretnine>(entity =>
         {
             entity.ToTable("TipNekretnine");
         });
+
+        modelBuilder.Entity<TipNekretnine>().SeedData();
 
         modelBuilder.Entity<Uloge>(entity =>
         {
@@ -250,17 +282,21 @@ public partial class SeminarskiNekretnineContext : DbContext
 
             entity.ToTable("Uloge");
         });
+
+        modelBuilder.Entity<Uloge>().SeedData();
         modelBuilder.Entity<Agent>(entity =>
         {
             entity.ToTable("Agent");
 
             entity.HasIndex(e => e.KorisnikId, "IX_Agent_KorisnikId");
 
-            
+
 
             entity.HasOne(d => d.Korisnik).WithMany(p => p.Agents).HasForeignKey(d => d.KorisnikId);
 
         });
+
+
 
         modelBuilder.Entity<NekretninaAgenti>(entity =>
         {
@@ -273,6 +309,8 @@ public partial class SeminarskiNekretnineContext : DbContext
             entity.HasOne(d => d.Korisnik).WithMany(p => p.NekretninaAgentis).HasForeignKey(d => d.KorisnikId);
             entity.HasOne(d => d.Nekretnina).WithMany(p => p.NekretninaAgentis).HasForeignKey(d => d.NekretninaId);
         });
+        modelBuilder.Entity<TipAkcije>().SeedData();
+        modelBuilder.Entity<NekretninaAgenti>().SeedData();
         modelBuilder.Entity<NekretninaTipAkcije>(entity =>
         {
             entity.ToTable("NekretninaTipAkcije");
@@ -284,6 +322,8 @@ public partial class SeminarskiNekretnineContext : DbContext
             entity.HasOne(d => d.Nekretnina).WithMany(p => p.NekretninaTipAkcijes).HasForeignKey(d => d.NekretninaId);
             entity.HasOne(d => d.TipAkcije).WithMany(p => p.NekretninaTipAkcijes).HasForeignKey(d => d.TipAkcijeId);
         });
+
+        modelBuilder.Entity<NekretninaTipAkcije>().SeedData();
         modelBuilder.Entity<KorisnikNekretninaWish>(entity =>
         {
             entity.ToTable("KorisnikNekretninaWish");
@@ -296,6 +336,7 @@ public partial class SeminarskiNekretnineContext : DbContext
 
             entity.HasOne(d => d.Nekretnina).WithMany(p => p.KorisnikNekretninaWishs).HasForeignKey(d => d.NekretninaId);
         });
+        modelBuilder.Entity<KorisnikNekretninaWish>().SeedData();
         modelBuilder.Entity<KorisnikAgencija>(entity =>
         {
             entity.ToTable("KorisnikAgencija");
@@ -308,6 +349,7 @@ public partial class SeminarskiNekretnineContext : DbContext
 
             entity.HasOne(d => d.Agencija).WithMany(p => p.KorisnikAgencijas).HasForeignKey(d => d.AgencijaId);
         });
+        modelBuilder.Entity<KorisnikAgencija>().SeedData();
         OnModelCreatingPartial(modelBuilder);
     }
 

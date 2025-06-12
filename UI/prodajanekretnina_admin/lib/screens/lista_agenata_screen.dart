@@ -27,7 +27,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import '../utils/util.dart';
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
+//import 'package:file_picker/file_picker.dart';
+
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
@@ -144,6 +145,8 @@ class _ListaAgenataScreenState extends State<ListaAgenataScreen> {
   SearchResult<TipNekretnine>? tipoviNekretninaResult;
   SearchResult<Agencija>? agencijaResult;
   SearchResult<KorisnikAgencija>? korisnikAgencijaResult;
+  final TextEditingController _imeController =
+      TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -185,7 +188,7 @@ class _ListaAgenataScreenState extends State<ListaAgenataScreen> {
       List<int> nekretnineIdsForProdaja = [];
       NadjiKojojAgencijiPripadaKorisnik();
       NadjiKorisnikIds();
-     
+    
       print('korisnikIds after initForm: $korisnikIds');
       
       // Iterate through tipAkcije items to find matching nekretninaId values
@@ -199,6 +202,7 @@ class _ListaAgenataScreenState extends State<ListaAgenataScreen> {
           'nekretninaId': nekretnineIdsForProdaja,
         },
       );
+      
       setState(() {
         isLoading = false;
       });
@@ -246,6 +250,19 @@ int korisnikID=0;
     print('korisnikIds: $korisnikIds');
     return korisnikIds;
   }
+ List<int> NadjiKorisnikIdsFiltrirano(List<Korisnik> filtriraniKorisnici) {
+  final pripadajuci = korisnikAgencijaResult!.result
+      .where((x) => x.agencijaId == pripadajucaAgencija)
+      .map((x) => x.korisnikId)
+      .toList();
+
+  return filtriraniKorisnici
+      .where((korisnik) => pripadajuci.contains(korisnik.korisnikId))
+      .map((k) => k.korisnikId!)
+      .toList();
+}
+
+
   int? pripadajucaAgencija;
 int? NadjiKojojAgencijiPripadaKorisnik() {
     for (var entry in korisnikAgencijaResult!.result) {
@@ -262,6 +279,7 @@ int? NadjiKojojAgencijiPripadaKorisnik() {
   }
   List<int?> korisnikIds = [];
   @override
+@override
 Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
@@ -269,41 +287,131 @@ Widget build(BuildContext context) {
     ),
     body: isLoading
         ? const Center(child: CircularProgressIndicator())
-        : GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              crossAxisSpacing: 10.0,
-              mainAxisSpacing: 10.0,
+        : Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                // Pretraga po imenu
+               Center(
+  child: SizedBox(
+    width: 400,
+    child: Row(
+      children: [
+        Expanded(
+          child: TextField(
+            controller: _imeController,
+            decoration: const InputDecoration(
+              hintText: 'Unesite ime agenta',
+              isDense: true,
+              contentPadding: EdgeInsets.all(10),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+                borderSide: BorderSide(color: Colors.grey),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+                borderSide: BorderSide(color: Colors.blue),
+              ),
             ),
-            itemCount: korisnikIds.length + 1,
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return buildAddAgentCard();
-              } else {
-                int? korisnikId = korisnikIds[index - 1];
-               return Container(
-  
-  margin: const EdgeInsets.all(8),
-  
-    decoration: const BoxDecoration(
-      gradient: LinearGradient(
-        colors: [
-          Color.fromRGBO(243, 238, 166, 0.749),
-          Color.fromARGB(255, 96, 72, 16),
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        ElevatedButton(
+          onPressed: () {
+            _fetchKorisnici();
+          },
+          child: const  Text(
+      'Pretraži',
+      style: TextStyle(fontSize: 16, color: Colors.white),
     ),
-    child: buildAgentCard(korisnikId),
-  
-);
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromARGB(255, 87, 88, 171),
+          ),
+        ),
+      ],
+    ),
+  ),
+),
 
-              }
-            },
+
+                const SizedBox(height: 20),
+                // GridView sa agentima
+                Expanded(
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,
+                      crossAxisSpacing: 10.0,
+                      mainAxisSpacing: 10.0,
+                    ),
+                    itemCount: korisnikIds.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return buildAddAgentCard();
+                      } else {
+                        int? korisnikId = korisnikIds[index - 1];
+                        return Container(
+                          margin: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color.fromRGBO(243, 238, 166, 0.749),
+                                Color.fromARGB(255, 96, 72, 16),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: buildAgentCard(korisnikId),
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
   );
 }
+Future<void> _fetchKorisnici() async {
+  NadjiKorisnikIds();
+  setState(() {
+    isLoading = true;
+    korisnikIds = []; 
+    korisnikIds =  NadjiKorisnikIds();
+  });
+
+  try {
+    final filter = <String, dynamic>{};
+    if (_imeController.text.trim().isNotEmpty) {
+      filter['ime'] = _imeController.text.trim();
+    }
+
+    final response = await _korisniciProvider.get(filter: filter);
+
+    korisniciResult = response;
+
+    
+
+
+    // 🔁 Osiguraj da se lista ponovo inicijalizira
+    final filtrirani = NadjiKorisnikIdsFiltrirano(korisniciResult!.result);
+    setState(() {
+      korisnikIds = filtrirani;
+    });
+  } catch (e) {
+    debugPrint('Greška prilikom dohvata korisnika: $e');
+  } finally {
+    setState(() {
+      isLoading = false;
+    });
+  }
+}
+
+
+
 
  Widget buildAddAgentCard() {
   return GestureDetector(
@@ -486,18 +594,21 @@ class _DodajAgentaScreenState extends State<DodajAgentaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      content: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _formBuild(),
-            ],
-          ),
+  return AlertDialog(
+    content: SizedBox(
+      width: 400, // <-- Povećaj po potrebi
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _formBuild(),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   String? _validatePhoneNumber(String value) {
     // Define your regex pattern for the phone number format
@@ -543,12 +654,14 @@ return FormBuilder(
                   ),
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Molimo unesite ime';
-                  }
-                  return null;
-                },
+                 validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Polje prezime je obavezno.';
+        }
+       if (!RegExp(r'^[a-zA-ZšđčćžŠĐČĆŽ\s]+$'
+).hasMatch(value)) {
+          return 'Unesite validno ime (dozvoljena slova i razmaci)';
+        }},
               ),
               const SizedBox(height: 10),
 
@@ -564,12 +677,14 @@ return FormBuilder(
                   ),
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Molimo unesite prezime';
-                  }
-                  return null;
-                },
+                 validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Polje prezime je obavezno.';
+        }
+       if (!RegExp(r'^[a-zA-ZšđčćžŠĐČĆŽ\s]+$'
+).hasMatch(value)) {
+          return 'Unesite validno prezime (dozvoljena slova i razmaci)';
+        }},
               ),
               const SizedBox(height: 10),
 
@@ -585,13 +700,19 @@ return FormBuilder(
                   ),
                   
                   border: OutlineInputBorder(),
+                   errorStyle: TextStyle(
+      fontSize: 12,
+      height: 1.5, // rastojanje između linija
+      overflow: TextOverflow.visible,
+    ),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Molimo unesite email';
-                  }
-                  return null;
-                },
+        if (value == null || value.isEmpty) {
+          return 'Polje email je obavezno.';
+        }
+        if ( !RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+          return 'Unesite validan e-mail (npr. korisnik@example.com)';
+        }},
               ),
               const SizedBox(height: 10),
 
@@ -600,7 +721,6 @@ return FormBuilder(
                 name: 'telefon',
                 decoration: InputDecoration(
                   labelText: 'Telefon *',
-                  helperText: '061123456 ili 061-123-4567',
                   helperStyle: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
                   prefixIcon: const Icon(Icons.phone),
                   labelStyle: const TextStyle(color: Colors.deepOrange),
@@ -610,11 +730,12 @@ return FormBuilder(
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Molimo unesite telefon';
-                  }
-                  return null;
-                },
+        if (value == null || value.isEmpty) {
+          return 'Polje telefon je obavezno.';
+        }
+       if (!RegExp(r'^\+?\d{1,4} ?\d{2,3} ?\d{3} ?\d{3,4}$').hasMatch(value)) {
+          return '(npr. 061123123 ili +387 61 123 456 ili 0611231234 ili +387611234567)';
+        }},
               ),
               const SizedBox(height: 10),
 
@@ -631,11 +752,14 @@ return FormBuilder(
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Molimo unesite korisnicko ime';
-                  }
-                  return null;
-                },
+        if (value == null || value.isEmpty) {
+          return 'Polje korisnicko ime je obavezno.';
+        }
+       if (!RegExp(r'^[a-zA-Z][a-zA-Z0-9._]{2,19}$'
+
+).hasMatch(value)) {
+          return '(minimalno 3 znaka, dozvoljena slova, brojevi, tačke i donje crte)';
+        }},
               ),
               const SizedBox(height: 5),
 
@@ -687,11 +811,15 @@ return FormBuilder(
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Molimo unesite lozinku';
-                  }
-                  return null;
-                },
+  if (value == null || value.isEmpty) {
+    return 'Molimo unesite lozinku';
+  }
+  if (value.length < 4) {
+    return 'Lozinka mora imati najmanje 4 karaktera';
+  }
+  return null;
+},
+
                 obscureText: true,
               ),
               const SizedBox(height: 10),
@@ -724,6 +852,10 @@ return FormBuilder(
                 children: [
                   ElevatedButton(
   onPressed: () async {
+     if (!_formKey.currentState!.saveAndValidate()) {
+    // Ako bilo koje polje nije validno, ne nastavljamo
+    return;
+  }
     // Validate the form before proceeding
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       // If form is valid, create a request object with form field values
@@ -754,100 +886,77 @@ return FormBuilder(
 
 
       if (filteredKorisnici.isEmpty) {
-        final String? phone = _formKey.currentState?.fields['telefon']?.value;
-  final String? email = _formKey.currentState?.fields['email']?.value;
+  
 
-  // 1. Provjera telefona
-  if (!phoneRegex.hasMatch(phone ?? '')) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Upozorenje"),
-          content: const Text("Neispravan format telefona. Dozvoljeno: 061123456 ili +387-61-123-456."),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text("OK"),
-            ),
-          ],
-        );
-      },
-    );
-    return;
-  }
+  
+  
 
-  // 2. Provjera emaila
-  if (!emailRegex.hasMatch(email ?? '')) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Upozorenje"),
-          content: const Text("Neispravan format email adrese."),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text("OK"),
-            ),
-          ],
-        );
-      },
-    );
-    return;
-  }
+  try {
+    Korisnik insertedKorisnik = await _korisniciProvider.insert(request);
+    int? insertedKorisnikId = insertedKorisnik.korisnikId;
+    _formKey.currentState?.reset();
 
+    if (insertedKorisnikId != -1) {
+      Map<String, dynamic> ulogeRequest = {
+        'korisnikId': insertedKorisnikId,
+        'ulogaId': 2,
+      };
 
-  Korisnik insertedKorisnik = await _korisniciProvider.insert(request);
-  int? insertedKorisnikId = insertedKorisnik.korisnikId;
-  _formKey.currentState?.reset();
+      _korisniciUlogeProvider.insert(ulogeRequest);
+    }
 
-  if (insertedKorisnikId != -1) {
-    Map<String, dynamic> ulogeRequest = {
+    Map<String, dynamic> korisnikAgencijaRequest = {
       'korisnikId': insertedKorisnikId,
-      'ulogaId': 2,
+      'agencijaId': pripadajucaAgencija,
     };
 
-    _korisniciUlogeProvider.insert(ulogeRequest);
-  }
+    _korisnikAgencijaProvider.insert(korisnikAgencijaRequest);
 
-  Map<String, dynamic> korisnikAgencijaRequest = {
-    'korisnikId': insertedKorisnikId,
-    'agencijaId': pripadajucaAgencija,
-  };
-
-  _korisnikAgencijaProvider.insert(korisnikAgencijaRequest);
-
-  showDialog(
-  context: context,
-  builder: (BuildContext context) {
-    return AlertDialog(
-      title: const Text("Uspjeh"),
-      content: const Text("Korisnik je uspješno dodan."),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(); // Zatvori AlertDialog
-            Navigator.of(context).pop(); // Zatvori trenutni ekran
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => ListaAgenataScreen(),
-              ),
-            );
-          },
-          child: const Text("U redu"),
-        ),
-      ],
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Uspješno!"),
+          content: const Text("Korisnik je uspješno dodan."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => ListaAgenataScreen()),
+                );
+              },
+              child: const Text("U redu"),
+            ),
+          ],
+        );
+      },
     );
-  },
-);
-  
-        
-      } else {
+  } catch (e) {
+    String errorMessage = 'Lozinke se ne poklapaju.';
+
+    if (e.toString().contains('Passwords do not match')) {
+      errorMessage = 'Lozinke se ne poklapaju.';
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Greška"),
+          content: Text(errorMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+} else {
         // Show username exists error
         showDialog(
           context: context,
@@ -997,14 +1106,25 @@ int? NadjiKojojAgencijiPripadaKorisnik() {
   }
  
 
-  Future getImage() async {
+  /*Future getImage() async {
     var result = await FilePicker.platform.pickFiles(type: FileType.image);
 
     if (result != null && result.files.single.path != null) {
       _image = File(result.files.single.path!);
       _base64Image = base64Encode(_image!.readAsBytesSync());
     }
+  }*/
+
+  Future getImageFromCamera() async {
+  final picker = ImagePicker();
+  final XFile? pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+  if (pickedFile != null) {
+    _image = File(pickedFile.path);
+    _base64Image = base64Encode(await _image!.readAsBytes());
   }
+}
+
 
   Widget buildImageColumn(int nekretninaId) {
     return FutureBuilder<SearchResult<Slika>>(

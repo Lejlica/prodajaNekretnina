@@ -727,21 +727,7 @@ class ProblemDetailScreen extends StatelessWidget {
                         ),
                       ]),
                       const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Icon(Icons.location_on, color: Colors.grey, size: 20),
-                          const SizedBox(width: 5),
-                          const Text(
-                            'Lokacija: ',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 130, 130, 130),
-                            ),
-                          ),
-                          //Text(
-                          //  _getAdresaNekretnine(problem.nekretninaId),
-                          //),
-                        ],
-                      ),
+                    
                       const SizedBox(height: 10),
                       const Row(children: [
                         Text(
@@ -816,7 +802,14 @@ class ProblemDetailScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('Status (ukoliko oznacite Zavrsen problem ce biti uklonjen iz liste): '),
+                                Text(
+  'Status: (ukoliko označite problem kao "Završen" bit će premješten u sekciju "Riješeni problemi"):',
+  style: TextStyle(
+    fontWeight: FontWeight.bold,
+    color: Colors.red,
+  ),
+),
+
                                 DropdownButtonFormField<int>(
                                   value: selectedStatusId,
                                   onChanged: (newValue) {

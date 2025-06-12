@@ -225,7 +225,7 @@ class LoginPage extends StatelessWidget {
                               child: const Text("Login"),
                             ),
                             const SizedBox(height: 10),
-                            GestureDetector(
+                            /*GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
@@ -240,7 +240,7 @@ class LoginPage extends StatelessWidget {
                                   decoration: TextDecoration.underline,
                                 ),
                               ),
-                            ),
+                            ),*/
                           ],
                         ),
                       ),

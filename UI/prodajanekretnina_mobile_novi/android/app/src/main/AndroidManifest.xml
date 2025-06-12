@@ -4,6 +4,7 @@
     <!-- Dozvola za pristup galeriji i skladištu -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="prodajanekretnina_mobile_novi"
         android:name="${applicationName}"

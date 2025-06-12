@@ -312,8 +312,8 @@ Widget _buildTextField(String name, String label, IconData icon,
           return 'Unesite validan broj telefona (npr. 987654321)';
         }
         if (name == 'password' || name == 'passwordPotvrda') {
-          if (value.length < 6) {
-            return 'Lozinka mora imati najmanje 6 karaktera.';
+          if (value.length < 4) {
+            return 'Lozinka mora imati najmanje 4 karaktera.';
           }
         }
         return null; 

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:prodajanekretnina_admin/models/agencija.dart';
 import 'dart:ui';  // za ImageFilter
 import 'package:prodajanekretnina_admin/models/drzave.dart';
 import 'package:prodajanekretnina_admin/models/gradovi.dart';
 import 'package:prodajanekretnina_admin/models/korisnici.dart';
+import 'package:prodajanekretnina_admin/models/korisnikAgencija.dart';
 import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_admin/models/lokacije.dart';
 import 'package:prodajanekretnina_admin/models/nekretnine.dart';
@@ -19,6 +21,8 @@ import 'package:prodajanekretnina_admin/providers/nekretninaAgenti_provider.dart
 import 'package:prodajanekretnina_admin/providers/lokacije_provider.dart';
 import 'package:prodajanekretnina_admin/providers/nekretnine_provider.dart';
 import 'package:prodajanekretnina_admin/providers/tipoviNekretnina_provider.dart';
+import 'package:prodajanekretnina_admin/providers/agencije_provider.dart';
+import 'package:prodajanekretnina_admin/providers/korisnikAgencija_provider.dart';
 import 'package:prodajanekretnina_admin/main.dart';
 import 'package:provider/provider.dart';
 import 'package:prodajanekretnina_admin/providers/slike_provider.dart';
@@ -55,6 +59,8 @@ class _RegistracijaScreenState extends State<RegistracijaScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late KorisniciProvider _korisniciProvider;
+  late KorisnikAgencijaProvider _korisnikAgencijaProvider;
+  late AgencijaProvider _agencijeProvider;
   String? selectedImagePath;
   late KorisniciUlogeProvider _korisniciUlogeProvider;
   bool isLoading = true;
@@ -62,7 +68,8 @@ class _RegistracijaScreenState extends State<RegistracijaScreen> {
   SearchResult<Korisnik>? korisniciResult;
   SearchResult<TipNekretnine>? tipoviResult;
   SearchResult<Lokacija>? lokacijeResult;
-
+SearchResult<Agencija>? agencijeResult;
+SearchResult<KorisnikAgencija>? korisnikAgencijaResult;
   SearchResult<Grad>? gradoviResult;
   SearchResult<Drzava>? drzaveResult;
   SearchResult<Slika>? slikeResult;
@@ -92,6 +99,8 @@ class _RegistracijaScreenState extends State<RegistracijaScreen> {
 
     _korisniciProvider = context.read<KorisniciProvider>();
     _korisniciUlogeProvider = KorisniciUlogeProvider();
+    _korisnikAgencijaProvider = context.read<KorisnikAgencijaProvider>();
+    _agencijeProvider = context.read<AgencijaProvider>();
    
     initForm();
   }
@@ -107,6 +116,9 @@ class _RegistracijaScreenState extends State<RegistracijaScreen> {
       var tmpKorisniciData = await _korisniciProvider.get();
 korisniciUlogeResult = await _korisniciUlogeProvider.get();
       print(korisniciUlogeResult);
+      agencijeResult = await _agencijeProvider.get();
+      korisnikAgencijaResult =
+          await _korisnikAgencijaProvider.get();
       setState(() {
         isLoading = false;
       });
@@ -118,7 +130,7 @@ korisniciUlogeResult = await _korisniciUlogeProvider.get();
   String convertBytesToBase64(Uint8List bytes) {
     return base64Encode(bytes);
   }
-
+ String selectedAgencijaId = '';
   @override
 Widget build(BuildContext context) {
   return Scaffold(
@@ -308,7 +320,7 @@ Widget build(BuildContext context) {
       // Regex za osnovnu provjeru email formata
       final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
       if (!emailRegex.hasMatch(value)) {
-        return "Unesite ispravan email u formatu: primjer@domena.com";
+        return "Unesite ispravan email (npr. primjer@domena.com)";
       }
       return null;
     },
@@ -372,8 +384,8 @@ Widget build(BuildContext context) {
       if (value == null || value.isEmpty) {
         return "Polje ne smije biti prazno";
       }
-      if (value.length < 6) {
-        return "Lozinka mora sadržavati najmanje 6 znakova";
+      if (value.length < 4) {
+        return "Lozinka mora sadržavati najmanje 4 znaka";
       }
       return null;
     },
@@ -595,7 +607,11 @@ Widget build(BuildContext context) {
 
                             // Call the insert method from korisniciUlogeProvider
                             _korisniciUlogeProvider.insert(ulogeRequest);
+                            
+
                           }
+                          
+
 
                           showDialog(
                             context: context,
@@ -616,13 +632,76 @@ Widget build(BuildContext context) {
                             },
                           );
                                                   if (insertedKorisnikId != null) {
-                            // Uspješna registracija, preusmeravanje na LoginPage
-                            Navigator.pushReplacement(
+                                                    showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Potvrda"),
+                                  content: SingleChildScrollView(
+                                    child: FormBuilderDropdown<String>(
+                                      name: 'korisnikAgencijaId',
+                                      decoration: InputDecoration(
+                                        labelText: 'Agencija*',
+                                        suffix: IconButton(
+                                          icon: const Icon(Icons.close),
+                                          onPressed: () {
+                                            _formKey.currentState!
+                                                .fields['korisnikAgencijaId']
+                                                ?.reset();
+                                          },
+                                        ),
+                                        hintText: 'Odaberite agenciju',
+                                      ),
+                                      onChanged: (newValue) {
+                                        _formKey.currentState
+                                            ?.fields['korisnikAgencijaId']
+                                            ?.didChange(newValue);
+                                        selectedAgencijaId = newValue ?? '';
+                                      },
+                                      items: agencijeResult?.result
+                                              .map((Agencija k) =>
+                                                  DropdownMenuItem(
+                                                    alignment:
+                                                        AlignmentDirectional
+                                                            .center,
+                                                    value:
+                                                        k.agencijaId.toString(),
+                                                    child: Text(
+                                                        k.naziv.toString()),
+                                                  ))
+                                              .toList() ??
+                                          [],
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Map<String, dynamic>
+                                            korisnikAgencijaRequest = {
+                                          'korisnikId': insertedKorisnikId,
+                                          'agencijaId': selectedAgencijaId,
+                                        };
+
+                                        _korisnikAgencijaProvider
+                                            .insert(korisnikAgencijaRequest);
+
+                                        Navigator.of(context).pop();
+                                        Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => LoginPage(),
                               ),
                             );
+                                        
+                                      },
+                                      child: const Text("OK"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                            // Uspješna registracija, preusmeravanje na LoginPage
+                            
                           }
                         },
                          icon: const Icon(

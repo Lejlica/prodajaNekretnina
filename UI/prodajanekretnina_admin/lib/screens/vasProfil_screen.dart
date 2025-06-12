@@ -288,6 +288,14 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
         prefixIcon: Icon(Icons.person),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
       ),
+       validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Polje prezime je obavezno.';
+        }
+       if (!RegExp(r'^[a-zA-ZšđčćžŠĐČĆŽ\s]+$'
+).hasMatch(value)) {
+          return 'Unesite validno prezime (samo slova i razmaci)';
+        }},
                         ),
                       ),
                       const SizedBox(
@@ -302,6 +310,14 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
         prefixIcon: Icon(Icons.person_outlined),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
       ),
+       validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Polje prezime je obavezno.';
+        }
+       if (!RegExp(r'^[a-zA-ZšđčćžŠĐČĆŽ\s]+$'
+).hasMatch(value)) {
+          return 'Unesite validno prezime (samo slova i razmaci)';
+        }},
                         ),
                       ),
                     ],
@@ -323,6 +339,13 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
         prefixIcon: Icon(Icons.mail),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Polje email je obavezno.';
+        }
+        if ( !RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+          return 'Unesite validan email (npr. korisnik@example.com)';
+        }},
                         ),
                       ),
                       const SizedBox(
@@ -337,6 +360,13 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
         prefixIcon: Icon(Icons.phone),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Polje telefon je obavezno.';
+        }
+       if (!RegExp(r'^\+?\d{6,15}$').hasMatch(value)) {
+          return 'Unesite validan broj telefona (npr. 987654321)';
+        }},
                         ),
                       ),
                     ],
@@ -358,6 +388,15 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
         prefixIcon: Icon(Icons.account_circle),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
       ),
+       validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Polje korisnicko ime je obavezno.';
+        }
+       if (!RegExp(r'^[a-zA-Z][a-zA-Z0-9._]{2,19}$'
+
+).hasMatch(value)) {
+          return 'Unesite validno korisničko ime (minimalno 3 znaka, dozvoljena slova, brojevi, tačke i donje crte)';
+        }},
                         ),
                       ),
                       const SizedBox(
@@ -483,6 +522,10 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                   ),
                   ElevatedButton.icon(
                     onPressed: () async {
+                      if (!_formKey.currentState!.saveAndValidate()) {
+    // Ako bilo koje polje nije validno, ne nastavljamo
+    return;
+  }
                       String? enteredPassword = _formKey.currentState?.fields['password']?.value;
 
   if (enteredPassword == null || enteredPassword.trim().isEmpty) {
@@ -501,6 +544,7 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
     );
     return; // Prekini izvršavanje ako je prazno
   }
+  
                       try {
                         Authorization.password = _passwordController.text;
                       } catch (e) {
@@ -520,56 +564,68 @@ class _VasProfilScreenState extends State<VasProfilScreen> {
                         );
                         return;
                       }
+try {
+  Map<String, dynamic> request = {
+    'ime': _formKey.currentState?.fields['ime']?.value,
+    'prezime': _formKey.currentState?.fields['prezime']?.value,
+    'email': _formKey.currentState?.fields['email']?.value,
+    'telefon': _formKey.currentState?.fields['telefon']?.value,
+    'korisnickoIme': _formKey.currentState?.fields['korisnickoIme']?.value,
+    'password': _formKey.currentState?.fields['password']?.value,
+    'passwordPotvrda': _formKey.currentState?.fields['password']?.value,
+  };
 
-                      Map<String, dynamic> request = {
-                        'ime': _formKey.currentState?.fields['ime']?.value,
-                        'prezime':
-                            _formKey.currentState?.fields['prezime']?.value,
-                        'email': _formKey.currentState?.fields['email']?.value,
-                        'telefon':
-                            _formKey.currentState?.fields['telefon']?.value,
-                        'korisnickoIme': _formKey
-                            .currentState?.fields['korisnickoIme']?.value,
-                        'password':
-                            _formKey.currentState?.fields['password']?.value,
-                        'passwordPotvrda':
-                            _formKey.currentState?.fields['password']?.value,
-                      };
+  if (selectedImagePath != null && selectedImagePath!.isNotEmpty) {
+    request['bajtoviSlike'] = selectedImagePath;
+  }
 
-                      if (selectedImagePath != null &&
-                          selectedImagePath!.isNotEmpty) {
-                        // Dodajte podatke o slici zahtevu
-                        request['bajtoviSlike'] = selectedImagePath;
-                      }
-                      int? korId = korisnikId();
-                      Korisnik insertedKorisnik =
-                          await _korisniciProvider.update(korId!, request);
+  int? korId = korisnikId();
+  Korisnik insertedKorisnik =
+      await _korisniciProvider.update(korId!, request);
 
-                      int? insertedKorisnikId;
-                      insertedKorisnikId = insertedKorisnik.korisnikId;
-                      _formKey.currentState?.reset();
+  int? insertedKorisnikId = insertedKorisnik.korisnikId;
+  _formKey.currentState?.reset();
 
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Uspješno sačuvane izmjene"),
-                            content: Text("Vaš račun je uspješno ažuriran."),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text("Uredu"),
-                              ),
-                            ],
-                          );
-                        },
-                      ).then((_) async {
-  // Ovdje se izvršava kod nakon što se zatvori dijalog
-  await initForm(); // ponovo učitaj podatke
-  setState(() {});  // osvježi UI
-});
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Uspješno sačuvane izmjene"),
+        content: Text("Vaš račun je uspješno ažuriran."),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("Uredu"),
+          ),
+        ],
+      );
+    },
+  ).then((_) async {
+    await initForm(); // ponovo učitaj podatke
+    setState(() {});  // osvježi UI
+  });
+} catch (e) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Greška"),
+        content: Text("Lozinka nije ispravna, molimo unesite tacnu lozinku.: $e"),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("Zatvori"),
+          ),
+        ],
+      );
+    },
+  );
+}
+
                                         },
                     
                      icon: const Icon(Icons.save_alt, size: 20),
