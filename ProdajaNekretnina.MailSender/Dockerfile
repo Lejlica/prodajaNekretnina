@@ -9,7 +9,7 @@ EXPOSE 443
 
 
 # This stage is used to build the service project
-COPY ProdajaNekretnina.MailSender/certifikat.pfx /app/certifikat.pfx
+#COPY ProdajaNekretnina.MailSender/certifikat.pfx /app/certifikat.pfx
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src

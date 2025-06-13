@@ -40,8 +40,6 @@ services:
       - MAIL_SENDER=seminarskinekretnine@gmail.com
       - MAIL_PASS=wnivtkyrbfpwwjki
       - MAIL_PORT=587
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=lejla
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certifikat.pfx
     networks:
       - prodajanekretnina
     ports:
@@ -65,8 +63,6 @@ services:
       - MAIL_SENDER=seminarskinekretnine@gmail.com
       - MAIL_PASS=wnivtkyrbfpwwjki
       - MAIL_PORT=587
-    volumes:
-      - ./certificate.pfx:/app/certificate.pfx
     ports:
       - "7189:7189"
     networks:
