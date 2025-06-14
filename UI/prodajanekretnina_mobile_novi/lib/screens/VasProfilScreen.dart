@@ -64,6 +64,8 @@ bool _imageInitialized = false;
   List<dynamic> data = [];
   List<dynamic> kupcidata = [];
   SearchResult<NekretninaAgenti>? nekretninaAgentiResult;
+  int? korisIdInitial;
+  int? kupIdInitial;
   @override
   void initState() {
     super.initState();
@@ -102,27 +104,50 @@ bool _imageInitialized = false;
     super.didChangeDependencies();
   }
 
-  Future initForm() async {
-    try {
-      var tmpKorisniciData = await _korisniciProvider?.get(null);
-      var tmpKupciData = await _kupciProvider?.get(null);
-      var korisnik = korisnikk(Authorization.username.toString()); 
+ Future initForm() async {
+  try {
+    var tmpKorisniciData = await _korisniciProvider?.get(null);
+    var tmpKupciData = await _kupciProvider?.get(null);
 
-    if (korisnik != null &&
-        korisnik.bajtoviSlike != null &&
-        korisnik.bajtoviSlike!.isNotEmpty) {
+    setState(() {
+      kupcidata = tmpKupciData ?? [];
+      data = tmpKorisniciData ?? [];
+      isLoading = false;
+    });
+
+    // Sada kad su liste postavljene, možeš tražiti korisnika
+    var korisnik = korisnikk(Authorization.username.toString());
+
+    if (korisnik != null && korisnik.bajtoviSlike != null && korisnik.bajtoviSlike!.isNotEmpty) {
       base64Image = korisnik.bajtoviSlike!;
       bytes = base64.decode(base64Image!);
     }
-      setState(() {
-        isLoading = false;
-        kupcidata = tmpKupciData!;
-        data = tmpKorisniciData!;
-      });
-    } catch (e) {
-      print('Error in initForm: $e');
-    }
+
+    // Tek sada možeš pozvati ove metode
+    List<dynamic> filteredData = data.where((korisnik) => korisnik.korisnickoIme == Authorization.username).toList();
+
+if (filteredData.isNotEmpty) {
+  korisIdInitial = filteredData[0].korisnikId;
+  print('korId u inistu: ${filteredData[0].korisnikId}');
+} else {
+  print('korId nije pronađen');
+}
+
+    List<dynamic> filteredDataKupci = kupcidata.where((kupac) => kupac.korisnickoIme == Authorization.username).toList();
+
+if (filteredDataKupci.isNotEmpty) {
+  kupIdInitial = filteredDataKupci[0].kupacId;
+  print('kupId u inistu: ${filteredDataKupci[0].kupacId}');
+} else {
+  print('kupId nije pronađen');
+}
+    print(Authorization.username);
+
+  } catch (e) {
+    print('Error in initForm: $e');
   }
+}
+
 
   String convertBytesToBase64(Uint8List bytes) {
     return base64Encode(bytes);
@@ -256,9 +281,11 @@ bool _imageInitialized = false;
                 decoration: BoxDecoration(
                   
                     ),
-                child: SingleChildScrollView(
-                    physics: AlwaysScrollableScrollPhysics(),
-                    child: Column(children: [
+                
+                    
+                    child: Column(
+                      
+                      children: [
                       Padding(
   padding: const EdgeInsets.only(top: 20.0),
   child: StatefulBuilder(
@@ -444,10 +471,11 @@ bool _imageInitialized = false;
 }
 
 
-        int? korId = korisnikId();
-        int? kupId = kupacId();
+        
 
-        if (korId == null || kupId == null) {
+       
+print( Authorization.username);
+        if (korisIdInitial == null || kupIdInitial == null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Row(
@@ -474,8 +502,8 @@ bool _imageInitialized = false;
           return;
         }
 
-        await _korisniciProvider.update(korId, request);
-        await _kupciProvider.update(kupId, request);
+        await _korisniciProvider.update(korisIdInitial!, request);
+        await _kupciProvider.update(kupIdInitial!, request);
 
         Navigator.of(context).pushReplacement(
   MaterialPageRoute(
@@ -621,8 +649,10 @@ SizedBox(height: 15),
       letterSpacing: 0.5,
     ),
   ),
+  
                       ),
-                    ])))));
+                       const SizedBox(height: 50),
+                    ]))));
   }
 
   Lokacija? lokacija;

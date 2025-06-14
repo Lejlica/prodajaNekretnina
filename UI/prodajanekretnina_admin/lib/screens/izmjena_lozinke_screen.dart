@@ -4,6 +4,7 @@ import 'package:prodajanekretnina_admin/models/drzave.dart';
 import 'package:prodajanekretnina_admin/models/gradovi.dart';
 import 'package:crypto/crypto.dart';
 import 'package:prodajanekretnina_admin/models/korisnici.dart';
+import 'package:prodajanekretnina_admin/main.dart';
 import 'package:prodajanekretnina_admin/models/nekretninaAgenti.dart';
 import 'package:prodajanekretnina_admin/models/lokacije.dart';
 import 'package:prodajanekretnina_admin/models/search_result.dart';
@@ -108,64 +109,58 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
     return base64Encode(bytes);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    _nekretnineProvider = context.read<NekretnineProvider>();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Izmjena lozinke"),
-      ),
-      body: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxHeight: 500, maxWidth: 1050),
-          child: Card(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: MediaQuery.of(context)
-                    .size
-                    .width, 
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width *
-                          0.5, 
-                      child: Image.asset(
-                        "assets/images/pswd.jpg",
-                        fit: BoxFit.cover,
-                        height: double.infinity,
-                        width: double.infinity,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 70),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width *
-                            0.5, // Set the width for the FutureBuilder
-                        child: FutureBuilder(
-                          future: _korisniciProvider.get(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.done) {
-                              
-                              return _formBuild();
-                            } else {
-                              
-                              return const CircularProgressIndicator();
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
+@override
+Widget build(BuildContext context) {
+  _nekretnineProvider = context.read<NekretnineProvider>();
+
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text("Izmjena lozinke"),
+    ),
+    body: LayoutBuilder(
+      builder: (context, constraints) {
+        return Row(
+          children: [
+            // Lijeva strana: slika
+            if (constraints.maxWidth > 600)
+              Expanded(
+                flex: 1,
+                child: Image.asset(
+                  "assets/images/pswd.jpg",
+                  fit: BoxFit.cover,
+                  height: double.infinity,
                 ),
               ),
+
+            // Desna strana: forma
+            Expanded(
+              flex: 1,
+              child: FutureBuilder(
+                future: _korisniciProvider.get(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return SingleChildScrollView(
+                      padding: const EdgeInsets.all(32),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 500),
+                          child: _formBuild(), // Tvoja logika forme ostaje
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
+              ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
+          ],
+        );
+      },
+    ),
+  );
+}
+
 
   String username = Authorization.username ?? "";
   Korisnik? korisnikk() {
@@ -228,6 +223,7 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
+                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Text(
                       "Promjena lozinke",
@@ -360,8 +356,11 @@ class _promjenaLozinkeScreenState extends State<promjenaLozinkeScreen> {
                                       actions: <Widget>[
                                         TextButton(
                                           onPressed: () {
-                                            Navigator.of(context)
-                                                .pop(); // Zatvori alert
+                                             Navigator.of(context).pop(); // Zatvori alert
+  Navigator.of(context).pushAndRemoveUntil(
+    MaterialPageRoute(builder: (context) =>  LoginPage()),
+    (Route<dynamic> route) => false, // Ukloni sve prethodne rute
+  );
                                           },
                                           child: const Text('OK'),
                                         ),

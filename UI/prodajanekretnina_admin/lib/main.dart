@@ -190,57 +190,43 @@ class LoginPage extends StatelessWidget {
                             const SizedBox(height: 14),
                             ElevatedButton(
                               onPressed: () async {
-                                var username = usernameController.text;
-                                var password = passwordController.text;
-                                print("Login proceed $username $password");
+  try {
+    var username = usernameController.text;
+    var password = passwordController.text;
 
-                                Authorization.username = username;
-                                Authorization.password = password;
+    Authorization.username = username;
+    Authorization.password = password;
 
-                                try {
-                                 // await _nekretnineProvider.get();
+    // Ovo služi kao "test" da li login radi – pravi HTTP poziv sa tim kredencijalima
+    await _nekretnineProvider.get();
 
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const NekretnineListScreen(),
-                                    ),
-                                  );
-                                } on Exception catch (e) {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          AlertDialog(
-                                            title: const Text("Error"),
-                                            content: Text(e.toString()),
-                                            actions: [
-                                              TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(context),
-                                                  child: const Text("OK"))
-                                            ],
-                                          ));
-                                }
-                              },
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const NekretnineListScreen(),
+      ),
+    );
+  } catch (e) {
+    // Ako dođe do greške (npr. 401), prikaži alert
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text("Greška"),
+        content: const Text("Neispravni korisnički podaci."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
+},
+
                               child: const Text("Login"),
                             ),
                             const SizedBox(height: 10),
-                            /*GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => RegistracijaScreen(),
-                                  ),
-                                );
-                              },
-                              child: const Text(
-                                "Registruj se",
-                                style: TextStyle(
-                                  color: Colors.white, // Set the color to blue
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            ),*/
+                           
                           ],
                         ),
                       ),

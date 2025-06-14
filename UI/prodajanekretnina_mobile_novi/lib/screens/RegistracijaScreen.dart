@@ -107,6 +107,7 @@ _korisnikUlogeProvider=context.read<KorisnikUlogeProvider>();
 Widget build(BuildContext context) {
   return MasterScreenWidget(
     title: 'Registracija',
+    showDrawer: false,
     child: SingleChildScrollView( // Omogućava skrolovanje cijelog sadržaja
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -115,6 +116,7 @@ Widget build(BuildContext context) {
     ),
   );
 }
+String? _base64OdabranaSlika;
 
 
  FormBuilder _formBuild() {
@@ -161,6 +163,36 @@ Widget build(BuildContext context) {
               _buildTextField('korisnickoIme', 'Korisničko ime', Icons.account_circle),
               _buildTextField('password', 'Lozinka', Icons.lock, obscure: true),
               _buildTextField('passwordPotvrda', 'Potvrdite lozinku', Icons.lock_outline, obscure: true),
+ SizedBox(height: 12),
+ElevatedButton.icon(
+  onPressed: () async {
+    final base64Image = await pickAndEncodeImage();
+    if (base64Image != null && base64Image.isNotEmpty) {
+      setState(() {
+        _base64OdabranaSlika = base64Image;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Slika uspješno odabrana.'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  },
+  icon: Icon(Icons.image),
+  label: Text('Odaberi sliku'),
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Color.fromARGB(255, 227, 223, 172),
+    padding: EdgeInsets.symmetric(vertical: 16),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16),
+    ),
+    textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+  ),
+),
+
 
               SizedBox(height: 24),
 
@@ -216,11 +248,12 @@ Widget build(BuildContext context) {
                     'passwordPotvrda': _formKey.currentState?.fields['passwordPotvrda']?.value,
                   };
 
-                  String base64Image = await pickAndEncodeImage();
+                  
 
-                  if (base64Image.isNotEmpty) {
-                    request['bajtoviSlike'] = base64Image;
-                  }
+                  
+ if (_base64OdabranaSlika != null && _base64OdabranaSlika!.isNotEmpty) {
+  request['bajtoviSlike'] = _base64OdabranaSlika;
+}
 
                   Korisnik insertedKorisnik = await _korisniciProvider.insert(request);
                   int? insertedKorisnikId;
@@ -228,6 +261,8 @@ Widget build(BuildContext context) {
                   if (insertedKorisnik != null) {
                     insertedKorisnikId = insertedKorisnik.korisnikId;
                     _formKey.currentState?.reset();
+
+                   
 
                     Map<String, dynamic> korisnikUlogaRequest = {
                       "korisnikId": insertedKorisnikId,
@@ -348,21 +383,17 @@ Widget _buildTextField(String name, String label, IconData icon,
     }
   }
 
-  Future<String> pickAndEncodeImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  Future<String?> pickAndEncodeImage() async {
+  final picker = ImagePicker();
+  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-    if (pickedFile != null) {
-      // Read the file as bytes
-      Uint8List imageBytes = await pickedFile.readAsBytes();
-
-      // Convert the bytes to base64
-      String base64Image = base64Encode(imageBytes);
-
-      return base64Image.toString();
-    } else {
-      print('No image selected.');
-      return ''; // or handle accordingly
-    }
+  if (pickedFile != null) {
+    Uint8List imageBytes = await pickedFile.readAsBytes();
+    return base64Encode(imageBytes);
+  } else {
+    print('Nijedna slika nije odabrana.');
+    return null;
   }
+}
+
 }

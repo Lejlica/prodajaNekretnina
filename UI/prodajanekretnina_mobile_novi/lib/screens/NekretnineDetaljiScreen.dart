@@ -203,10 +203,12 @@ class _NekretnineDetaljiScreenState extends State<NekretnineDetaljiScreen> {
   Widget build(BuildContext context) {
     return MasterScreenWidget(
       // ignore: sort_child_properties_last
-      child: Column(
-        children: [
-          _formBuild()
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            _formBuild()
+          ],
+        ),
       ),
       title: this.widget.nekretnina?.naziv.toString() ?? "",
     );
@@ -897,7 +899,7 @@ Padding(
                   Row(
                     children: [
                       Expanded(
-                        child: SingleChildScrollView(
+                        
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -931,6 +933,7 @@ Padding(
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 20),
                                       child: GridView.builder(
+                                        physics: NeverScrollableScrollPhysics(), 
                                         gridDelegate:
                                             SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 1,
@@ -1078,7 +1081,7 @@ Padding(
                               ),
                             ],
                           ),
-                        ),
+                        
                       ),
                     ],
                   ),

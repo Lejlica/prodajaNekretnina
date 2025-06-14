@@ -167,8 +167,8 @@ Korisnik? pronadjiKorisnika(String username) {
             children: [
               Text(
                 widget!.nekretnina!.nekretninaId != null
-                    ? 'ID: ${widget!.nekretnina!.nekretninaId}'
-                    : 'Nema ID',
+                    ? 'Naziv: ${widget!.nekretnina!.naziv}'
+                    : 'Nema naziva',
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               Text(

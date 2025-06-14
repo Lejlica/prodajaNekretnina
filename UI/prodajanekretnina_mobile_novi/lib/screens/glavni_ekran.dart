@@ -13,7 +13,8 @@ import 'package:prodajanekretnina_mobile_novi/screens/statistika2.dart';
 class MasterScreenWidget extends StatefulWidget {
   Widget? child;
   String? title;
-  MasterScreenWidget({this.child, this.title, Key? key}) : super(key: key);
+  final bool showDrawer;
+  MasterScreenWidget({this.child, this.title,this.showDrawer = true, Key? key}) : super(key: key);
 
   @override
   State<MasterScreenWidget> createState() => _MasterScreenWidget();
@@ -30,8 +31,9 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
           widget.title ?? "",
           style: TextStyle(fontSize: 20), // Adjust the font size as needed
         ),
+        automaticallyImplyLeading: widget.showDrawer,
       ),
-      drawer: Drawer(
+      drawer: widget.showDrawer ? Drawer(
   child: Container(
     decoration: const BoxDecoration(
       gradient: LinearGradient(
@@ -60,7 +62,7 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
               ),
               const SizedBox(height: 12),
               Text(
-                ' $username',
+                Authorization.username??'',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -96,7 +98,7 @@ class _MasterScreenWidget extends State<MasterScreenWidget> {
       ],
     ),
   ),
-),
+):null,
 
       body: widget.child!,
     );
