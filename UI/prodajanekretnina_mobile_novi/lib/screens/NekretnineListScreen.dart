@@ -7,6 +7,7 @@ import 'package:prodajanekretnina_mobile_novi/models/slike.dart';
 import 'package:prodajanekretnina_mobile_novi/models/search_result.dart';
 import 'package:prodajanekretnina_mobile_novi/models/tipoviNekretnina.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/korisnici_provider.dart';
+import 'package:prodajanekretnina_mobile_novi/providers/kupovine_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/nekretnine_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/slike_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/tipNekr_provider.dart';
@@ -49,9 +50,12 @@ class CustomCard extends StatefulWidget {
 class _CustomCardState extends State<CustomCard> {
   late PageController _pageController;
   List<dynamic> data = [];
+  List<dynamic> kupovineData = [];
+  List<dynamic> nekretnineData = [];
   late KorisniciProvider _korisniciProvider;
   late KupciProvider _kupciProvider;
-
+  late KupovinaProvider _kupovinaProvider;
+  late NekretnineProvider _nekretnineProvider;
   
   @override
   void initState() {
@@ -59,7 +63,8 @@ class _CustomCardState extends State<CustomCard> {
     _pageController = PageController(initialPage: 0);
     _korisniciProvider = context.read<KorisniciProvider>();
     _kupciProvider = context.read<KupciProvider>();
-    
+    _kupovinaProvider = context.read<KupovinaProvider>();
+    _nekretnineProvider = context.read<NekretnineProvider>();
     initForm();
     
     
@@ -68,10 +73,12 @@ Future initForm() async {
   try {
     var tmpKorisniciData = await _korisniciProvider.get({});
     var tmpKupciData = await _kupciProvider.get({});
-
+    var tmpKupovinaData =await _kupovinaProvider.get();
+    var tmpNekretnineData=await _nekretnineProvider.get();
     setState(() {
       data = tmpKorisniciData!;
-      
+      kupovineData = tmpKupovinaData;
+      nekretnineData = tmpNekretnineData!;
     });
 
     String? username = Authorization.username;
@@ -83,6 +90,13 @@ Future initForm() async {
   }
 }
 
+bool isKupljena(int nekretninaId) {
+  return kupovineData.any((kupovina) =>
+    kupovina.nekretninaId == nekretninaId &&
+    kupovina.payPalPaymentId != null &&
+    kupovina.payPalPaymentId!.isNotEmpty
+  );
+}
 
   @override
   void dispose() {
@@ -137,6 +151,32 @@ Korisnik? pronadjiKorisnika(String username) {
   child: Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
+      if (isKupljena(widget.nekretnina!.nekretninaId!))
+      Container(
+  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  decoration: BoxDecoration(
+    color: Colors.green.withOpacity(0.15), // blaga zelena pozadina
+    border: Border.all(color: Colors.green, width: 2),
+    borderRadius: BorderRadius.circular(12),
+  ),
+  child: Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(Icons.verified, color: Colors.green, size: 24),
+      SizedBox(width: 8),
+      Text(
+        'KUPLJENA',
+        style: TextStyle(
+          color: Colors.green[800],
+          fontWeight: FontWeight.w700,
+          fontSize: 18,
+          letterSpacing: 1.2,
+        ),
+      ),
+    ],
+  ),
+),
+
       ClipRRect(
   borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
   child: widget.slikaBajtovi != null
@@ -165,6 +205,7 @@ Korisnik? pronadjiKorisnika(String username) {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              
               Text(
                 widget!.nekretnina!.nekretninaId != null
                     ? 'Naziv: ${widget!.nekretnina!.naziv}'
@@ -225,7 +266,7 @@ Korisnik? pronadjiKorisnika(String username) {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                 ),
-                onPressed: data == null ? null : () {
+                onPressed: (data == null || isKupljena(widget.nekretnina!.nekretninaId!)) ? null : () {
     var korisnik = pronadjiKorisnika(username!);
     if (korisnik == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -245,7 +286,12 @@ Korisnik? pronadjiKorisnika(String username) {
                       nekretnina: widget!.nekretnina!,
                       ),
                     ),
-                  );
+                  ).then((value) {
+  if (value == true) {
+    
+    initForm(); 
+  }
+});
                 },
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
@@ -306,7 +352,8 @@ class _NekretnineListScreenState extends State<NekretnineListScreen> {
   SearchResult<Nekretnina>? result;
   TextEditingController _gradController = TextEditingController();
   TextEditingController _tipNekretnineController = TextEditingController();
-  TextEditingController _kvadraturaController = TextEditingController();
+  TextEditingController _kvadraturaOdController = TextEditingController();
+  TextEditingController _kvadraturaDoController = TextEditingController();
   TextEditingController _cijenaOdController = TextEditingController();
   TextEditingController _cijenaDoController = TextEditingController();
   SearchResult<TipNekretnine>? tipNekretnineResult;
@@ -423,8 +470,10 @@ Future<void> loadNekretnine() async {
       'isOdobrena': true,
       'tipNekretnineId': selectedPropertyTypeId ?? 0,
       if (_gradController.text.isNotEmpty) 'grad': _gradController.text,
-      if (_kvadraturaController.text.isNotEmpty)
-        'kvadratura': int.parse(_kvadraturaController.text),
+      if (_kvadraturaOdController.text.isNotEmpty)
+        'KvadraturaOd': int.parse(_kvadraturaOdController.text),
+         if (_kvadraturaDoController.text.isNotEmpty)
+        'KvadraturaDo': int.parse(_kvadraturaDoController.text),
       if (_cijenaOdController.text.isNotEmpty)
         'CijenaOd': int.parse(_cijenaOdController.text),
       if (_cijenaDoController.text.isNotEmpty)
@@ -508,10 +557,27 @@ Widget _buildSearch() {
             SizedBox(width: 12),
             Expanded(
               child: TextField(
-                controller: _kvadraturaController,
+                controller: _kvadraturaOdController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: "Kvadratura (m²)",
+                  labelText: "Kvadratura od (m²)",
+                  prefixIcon: Icon(Icons.square_foot, color: Colors.green),
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: TextField(
+                controller: _kvadraturaDoController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: "Kvadratura do (m²)",
                   prefixIcon: Icon(Icons.square_foot, color: Colors.green),
                   filled: true,
                   fillColor: Colors.grey[100],

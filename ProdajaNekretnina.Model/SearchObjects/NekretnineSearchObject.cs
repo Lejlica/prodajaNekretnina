@@ -22,6 +22,7 @@ namespace ProdajaNekretnina.Model.SearchObjects
         public int? tipNekretnineId { get; set; }
 
         public bool? isOdobrena { get; set; }
-        public int? kvadratura { get; set; }
+        public int? KvadraturaOd { get; set; }
+        public int? KvadraturaDo { get; set; }
     }
 }

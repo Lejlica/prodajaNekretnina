@@ -74,10 +74,16 @@ namespace ProdajaNekretnina.Services
                 filteredQuery = filteredQuery.Where(x => x.Cijena <= search.CijenaDo.Value);
             }
 
-            if (search?.kvadratura != null)
+            if (search?.KvadraturaOd != null)
             {
-                filteredQuery = filteredQuery.Where(x => x.Kvadratura >= search.kvadratura.Value);
+                filteredQuery = filteredQuery.Where(x => x.Kvadratura >= search.KvadraturaOd);
             }
+
+            if (search?.KvadraturaDo != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Kvadratura <= search.KvadraturaDo);
+            }
+
 
 
             if (search?.Grad != null)
@@ -96,10 +102,7 @@ namespace ProdajaNekretnina.Services
             {
                 filteredQuery = filteredQuery.Where(x => x.TipNekretnineId == search.tipNekretnineId);
             }
-            if (search?.kvadratura != null && search?.kvadratura != 0)
-            {
-                filteredQuery = filteredQuery.Where(x => x.Kvadratura == search.kvadratura);
-            }
+           
 
             return filteredQuery;
         }

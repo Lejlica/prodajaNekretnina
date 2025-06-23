@@ -1,6 +1,7 @@
 
 import 'package:prodajanekretnina_mobile_novi/providers/agencije_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/komentariAgentima_provider.dart';
+import 'package:prodajanekretnina_mobile_novi/providers/kupovine_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/nekretninaAgenti_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/problem_provider.dart';
 import 'package:prodajanekretnina_mobile_novi/providers/reccomend_results_provider.dart';
@@ -60,6 +61,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => KorisnikUlogeProvider()),
       ChangeNotifierProvider(create: (_) => AgencijaProvider()),
       ChangeNotifierProvider(create: (_) => KorisnikAgencijaProvider()),
+      ChangeNotifierProvider(create: (_) => KupovinaProvider()),
     ],
     child: MaterialApp(
       debugShowCheckedModeBanner: true,

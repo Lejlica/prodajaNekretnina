@@ -133,20 +133,17 @@ Future<void> _createKupovina() async {
         ],
         note: "Thank you for your purchase!",
         onSuccess: (params) async {
-          final paymentId = params['paymentId'];
-          print("paymentId: $paymentId");
-          await kupovinaProvider.addPayPalPaymentId(widget!.nekretnina!.nekretninaId!, paymentId);
-          //await kupovinaProvider.updateIsPaid(widget.kupovinaId, true);
+  final paymentId = params['paymentId'];
+  print("paymentId: $paymentId");
 
-          if (!mounted) return;
-          
-          navigatorKey.currentState?.pushReplacement(
-    MaterialPageRoute(
-      builder: (_) => PaymentSuccessPage(),
-    ),
-  );
-          completer.complete(true);
-        },
+  await kupovinaProvider.addPayPalPaymentId(widget.nekretnina.nekretninaId!, paymentId);
+
+  if (!mounted) return;
+
+  Navigator.of(context).pop(true); 
+},
+
+      
         onError: (error) {
           completer.complete(false);
           if (!mounted) return;
